@@ -1,0 +1,122 @@
+[
+  {
+    "file": "assets/images/asset-01.png",
+    "mime": "png",
+    "bytes": 222911
+  },
+  {
+    "file": "assets/images/asset-02.png",
+    "mime": "png",
+    "bytes": 219776
+  },
+  {
+    "file": "assets/images/asset-03.png",
+    "mime": "png",
+    "bytes": 211501
+  },
+  {
+    "file": "assets/images/asset-04.png",
+    "mime": "png",
+    "bytes": 278564
+  },
+  {
+    "file": "assets/images/asset-05.png",
+    "mime": "png",
+    "bytes": 252108
+  },
+  {
+    "file": "assets/images/asset-06.png",
+    "mime": "png",
+    "bytes": 269545
+  },
+  {
+    "file": "assets/images/asset-07.png",
+    "mime": "png",
+    "bytes": 233373
+  },
+  {
+    "file": "assets/images/asset-08.png",
+    "mime": "png",
+    "bytes": 222398
+  },
+  {
+    "file": "assets/images/asset-09.png",
+    "mime": "png",
+    "bytes": 211088
+  },
+  {
+    "file": "assets/images/asset-10.png",
+    "mime": "png",
+    "bytes": 303515
+  },
+  {
+    "file": "assets/images/asset-11.png",
+    "mime": "png",
+    "bytes": 304797
+  },
+  {
+    "file": "assets/images/asset-12.png",
+    "mime": "png",
+    "bytes": 367187
+  },
+  {
+    "file": "assets/images/asset-13.png",
+    "mime": "png",
+    "bytes": 522486
+  },
+  {
+    "file": "assets/images/asset-14.png",
+    "mime": "png",
+    "bytes": 537276
+  },
+  {
+    "file": "assets/images/asset-15.png",
+    "mime": "png",
+    "bytes": 128667
+  },
+  {
+    "file": "assets/images/asset-16.webp",
+    "mime": "webp",
+    "bytes": 320902
+  },
+  {
+    "file": "assets/images/asset-17.webp",
+    "mime": "webp",
+    "bytes": 105856
+  },
+  {
+    "file": "assets/images/asset-18.svg",
+    "mime": "svg+xml",
+    "bytes": 1213
+  },
+  {
+    "file": "assets/images/asset-19.svg",
+    "mime": "svg+xml",
+    "bytes": 422
+  },
+  {
+    "file": "assets/images/asset-20.svg",
+    "mime": "svg+xml",
+    "bytes": 613
+  },
+  {
+    "file": "assets/images/asset-21.svg",
+    "mime": "svg+xml",
+    "bytes": 435
+  },
+  {
+    "file": "assets/images/asset-22.svg",
+    "mime": "svg+xml",
+    "bytes": 1294
+  },
+  {
+    "file": "assets/images/asset-23.svg",
+    "mime": "svg+xml",
+    "bytes": 494
+  },
+  {
+    "file": "assets/images/asset-24.svg",
+    "mime": "svg+xml",
+    "bytes": 725
+  }
+]

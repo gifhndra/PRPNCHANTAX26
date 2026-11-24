@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 420">
+<defs><linearGradient id="gold" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#fff4c9"/><stop offset=".35" stop-color="#e4bb63"/><stop offset="1" stop-color="#98651f"/></linearGradient></defs>
+<path d="M75 300 L35 95 L170 190 L300 35 L430 190 L565 95 L525 300Z" fill="url(#gold)" stroke="#fff0b5" stroke-width="10" stroke-linejoin="round"/>
+<path d="M75 300 H525 V355 H75Z" fill="#b47b2a" stroke="#f8dda0" stroke-width="8"/>
+<g fill="#7b1f35" stroke="#ffe6a0" stroke-width="5"><circle cx="170" cy="190" r="18"/><circle cx="300" cy="35" r="22"/><circle cx="430" cy="190" r="18"/></g>
+<path d="M105 320 H495" stroke="#fff0b5" stroke-width="7" opacity=".8"/>
+</svg>
