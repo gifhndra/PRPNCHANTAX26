@@ -24,7 +24,7 @@ const CONF_HEADERS = ['Status Konfirmasi', 'Keterangan Konfirmasi', 'Dikonfirmas
 const LOG_SHEET    = 'Riwayat Konfirmasi';
 const STATUSES     = ['', 'Verified', 'Improvement', 'Rejected'];
 const MIN_NOTE     = 10;
-const VERSION      = 5; // penanda versi script (dipakai website untuk mendeteksi script yang belum diperbarui)
+const VERSION      = 6; // penanda versi script (dipakai website untuk mendeteksi script yang belum diperbarui)
 
 function doGet(e) {
   const p = (e && e.parameter) || {};
@@ -33,6 +33,7 @@ function doGet(e) {
     return out_(list_());
   }
   if (p.action === 'check') return out_(check_(p.email, p.tim));
+  if (p.action === 'content') return out_(getContent_());   // publik: isi website yang diatur panitia
   return out_({ ok: true, v: VERSION, info: 'API Konfirmasi Pendaftar aktif' });
 }
 
@@ -41,6 +42,7 @@ function doPost(e) {
   try { b = JSON.parse(e.postData.contents); } catch (err) { return out_({ ok: false, error: 'Format permintaan tidak valid' }); }
   if (b.key !== SECRET) return out_({ ok: false, error: 'Kunci akses salah' });
   if (b.action === 'confirm') return out_(confirm_(b));
+  if (b.action === 'saveContent') return out_(saveContent_(b));
   return out_({ ok: false, error: 'Aksi tidak dikenal' });
 }
 
@@ -164,4 +166,65 @@ function check_(email, tim) {
     }
   }
   return { ok: true, v: VERSION, found: found, verified: false };
+}
+
+
+/* =====================================================================
+ * KONTEN WEBSITE (Dashboard Panitia > Konten Web) — tayang langsung tanpa unggah content.json
+ * Disimpan di tab "WebsiteContent" (dibuat otomatis): key | part | data | updated
+ * Satu key bisa dipecah beberapa baris (batas 1 sel = 50.000 karakter).
+ *  - GET  ?action=content            : publik, mengirim seluruh konten
+ *  - POST {action:'saveContent',key} : wajib SECRET, menimpa key yang dikirim
+ * ===================================================================== */
+const CONTENT_SHEET = 'WebsiteContent';
+const CONTENT_HEAD  = ['key', 'part', 'data', 'updated'];
+const CHUNK = 40000;
+const BLOCKED_KEYS = ['certs', 'roster', 'participants'];
+
+function contentSheet_() {
+  const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  let sh = ss.getSheetByName(CONTENT_SHEET);
+  if (!sh) { sh = ss.insertSheet(CONTENT_SHEET); sh.getRange(1, 1, 1, 4).setValues([CONTENT_HEAD]); }
+  return sh;
+}
+
+function getContent_() {
+  const sh = contentSheet_(), n = sh.getLastRow(), by = {}, out = {};
+  if (n > 1) {
+    sh.getRange(2, 1, n - 1, 3).getValues().forEach(function (r) {
+      if (!r[0]) return;
+      (by[r[0]] = by[r[0]] || []).push([Number(r[1]), String(r[2])]);
+    });
+    Object.keys(by).forEach(function (k) {
+      try { out[k] = JSON.parse(by[k].sort(function (a, b) { return a[0] - b[0]; }).map(function (x) { return x[1]; }).join('')); } catch (e) {}
+    });
+  }
+  return { ok: true, v: VERSION, content: out };
+}
+
+function saveContent_(b) {
+  const items = b.items || {}, keys = Object.keys(items);
+  for (let i = 0; i < keys.length; i++) {
+    if (!/^[a-zA-Z0-9_]{1,40}$/.test(keys[i]) || BLOCKED_KEYS.indexOf(keys[i]) >= 0) return { ok: false, error: 'Nama data tidak diizinkan: ' + keys[i] };
+    try { JSON.parse(String(items[keys[i]])); } catch (e) { return { ok: false, error: 'Data ' + keys[i] + ' bukan JSON yang valid' }; }
+  }
+  const lock = LockService.getScriptLock();
+  lock.waitLock(25000);
+  try {
+    const sh = contentSheet_(), n = sh.getLastRow();
+    let rows = n > 1 ? sh.getRange(2, 1, n - 1, 4).getValues() : [];
+    rows = rows.filter(function (r) { return keys.indexOf(String(r[0])) < 0; });
+    const now = new Date();
+    keys.forEach(function (k) {
+      const j = String(items[k]);
+      for (let i = 0, p = 0; i < j.length; i += CHUNK, p++) rows.push([k, p, j.substr(i, CHUNK), now]);
+    });
+    sh.clearContents();
+    sh.getRange(1, 1, 1, 4).setValues([CONTENT_HEAD]);
+    if (rows.length) {
+      sh.getRange(2, 3, rows.length, 1).setNumberFormat('@');   // teks polos: cegah isi sel dibaca sebagai rumus
+      sh.getRange(2, 1, rows.length, 4).setValues(rows);
+    }
+    return { ok: true, saved: keys };
+  } finally { lock.releaseLock(); }
 }

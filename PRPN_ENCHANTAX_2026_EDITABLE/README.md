@@ -33,7 +33,7 @@ Semua bagian publik kini diatur dari sini tanpa mengedit kode:
 
 | Sub-tab | Yang bisa diatur |
 |---|---|
-| 🏠 Umum | nama header, judul, tagline, footer, kartu "Tentang" (tambah/hapus tab) |
+| 🏠 Umum | nama header, judul, tagline, footer, dan kotak "Tentang" (logo + judul; klik untuk membuka deskripsi & label — tambah/hapus/urutkan/sembunyikan, ganti logo) |
 | 📅 Timeline | tambah/hapus/urut tahap, tanggal mulai & akhir, deskripsi, persyaratan tahap, tombol tujuan, tahap pengumpulan karya |
 | 🏁 Cabang | tambah/hapus cabang, nama, ikon, deskripsi, tampil/sembunyikan, tautan formulir daftar & kumpul |
 | 📎 Dokumen & Syarat | dokumen/persyaratan pendaftaran (tambah/kurangi) + tautan file |
@@ -43,7 +43,7 @@ Semua bagian publik kini diatur dari sini tanpa mengedit kode:
 | ❓ FAQ | pertanyaan & jawaban |
 | ☎️ Narahubung | kartu kontak; isi nomor WA (08…/62…) atau @instagram → otomatis jadi tautan |
 | 📚 Materi | materi pendukung + tautan file; tampil sebagai kartu yang langsung terlihat semua |
-| 🔗 Tautan | Handbook, Twibbon, Poster |
+| 🔗 Akses Cepat | kartu Handbook/Twibbon/Poster dst. (logo + judul; klik buka, klik lagi tutup): tambah/hapus/urutkan, logo, judul, deskripsi, label & tautan tombol |
 | 💾 Cadangan | unduh / impor `content.json`, reset perubahan lokal |
 
 ### Cara data tersimpan
@@ -57,3 +57,11 @@ Semua bagian publik kini diatur dari sini tanpa mengedit kode:
 - `js/cms.js` — renderer dinamis + editor Konten Web
 - `css/cms.css` — gaya editor + animasi kartu materi
 - `data/content.json` — konten terbit (opsional)
+
+
+## Tayang langsung di domain sendiri (tanpa unduh content.json)
+Konten Web disimpan ke tab **WebsiteContent** di Google Sheet lewat Apps Script yang sama dengan dashboard konfirmasi.
+1. Tempel `apps-script/Code.gs` terbaru (versi 6) ke Apps Script, ganti `SECRET`, lalu **Deploy > Manage deployments > Edit > New version > Deploy** (URL /exec tetap).
+2. Di website: Panitia > Konten Web > **💾 Cadangan** > isi kunci (sama dengan SECRET) > **Simpan kunci & uji koneksi**.
+3. Klik **🚀 Terbitkan semua konten sekarang** sekali untuk mengirim isi yang ada. Setelah itu tiap **Simpan & terapkan** langsung tayang untuk semua pengunjung.
+Pengunjung membaca konten publik dari Sheet; hanya yang memegang kunci yang bisa menulis. Hash kata sandi panitia tidak ikut dikirim. `data/content.json` tetap bisa dipakai sebagai cadangan.

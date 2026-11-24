@@ -33,17 +33,36 @@ const actBr=()=>(CT.branches||[]).filter(b=>b&&b.on!==false);
 
 /* ---------- 1. Informasi umum ---------- */
 function applyGen(){const g=CT.gen||{},set=(s,v)=>{const e=$(s);if(e&&v!=null&&v!=="")e.textContent=v};
-  set(".brand",g.brand);set("#hero .wel",g.welcome);set("#hero .ttl",g.title);set("#hero .hero-in .sub",g.tagline);set("footer",g.footer);
+  set("#kit .tag",g.kitTag);set("#kit .sec-title",g.kitTitle);set("#kit .sub",g.kitSub);set("#about .sec-title",g.aboutTitle);set("#about .sub",g.aboutSub);set(".brand",g.brand);set("#hero .wel",g.welcome);set("#hero .ttl",g.title);set("#hero .hero-in .sub",g.tagline);set("footer",g.footer);
   if(g.title)document.title=g.title+" – Portal Pendaftaran"}
-let cmsAb=0;
-tab=function(i){if(!AB[i])i=0;const a=AB[i];if(!a)return;cmsAb=i;const[t,d,c,m]=a;
-  $("#pane").innerHTML=`<h3>${esc(t)}</h3><p>${nl2br(d)}</p><div class="chips">${(c||[]).map(x=>`<span>${esc(x)}</span>`).join("")}</div>`;
-  const p=$("#pane");p.style.animation="none";p.offsetWidth;p.style.animation="";$("#am").dataset.c=m;crop();$$("#tabs button").forEach((b,j)=>b.classList.toggle("on",cmsAb===j))};
-function buildAbout(){const g=CT.gen||{},cr=["95,5,100,160","80,175,115,165","335,5,110,160","330,180,115,160"];
-  AB=(g.about||[]).map((a,i)=>[a.t||"",a.d||"",a.c||[],cr[i%cr.length]]);
-  AB.push(["Cabang Lomba",g.branchIntro||"",actBr().map(b=>b.name),cr[2]]);
-  $("#tabs").innerHTML=AB.map((a,i)=>`<button data-t="${i}">${esc(a[0])}</button>`).join("");
-  $$("#tabs button").forEach(b=>b.onclick=()=>tab(+b.dataset.t));tab(Math.min(cmsAb,AB.length-1))}
+/* Tentang: 3 kotak (logo + judul). Klik kotak -> berbalik menampilkan deskripsi & label.
+   Semua item (logo, judul, deskripsi, label) diatur dari Dashboard Panitia > Konten Web > Umum. */
+const ABOUT_LOGO=["assets/images/asset-17.webp","assets/images/asset-13.png","assets/images/asset-16.webp"];
+function aboutList(g){let a=(g.about||[]).map(x=>({...x}));
+  if(!g.aboutV2)a.push({t:"Cabang Lomba",d:g.branchIntro||"",c:[],auto:true});  /* migrasi data lama: tab Cabang Lomba kini jadi kotak biasa */
+  a.forEach((x,i)=>{if(x.p==null)x.p=ABOUT_LOGO[i%ABOUT_LOGO.length];x.on=x.on!==false});return a}
+tab=function(){};  /* tab lama dinonaktifkan */
+function buildAbout(){const H=$("#abx");if(!H)return;const L=aboutList(CT.gen||{}).filter(a=>a.on!==false);
+  H.innerHTML=L.map((a,i)=>{const ch=a.auto?actBr().map(b=>b.name):(a.c||[]),
+    lg=a.p?`<img src="${esc(a.p)}" alt="" loading="lazy" draggable="false">`:`<span class="abph" aria-hidden="true">${esc((a.t||"?").trim().charAt(0).toUpperCase())}</span>`;
+    return`<div class="abc" role="button" tabindex="0" aria-expanded="false" aria-label="${esc(a.t)} — ketuk untuk membuka deskripsi" data-i="${i}"><div class="abi">`+
+      `<div class="abf"><div class="ablg">${lg}</div><h3>${esc(a.t)}</h3><small class="abh">Ketuk untuk membuka</small></div>`+
+      `<div class="abb" aria-hidden="true"><h3>${esc(a.t)}</h3><p>${nl2br(a.d||"")}</p>${ch.length?`<div class="chips">${ch.map(x=>`<span>${esc(x)}</span>`).join("")}</div>`:""}<small class="abh">Ketuk untuk menutup</small></div></div></div>`}).join("")||'<div class="empty">Bagian Tentang belum diisi panitia.</div>';
+  $$(".abc",H).forEach(c=>{const f=()=>{const o=c.classList.toggle("open");c.setAttribute("aria-expanded",o);$(".abb",c).setAttribute("aria-hidden",!o);$(".abf",c).setAttribute("aria-hidden",o)};
+    c.onclick=f;c.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();f()}}})}
+
+/* ---------- Akses cepat (Handbook / Twibbon / Poster / dst.): kartu logo + judul, klik buka, klik lagi tutup ---------- */
+const KIT_LOGO=["assets/images/asset-13.png","assets/images/asset-17.webp","assets/images/asset-16.webp"];
+function kitList(g){let a;
+  if(g.kitV2)a=(g.kit||[]).map(x=>({...x}));
+  else{const L=CT.links||{};a=[["Handbook","Baca ketentuan lomba sebelum mulai.","Buka Handbook",L.handbook],["Twibbon","Pasang dan bagikan semangatmu.","Pakai Twibbon",L.twibbon],["Poster","Unduh dan sebarkan ke temanmu.","Lihat Poster",L.poster]].map(([t,d,b,u])=>({t,d,b,u:u||""}))}  /* migrasi data lama */
+  a.forEach((x,i)=>{if(x.p==null)x.p=KIT_LOGO[i%KIT_LOGO.length];x.on=x.on!==false});return a}
+function buildKit(){const H=$("#kcs");if(!H)return;const L=kitList(CT.gen||{}).filter(x=>x.on!==false);
+  H.innerHTML=L.map((x,i)=>{const u=toLink(x.u),
+    lg=x.p?`<img src="${esc(x.p)}" alt="" loading="lazy" draggable="false">`:`<span class="kph" aria-hidden="true">${esc((x.t||"?").trim().charAt(0).toUpperCase())}</span>`;
+    return`<div class="kc" data-i="${i}"><button type="button" class="kch" aria-expanded="false" aria-controls="kcb${i}"><span class="kcl">${lg}</span><h3>${esc(x.t)}</h3></button>`+
+      `<div class="kcb" id="kcb${i}"><div class="kci">${x.d?`<p>${nl2br(x.d)}</p>`:""}${u?`<a class="btn" href="${esc(u)}" target="_blank" rel="noopener noreferrer">${esc(x.b||"Buka")}</a>`:""}</div></div></div>`}).join("")||'<div class="empty">Belum ada kartu akses cepat.</div>';
+  $$(".kc",H).forEach(c=>{c.onclick=e=>{if(e.target.closest("a"))return;const o=c.classList.toggle("open");$(".kch",c).setAttribute("aria-expanded",o)}})}
 
 /* ---------- 2. Cabang lomba (kartu pendaftaran + pengumpulan) ---------- */
 function pickCat(c,fromUser){const r=$("#reg");$$(".cat").forEach(x=>{x.classList.remove("sel");$(".pick",x).textContent="Ketuk untuk memilih"});
@@ -103,8 +122,37 @@ function playDeal(){const H=$("#deal");if(!H)return;const cs=$$(".dcard",H);if(!
 {const H=$("#deal");if(H&&"IntersectionObserver"in window){new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting&&!H.classList.contains("go"))playDeal()}),{threshold:.2}).observe(H)}
  const nx=$("#nx");if(nx)nx.onclick=()=>{playDeal();confetti(40)}}
 
+/* =====================================================================
+   SINKRON KONTEN KE GOOGLE APPS SCRIPT — tayang langsung di domain sendiri
+   (dipakai bila database Claude tidak aktif). Memakai URL /exec yang sama dengan
+   dashboard konfirmasi (KONF.API). Baca: publik. Tulis: wajib kunci (SECRET).
+   ===================================================================== */
+const REMOTE_SKIP=["certs","roster"];
+const syncApi=()=>{try{return KONF.API||""}catch(e){return""}};
+const syncKey=()=>{try{return localStorage.getItem("prpn_sheetkey")||""}catch(e){return""}};
+const setSyncKey=v=>{try{localStorage.setItem("prpn_sheetkey",v)}catch(e){}};
+function syncNote(long){if(!syncApi())return"<b>Database tidak aktif</b>: tersimpan di browser ini. Gunakan tab 💾 Cadangan untuk menerbitkan.";
+  return syncKey()?(long?"Kunci tersimpan. Setiap menekan <b>Simpan & terapkan</b>, konten otomatis dikirim ke Google Sheet dan langsung tayang untuk semua pengunjung.":" — otomatis tayang untuk semua pengunjung (via Google Sheet)."):
+  (long?"<b>Belum terhubung.</b> Isi kunci di bawah agar perubahan langsung tayang di website tanpa unduh content.json.":". <b>Kunci Apps Script belum diisi</b> — buka tab 💾 Cadangan agar perubahan langsung tayang.")}
+async function syncPost(body){const key=syncKey();if(!key)throw Error("Kunci Apps Script belum diisi (tab 💾 Cadangan)");
+  let r;try{r=await fetch(syncApi(),{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(Object.assign({key},body)),redirect:"follow"})}catch(e){throw Error("Tidak bisa menghubungi Apps Script (cek internet / URL /exec)")}
+  let j;try{j=await r.json()}catch(e){throw Error("Respons Apps Script tidak terbaca. Pastikan deployment 'Siapa saja' dan memakai Code.gs terbaru.")}
+  if(!j.ok)throw Error(j.error||"Ditolak Apps Script");return j}
+async function syncSave(keys){const items={};
+  keys.forEach(k=>{if(REMOTE_SKIP.includes(k)||!(k in DEF))return;let v=CT[k];if(k==="set"){v={...v};delete v.adminHash}const j=JSON.stringify(v);if(j.length>900000)throw Error("Data '"+k+"' terlalu besar (>900 KB). Perkecil gambar atau pakai URL gambar.");items[k]=j});
+  if(Object.keys(items).length)await syncPost({action:"saveContent",items})}
+{const _p=persist;let q=Promise.resolve();
+ persist=async function(k){await _p(k);if(DB||!syncApi()||!syncKey())return;
+  /* kirim berurutan; toast akhir menimpa toast bawaan "Tersimpan lokal" */
+  q=q.then(()=>syncSave([k])).then(()=>setTimeout(()=>toast("Tersimpan & tayang untuk semua pengunjung ✅"),250),e=>setTimeout(()=>toast("⚠️ Tersimpan di browser ini, tapi gagal tayang: "+e.message),250));await q}}
+async function remoteLoad(){if(DB||!syncApi())return;
+  try{const r=await fetch(syncApi()+"?action=content&t="+Date.now(),{redirect:"follow"}),j=await r.json();if(!j||!j.ok||!j.content)return;let n=0;
+    Object.keys(j.content).forEach(k=>{if(!(k in DEF)||REMOTE_SKIP.includes(k))return;const v=j.content[k];if(v==null)return;CT[k]=k==="set"?{...v,adminHash:CT.set.adminHash}:v;LS.set("c_"+k,CT[k]);n++});
+    if(n)applyCT()}catch(e){}}
+(async()=>{for(let i=0;i<200&&!loaded;i++)await new Promise(r=>setTimeout(r,100));remoteLoad()})();
+
 /* ---------- terapkan semua ---------- */
-function cmsApply(){applyGen();buildAbout();buildCats();buildSubs();applyLinks();renderContacts();buildDeal()}
+function cmsApply(){applyGen();buildAbout();buildKit();buildCats();buildSubs();applyLinks();renderContacts();buildDeal()}
 {const _a=applyCT;applyCT=function(){syncLB();_a();cmsApply()}}
 syncLB();cmsApply();
 
@@ -112,7 +160,7 @@ syncLB();cmsApply();
    EDITOR: tab "🛠️ Konten Web" di dashboard panitia
    ===================================================================== */
 let CMS_T="gen";
-const CMS_TABS=[["gen","🏠 Umum"],["ev","📅 Timeline"],["br","🏁 Cabang"],["rq","📎 Dokumen & Syarat"],["cr","⚖️ Penilaian"],["jr","👩‍⚖️ Dewan Juri"],["sp","🤝 Mitra"],["fq","❓ FAQ"],["ct","☎️ Narahubung"],["mt","📚 Materi"],["an","🏆 Pengumuman"],["lk","🔗 Tautan"],["bk","💾 Cadangan"]];
+const CMS_TABS=[["gen","🏠 Umum"],["ev","📅 Timeline"],["br","🏁 Cabang"],["rq","📎 Dokumen & Syarat"],["cr","⚖️ Penilaian"],["jr","👩‍⚖️ Dewan Juri"],["sp","🤝 Mitra"],["fq","❓ FAQ"],["ct","☎️ Narahubung"],["mt","📚 Materi"],["an","🏆 Pengumuman"],["lk","🔗 Akses Cepat"],["bk","💾 Cadangan"]];
 const GO_OPT=[["","(tidak ada)"],["daftar","Pendaftaran"],["kumpul","Pengumpulan karya"],["materi","Materi pendukung"],["info","Ketentuan & penilaian"],["berita","Berita"],["jadwal","Timeline"],["tim","Juri & mitra"],["juara","Pengumuman juara"],["faq","FAQ"],["kontak","Narahubung"]];
 const nowWIB=(addDays=0,end=false)=>{const d=new Date(Date.now()+addDays*864e5),s=d.toLocaleString("sv-SE",{timeZone:"Asia/Jakarta"}).replace(" ","T").slice(0,10);return s+(end?"T23:59:59":"T00:00:00")};
 
@@ -149,16 +197,23 @@ async function cmsSave(pairs,okMsg){for(const[k,v]of pairs){const j=JSON.stringi
 const cmsBar=(add,extra="")=>`<div class="row cbar"><button class="btn mini" id="cadd">＋ ${esc(add)}</button>${extra}<button class="btn gold" id="csave">💾 Simpan & terapkan</button></div>`;
 
 /* ----- host admin ----- */
-function admC(){$("#ap").innerHTML=`<div class="cms-sub">${CMS_TABS.map(([k,l])=>`<button class="${CMS_T===k?"on":""}" data-s="${k}">${l}</button>`).join("")}</div><p class="cms-note">Semua perubahan tampil di website setelah menekan <b>Simpan & terapkan</b>${DB?" (tersimpan untuk semua pengunjung).":". <b>Database tidak aktif</b>: tersimpan di browser ini — gunakan tab 💾 Cadangan untuk menerbitkan."}</p><div id="cmsb"></div>`;
+function admC(){$("#ap").innerHTML=`<div class="cms-sub">${CMS_TABS.map(([k,l])=>`<button class="${CMS_T===k?"on":""}" data-s="${k}">${l}</button>`).join("")}</div><p class="cms-note">Semua perubahan tampil di website setelah menekan <b>Simpan & terapkan</b>${DB?" (tersimpan untuk semua pengunjung).":syncNote()}</p><div id="cmsb"></div>`;
   $$(".cms-sub button").forEach(b=>b.onclick=()=>{CMS_T=b.dataset.s;admC()});(CMSE[CMS_T]||CMSE.gen)($("#cmsb"))}
 const CMSE={};
 
 /* 🏠 Umum */
 CMSE.gen=h=>{const g=CT.gen||{};
   h.innerHTML=`<h4>Informasi umum website</h4>${[["brand","Nama di header"],["welcome","Teks sapaan (hero)"],["title","Judul utama"],["tagline","Tagline / tema"],["footer","Teks footer"]].map(([k,l])=>cfField({k,l,t:"text"},g[k])).join("")}
-  <h4>Bagian "Tentang"</h4><p class="cms-note">Tiap kartu menjadi satu tombol tab. Tab terakhir "Cabang Lomba" dibuat otomatis dari menu 🏁 Cabang.</p><div id="abl"></div><label>Pengantar tab Cabang Lomba</label><textarea data-f="branchIntro">${esc(g.branchIntro||"")}</textarea>${cmsBar("Tambah tab Tentang")}`;
-  const L=cfList($("#abl",h),{items:g.about||[],title:x=>x.t,min:1,fields:[{k:"t",l:"Judul tab",t:"text"},{k:"d",l:"Deskripsi",t:"area"},{k:"c",l:"Label/chip",h:"(satu per baris)",t:"lines"}],blank:{t:"Tab baru",d:"",c:[]}});
-  $("#cadd").onclick=L.add;$("#csave").onclick=async()=>{const v={...g};["brand","welcome","title","tagline","footer"].forEach(k=>v[k]=$(`[data-f="${k}"]`,h).value.trim());v.branchIntro=$('textarea[data-f="branchIntro"]',h).value.trim();v.about=L.get();if(await cmsSave([["gen",v]]))admC()}};
+  <h4>Bagian "Tentang" — kotak logo</h4><p class="cms-note">Tiap item tampil sebagai <b>kotak berisi logo + judul</b>. Deskripsi & label baru muncul saat pengunjung mengeklik kotak. Kamu bisa <b>tambah / hapus / urutkan (↑ ↓)</b> kotak, ganti <b>logo</b> (unggah atau URL), judul, deskripsi, dan label. Hilangkan centang <b>Tampilkan</b> untuk menyembunyikan kotak tanpa menghapusnya.</p>
+  ${[["aboutTitle","Judul bagian"],["aboutSub","Kalimat di bawah judul"]].map(([k,l])=>cfField({k,l,t:"text",ph:k==="aboutTitle"?"Apa itu PRPN x Enchantax?":"Ketuk kotak di bawah untuk mengenal lebih dekat."},g[k])).join("")}
+  <div id="abl"></div>${cmsBar("Tambah kotak Tentang")}`;
+  const L=cfList($("#abl",h),{items:aboutList(g),title:x=>(x.t||"")+(x.on===false?"  (disembunyikan)":""),min:1,empty:"Belum ada kotak.",
+    fields:[{k:"p",l:"Logo (gambar di depan kotak)",t:"img"},{k:"t",l:"Judul (tampil di depan kotak)",t:"text"},{k:"d",l:"Deskripsi (tampil saat kotak diklik)",t:"area"},{k:"c",l:"Label/chip",h:"(satu per baris)",t:"lines"},
+      {k:"auto",l:"Label otomatis: isi dengan nama cabang lomba yang aktif (menu 🏁 Cabang)",t:"check"},{k:"on",l:"Tampilkan di website",t:"check"}],
+    blank:()=>({t:"Kotak baru",d:"",c:[],p:"",auto:false,on:true})});
+  $("#cadd").onclick=L.add;$("#csave").onclick=async()=>{const v={...g};["brand","welcome","title","tagline","footer","aboutTitle","aboutSub"].forEach(k=>{const e=$(`[data-f="${k}"]`,h);if(e)v[k]=e.value.trim()});
+    const ab=L.get();if(ab.some(x=>!x.t))return toast("Judul kotak Tentang wajib diisi");if(!ab.some(x=>x.on!==false))return toast("Minimal satu kotak harus ditampilkan");
+    v.about=ab;v.aboutV2=true;if(await cmsSave([["gen",v]]))admC()}};
 
 /* 📅 Timeline */
 CMSE.ev=h=>{h.innerHTML=`<h4>Timeline lomba</h4><p class="cms-note">Urutkan dari tahap paling awal. Centang <b>Tahap pengumpulan karya</b> pada satu tahap: tanggalnya dipakai sebagai buka/tutup pengumpulan.</p><div id="evl"></div>${cmsBar("Tambah tahap",'<button class="btn mini" id="csort">↕ Urutkan per tanggal</button>')}`;
@@ -242,14 +297,32 @@ CMSE.an=h=>{const A=ANN(),hl=A.hl,F=(k,l,t,hint,ph)=>cfField({k,l,t:t||"text",h:
     if(await cmsSave([["ann",v]]))admC()};
   $("#crst").onclick=async()=>{if(!confirm("Kembalikan semua teks pengumuman ke bawaan?"))return;if(await cmsSave([["ann",JSON.parse(JSON.stringify(DEF.ann))]]))admC()}};
 
-/* 🔗 Tautan */
-CMSE.lk=h=>{const l=CT.links||{};h.innerHTML=`<h4>Tautan akses cepat (halaman Pendaftaran)</h4>${[["handbook","📘 Handbook"],["twibbon","🖼️ Twibbon"],["poster","🎨 Poster"]].map(([k,t])=>cfField({k,l:t,t:"text",ph:"https://…"},l[k])).join("")}<div class="row cbar"><button class="btn gold" id="csave">💾 Simpan & terapkan</button></div>`;
-  $("#csave").onclick=async()=>{const v={};for(const k of["handbook","twibbon","poster"]){const x=$(`[data-f="${k}"]`,h).value.trim();if(x&&!toLink(x))return toast("Tautan tidak valid: "+k);v[k]=x}if(await cmsSave([["links",v]]))admC()}};
+/* 🔗 Akses Cepat */
+CMSE.lk=h=>{const g=CT.gen||{};
+  h.innerHTML=`<h4>Akses cepat (halaman Pendaftaran)</h4><p class="cms-note">Tiap item tampil sebagai <b>kartu kecil berisi logo + judul</b>. Saat diklik kartu terbuka menampilkan deskripsi & tombol tautan; diklik lagi untuk menutup. Bisa <b>tambah / hapus / urutkan (↑ ↓)</b>, ganti logo, judul, deskripsi, label tombol, dan tautan. Kosongkan tautan bila kartu hanya berisi keterangan (tombol tidak ditampilkan).</p>
+  ${[["kitTag","Label kecil di atas judul","AKSES CEPAT"],["kitTitle","Judul bagian","Handbook, Twibbon & Poster"],["kitSub","Kalimat di bawah judul","Ketuk kartu untuk membukanya, ketuk lagi untuk menutup."]].map(([k,l,ph])=>cfField({k,l,t:"text",ph},g[k])).join("")}
+  <div id="kil"></div>${cmsBar("Tambah kartu")}`;
+  const L=cfList($("#kil",h),{items:kitList(g),title:x=>(x.t||"")+(x.on===false?"  (disembunyikan)":""),empty:"Belum ada kartu.",
+    fields:[{k:"p",l:"Logo (gambar di kartu)",t:"img"},{k:"t",l:"Judul (tampil di kartu kecil)",t:"text"},{k:"d",l:"Deskripsi (tampil saat kartu dibuka)",t:"area"},{k:"b",l:"Label tombol",t:"text",ph:"mis. Buka Handbook"},{k:"u",l:"Tautan tombol",h:"(Google Drive, dll.; boleh kosong)",t:"text",ph:"https://drive.google.com/…"},{k:"on",l:"Tampilkan di website",t:"check"}],
+    blank:()=>({t:"Kartu baru",d:"",b:"Buka",u:"",p:"",on:true})});
+  $("#cadd").onclick=L.add;$("#csave").onclick=async()=>{const v={...g};["kitTag","kitTitle","kitSub"].forEach(k=>{const e=$(`[data-f="${k}"]`,h);if(e)v[k]=e.value.trim()});
+    const it=L.get();for(const x of it){if(!x.t)return toast("Judul kartu wajib diisi");if(x.u&&!toLink(x.u))return toast("Tautan tidak valid: "+x.t)}
+    v.kit=it;v.kitV2=true;if(await cmsSave([["gen",v]]))admC()}};
 
 /* 💾 Cadangan */
-CMSE.bk=h=>{h.innerHTML=`<h4>Cadangan & penerbitan konten</h4>
+CMSE.bk=h=>{h.innerHTML=`<h4>🌐 Tayang langsung ke website (tanpa unduh content.json)</h4>
+  <p class="cms-note">${syncNote(true)}</p>
+  <label>Kunci akses Apps Script <span class="hint">(sama dengan SECRET di Code.gs; tersimpan hanya di browser ini)</span></label><input id="skey" type="password" autocomplete="off" placeholder="Kunci rahasia" value="${esc(syncKey())}">
+  <div class="row" style="justify-content:flex-start"><button class="btn mini" id="skeysv">🔌 Simpan kunci & uji koneksi</button><button class="btn gold" id="spub">🚀 Terbitkan semua konten sekarang</button></div><div id="smsg" class="cms-note"></div>
+  <h4>Cadangan & penerbitan manual</h4>
   <p class="cms-note">${DB?"Database aktif: perubahan langsung dilihat semua pengunjung.":"<b>Database tidak aktif.</b> Perubahan hanya tersimpan di browser panitia ini. Agar pengunjung melihatnya: unduh <code>content.json</code>, letakkan di folder <code>data/</code> website, lalu unggah ulang situs."}</p>
   <div class="row" style="justify-content:flex-start"><button class="btn" id="bex">⬇️ Unduh content.json</button><label class="btn" style="cursor:pointer">⬆️ Impor content.json<input id="bim" type="file" accept=".json,application/json" hidden></label><button class="btn mini" id="brs">↩️ Hapus perubahan lokal browser ini</button></div><div id="bmsg"></div>`;
   $("#bex").onclick=()=>{const o={};Object.keys(DEF).forEach(k=>{if(!["certs","roster"].includes(k))o[k]=CT[k]});o.set={...CT.set};delete o.set.adminHash;cmsDownload("content.json",JSON.stringify(o,null,1))};
   $("#bim").onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const j=JSON.parse(await f.text()),ks=Object.keys(j).filter(k=>k in DEF&&!["certs","roster"].includes(k));if(!ks.length)throw Error("Tidak ada data yang dikenali");if(!confirm("Timpa "+ks.length+" bagian konten ("+ks.join(", ")+")?"))return;ks.forEach(k=>{CT[k]=k==="set"?{...j.set,adminHash:CT.set.adminHash}:j[k]});await svc(...ks);admC()}catch(x){toast("Impor gagal: "+x.message)}};
-  $("#brs").onclick=()=>{if(!confirm("Hapus semua perubahan konten yang tersimpan di browser ini?"))return;Object.keys(DEF).forEach(k=>{try{localStorage.removeItem("prpn_c_"+k)}catch(e){}});location.reload()}};
+  $("#brs").onclick=()=>{if(!confirm("Hapus semua perubahan konten yang tersimpan di browser ini?"))return;Object.keys(DEF).forEach(k=>{try{localStorage.removeItem("prpn_c_"+k)}catch(e){}});location.reload()};
+  const sm=t=>{$("#smsg").innerHTML=t};
+  $("#skeysv").onclick=async()=>{const v=$("#skey").value.trim();if(v.length<6)return sm("<b>Kunci terlalu pendek.</b>");setSyncKey(v);sm("Menguji koneksi…");
+    try{const g=await (await fetch(syncApi()+"?action=content&t="+Date.now(),{redirect:"follow"})).json();if(!g||!g.ok||!(g.v>=6))throw Error("Apps Script belum diperbarui ke kode terbaru (apps-script/Code.gs versi 6). Perbarui lalu Deploy > New version.");
+      await syncPost({action:"saveContent",items:{}});sm("✅ <b>Terhubung.</b> Kunci benar — simpan di menu Konten Web akan langsung tayang di website.")}catch(e){sm("❌ "+esc(e.message))}};
+  $("#spub").onclick=async()=>{if(!syncKey())return sm("Isi kunci dulu, lalu klik <b>Simpan kunci & uji koneksi</b>.");if(!confirm("Terbitkan SEMUA konten yang ada di browser ini ke website? Konten lama di server akan ditimpa."))return;sm("Menerbitkan…");
+    try{const ks=Object.keys(DEF).filter(k=>!REMOTE_SKIP.includes(k));await syncSave(ks);sm("✅ <b>"+ks.length+" bagian konten</b> sudah tayang untuk semua pengunjung.")}catch(e){sm("❌ "+esc(e.message))}}};

@@ -5,7 +5,7 @@
          + keterangan + nama pengonfirmasi -> disimpan kembali ke sheet yang sama.
    ============================================================ */
 const KONF={
-  API:"https://script.google.com/macros/s/AKfycbzlU4QCSt00w5eMITXYahbS_rXkZXT4ebg_Y-vnu-KhwJtGSz5m8M91rV3pp868Ojo/exec",
+  API:"https://script.google.com/macros/s/AKfycbxsPl27FT4oW_KMIEbfgRR42eqKs3s_MQZn8sWFsKZsQjqkdE3qjBy-ql--k8J2HrM/exec",
   SHEET:"https://docs.google.com/spreadsheets/d/1NPAU1kzwaTL8H_7C7cp2x3yMU5a3zyiOaUyjoT-Hf78/edit?usp=sharing",
   /* nama kolom konfirmasi di sheet (dibuat otomatis oleh Apps Script bila belum ada) */
   COLS:{st:"Status Konfirmasi",note:"Keterangan Konfirmasi",by:"Dikonfirmasi Oleh",at:"Waktu Konfirmasi"},

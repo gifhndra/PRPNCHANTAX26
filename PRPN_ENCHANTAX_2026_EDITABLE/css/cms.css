@@ -58,3 +58,47 @@ button.mini:hover{background:var(--s3)}
 .cg .gname{font-weight:800!important;flex:1;min-width:140px;margin:0!important}
 .cg .gl{margin-top:8px}
 @media (max-width:560px){.cbar{bottom:-26px}.imgf{flex-direction:column;align-items:stretch}}
+
+/* ---------- Tentang: kotak logo + judul, klik untuk membalik & membuka deskripsi ---------- */
+.abx{display:flex;flex-wrap:wrap;justify-content:center;gap:22px;width:100%;max-width:980px;margin:0 auto}
+.abc{flex:1 1 220px;max-width:300px;min-height:270px;display:grid;perspective:1200px;cursor:pointer;outline:none;-webkit-tap-highlight-color:transparent;text-align:center;user-select:none}
+.abi{grid-area:1/1;display:grid;transform-style:preserve-3d;transition:transform .75s cubic-bezier(.2,.8,.2,1)}
+.abc:not(.open):hover .abi{transform:translateY(-6px)}
+.abc.open .abi{transform:rotateY(180deg)}
+.abf,.abb{grid-area:1/1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:26px 20px;border-radius:26px;background:var(--card);border:2px solid #d4a63c66;box-shadow:0 10px 30px #1e2a5a26;-webkit-backface-visibility:hidden;backface-visibility:hidden;transition:box-shadow .25s,border-color .25s}
+.abc:hover .abf{box-shadow:0 18px 40px #8b1e2e2e;border-color:var(--gold)}
+.abc:focus-visible .abf,.abc:focus-visible .abb{outline:3px solid var(--wine);outline-offset:3px}
+.abb{transform:rotateY(180deg);border-color:var(--wine)}
+.ablg{width:clamp(130px,19vw,172px);aspect-ratio:1;display:grid;place-items:center}
+.ablg img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 8px 10px #1e2a5a33);animation:abfl 4.5s ease-in-out infinite}
+.abc:nth-child(2n) .ablg img{animation-delay:-1.6s}.abc:nth-child(3n) .ablg img{animation-delay:-3s}
+@keyframes abfl{50%{transform:translateY(-6px)}}
+.abph{width:100%;height:100%;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,var(--navy),#3a4a8a);color:#fff;font:700 52px Fredoka;border:4px solid var(--gold)}
+.abf h3,.abb h3{font-size:24px;color:var(--wine)}
+.abb p{margin:0;color:var(--tx);font-size:15px;line-height:1.5}
+.abb .chips{justify-content:center;margin-top:4px}
+.abh{color:var(--mut);font:600 12px Nunito;letter-spacing:.04em;padding-top:4px}.abb .abh{margin-top:6px}
+@media (max-width:640px){.abc{flex-basis:100%;max-width:340px;min-height:240px}}
+@media (prefers-reduced-motion:reduce){.abi{transition:none}.ablg img{animation:none}}
+
+/* ---------- Akses cepat: kartu gulungan kecil (logo + judul), klik buka / klik lagi tutup ---------- */
+.kcs{display:flex;flex-wrap:wrap;justify-content:center;align-items:flex-start;gap:20px;width:100%;max-width:980px;margin:0 auto}
+.kc{flex:1 1 240px;max-width:310px;position:relative;overflow:hidden;text-align:center;cursor:pointer;background:var(--card);border-radius:26px;border:2px solid #d4a63c66;box-shadow:0 10px 30px #1e2a5a26;transition:box-shadow .25s,border-color .25s,transform .25s}
+.kc:hover{box-shadow:0 16px 38px #8b1e2e2e;border-color:var(--gold)}
+.kc.open{border-color:var(--wine)}
+.kc:before,.kc:after{content:"";position:absolute;left:0;right:0;height:14px;background:linear-gradient(var(--gold),#a77f1f);z-index:2}.kc:before{top:0}.kc:after{bottom:0}
+.kch{display:flex;flex-direction:column;align-items:center;gap:8px;width:100%;border:0;background:none;color:inherit;font:inherit;cursor:pointer;padding:32px 16px 26px;outline:none}
+.kch:focus-visible{outline:3px solid var(--wine);outline-offset:-6px;border-radius:26px}
+.kch h3{font-size:24px;color:var(--tx)}
+.kcl{width:clamp(88px,12vw,112px);aspect-ratio:1;display:grid;place-items:center}
+.kcl img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 6px 8px #1e2a5a33);transition:transform .5s cubic-bezier(.2,.8,.2,1)}
+.kc.open .kcl img{transform:scale(1.08) rotate(-3deg)}
+.kph{width:100%;height:100%;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,var(--navy),#3a4a8a);color:#fff;font:700 40px Fredoka;border:4px solid var(--gold)}
+.kcb{display:grid;grid-template-rows:0fr;opacity:0;visibility:hidden;transition:grid-template-rows .5s cubic-bezier(.2,.8,.2,1),opacity .35s,visibility 0s .5s}
+.kc.open .kcb{grid-template-rows:1fr;opacity:1;visibility:visible;transition:grid-template-rows .5s cubic-bezier(.2,.8,.2,1),opacity .45s .1s,visibility 0s}
+.kci{overflow:hidden;min-height:0;padding:0 18px}
+.kc.open .kci{padding-bottom:34px}
+.kci p{margin:0 0 14px;color:var(--mut);font-size:15px;line-height:1.5}
+.kci .btn{font-size:14px;padding:9px 20px}
+@media (max-width:640px){.kc{flex-basis:100%;max-width:340px}}
+@media (prefers-reduced-motion:reduce){.kcb,.kc.open .kcb,.kcl img{transition:none}}
