@@ -5,7 +5,7 @@
          + keterangan + nama pengonfirmasi -> disimpan kembali ke sheet yang sama.
    ============================================================ */
 const KONF={
-  API:"https://script.google.com/macros/s/AKfycbyHhgRizGH4fSdF64TgP0kVqKOrTYuAmf6aXKZEeZCNUdgbTSAB_545wB0iRIbQZPqR/exec",
+  API:"https://script.google.com/macros/s/AKfycbxCa1YoWy0SmFt6NYCIkhajSbB4oTD-BQ3gmp8Zr1xDH4vnRXcja2Q5T_qQzz7S4ro/exec",
   /* Client ID OAuth Google (Web application) untuk login panitia; harus sama dengan GOOGLE_CLIENT_ID di Code.gs */
   GOOGLE_CLIENT_ID:"913127893846-8fhrpro22ftv8caft6iu38rq2ru3lq3v.apps.googleusercontent.com",
   SHEET:"https://docs.google.com/spreadsheets/d/1NPAU1kzwaTL8H_7C7cp2x3yMU5a3zyiOaUyjoT-Hf78/edit?usp=sharing",
