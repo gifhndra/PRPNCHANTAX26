@@ -1,4 +1,3 @@
-```javascript
 /* ============================================================
    LOGIN PANITIA — 2 faktor yang harus cocok sebagai satu pasangan:
    (1) Akun Google (Google Identity Services)
@@ -404,4 +403,3 @@ window.addEventListener("load", () => {
     setTimeout(() => AUTH.restore(), 400);
   }
 });
-```
