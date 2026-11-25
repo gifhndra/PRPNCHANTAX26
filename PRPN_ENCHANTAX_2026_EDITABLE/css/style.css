@@ -657,3 +657,44 @@ section>.hm.hm{position:absolute!important;bottom:0;z-index:3;height:var(--mh);w
   #jadwal .path .node small { font-size: 7px; }
   #jadwal .path .runner { width: 40px; }
 }
+
+
+/* ===== LANDSCAPE PHONE FIX: keep the laptop-style timeline/book spread ===== */
+@media (orientation: landscape) and (max-height: 520px) and (min-width: 600px) and (max-width: 1100px) {
+  /* Timeline track remains horizontal, but scales to the short landscape viewport. */
+  #jadwal { padding-left: 12px; padding-right: 12px; }
+  .timeline-branches { gap: 8px; margin: 12px auto 6px; }
+  .timeline-branches button { font-size: 12px; padding: 7px 12px; }
+  .path { width: 100%; max-width: 100%; padding-top: 76px; overflow: visible !important; }
+  .line { top: 91px; left: 6%; right: 6%; height: 7px; }
+  .node { padding: 0 2px; font-size: 11px; }
+  .node .c { width: 40px; height: 40px; border-width: 3px; font-size: 18px; margin-bottom: 5px; }
+  .node b { font-size: 11px; line-height: 1.15; }
+  .node small { font-size: 9px; line-height: 1.15; }
+  .runner { width: 56px; }
+
+  /* Restore the two-page book layout only for short landscape screens. */
+  .timeline-book { width: 96vw !important; max-width: 100%; margin: 14px auto 0; }
+  .book-shell { display: grid !important; grid-template-columns: minmax(0,1fr) 12px minmax(0,1fr) !important; min-height: 300px !important; }
+  .book-shell::after { display: block !important; }
+  .book-spine { display: block !important; }
+  .book-left, .book-right { border-radius: 12px !important; }
+  .book-right { margin-top: 0 !important; }
+  .book-page-paper { position: absolute !important; inset: 0; min-height: 0 !important; padding: 10px !important; }
+  .book-page-paper::after { inset: 7px; background-size: 38px 38px,38px 38px; }
+  .book-left .detail { padding: 10px 12px; max-width: 100%; }
+  .book-left .detail h3 { font-size: clamp(14px,2.1vw,20px); }
+  .book-left .detail p { font-size: 10px; }
+  .book-left .detail .btn { font-size: 10px; padding: 5px 8px; margin: 1px; }
+  .book-mini-tag { font-size: 9px; padding: 3px 9px; margin-bottom: 4px; }
+  .book-count-title { font-size: clamp(13px,2vw,19px); margin: 0 0 5px; }
+  .book-count { max-width: 100%; gap: 5px; }
+  .book-count .unit { width: clamp(34px,6vw,54px) !important; }
+  .book-count .flip { height: 42px; line-height: 42px; font-size: 25px; border-radius: 8px; }
+  .book-count .unit small { font-size: 8px; margin-top: 3px; }
+  .book-count + .meter { width: 90%; margin-top: 6px; }
+  .book-now { font-size: 9px !important; }
+  .book-mascots { gap: 2px; margin-top: 4px; }
+  .book-mascots .cdm { width: 34px; }
+  .book-ribbon { width: 24px; height: 72px; }
+}

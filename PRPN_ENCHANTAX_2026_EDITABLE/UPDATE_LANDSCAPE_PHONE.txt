@@ -1,0 +1,20 @@
+PRPN x ENCHANTAX 2026 — LANDSCAPE PHONE FIX
+
+Tujuan:
+- Memperbaiki tampilan HP dalam orientasi lanskap.
+- Mengembalikan buku Timeline menjadi dua halaman berdampingan seperti laptop.
+- Mempertahankan jalur, lingkaran tahapan, teks, dan maskot pada satu baris dengan ukuran lebih ringkas.
+
+Pemasangan:
+1. Backup css/style.css yang sedang dipakai.
+2. Ekstrak ZIP ini.
+3. Ganti css/style.css proyek dengan file css/style.css dari ZIP.
+4. Deploy ulang dan refresh browser.
+
+Cakupan:
+- Perubahan tambahan hanya aktif pada layar landscape dengan tinggi maksimal 520px dan lebar 600–1100px (umumnya HP lanskap).
+- Tampilan laptop/desktop biasa tidak berubah.
+- Tidak ada perubahan HTML, JavaScript, Google Apps Script, maupun Google Sheets.
+
+Catatan:
+File CSS di ZIP ini sudah membawa perbaikan mobile sebelumnya dan tambahan landscape fix. Gunakan file ini sebagai pengganti penuh style.css, jangan ditempel sebagai potongan terpisah.
