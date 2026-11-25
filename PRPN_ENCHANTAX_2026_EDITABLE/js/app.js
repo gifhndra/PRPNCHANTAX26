@@ -49,18 +49,39 @@ const EV=[{k:"Pendaftaran",i:"📝",s:"2026-11-17T00:00:00",e:"2026-12-31T23:59:
 function SUBEV(){return EV.find(v=>v.role==="submit")||EV[1]||EV[EV.length-1]}
 EV[1].role="submit";EV[0].go="daftar";EV[0].gl="Daftar sekarang";EV[1].go="kumpul";EV[1].gl="Kumpulkan karya";EV[2].go="berita";EV[2].gl="Lihat pengumuman";EV[3].go="juara";EV[3].gl="Lihat hasil";
 const rng=v=>v.s.slice(0,10)===v.e.slice(0,10)?fm(D(v.s)):fm(D(v.s))+" – "+fm(D(v.e)),stt=v=>{const n=Date.now();return n>D(v.e)?"done":n>=D(v.s)?"now":"next"};
-function buildTl(){const nd=$("#nodes");if(!nd)return;nd.innerHTML="";EV.forEach((v,i)=>{const b=document.createElement("button"),st=stt(v);b.className="node "+st;b.setAttribute("aria-label",v.k);b.innerHTML=`<span class="c">${st==="done"?"✓":ico(v.pi,v.i)}</span><b>${esc(v.k)}</b><small>${rng(v)}</small>`;b.onclick=()=>sel(i);nd.append(b)});
-const n=Date.now(),p=EV.reduce((s,v)=>s+Math.min(1,Math.max(0,(n-D(v.s))/(D(v.e)-D(v.s)))),0)/EV.length;$("#lf").style.width=p*100+"%";$("#lf").title="Progres aktual "+Math.round(p*100)+"%";
-const c=EV.findIndex(v=>n<=D(v.e));sel(c<0?EV.length-1:c)}
+function pagePaper(side){return $(side==="left"?".book-left .book-page-paper":".book-right .book-page-paper")}
+function snapshotPaper(side){const p=pagePaper(side);return p?p.cloneNode(true):null}
+
+function buildTl(animate=true){
+  const nd=$("#nodes");if(!nd)return;nd.innerHTML="";
+  EV.forEach((v,i)=>{const b=document.createElement("button"),st=stt(v);b.className="node "+st;b.setAttribute("aria-label",v.k);b.innerHTML=`<span class="c">${st==="done"?"✓":ico(v.pi,v.i)}</span><b>${esc(v.k)}</b><small>${rng(v)}</small>`;b.onclick=()=>sel(i,true);nd.append(b)});
+  const n=Date.now(),p=EV.reduce((s,v)=>s+Math.min(1,Math.max(0,(n-D(v.s))/(D(v.e)-D(v.s)))),0)/EV.length;
+  $("#lf").style.width=p*100+"%";$("#lf").title="Progres aktual "+Math.round(p*100)+"%";
+  const c=EV.findIndex(v=>n<=D(v.e));sel(c<0?EV.length-1:c,false);
+}
 const ST={done:["Completed","Selesai ✓"],now:["Ongoing","Sedang berlangsung 🔥"],next:["Upcoming","Akan datang ⏳"]};
-function sel(i){const runner=$("#run"),prev=Number(runner.dataset.stage??i),dir=i<prev?-1:1;runner.classList.remove("mascot-hop","face-left","face-right");runner.classList.toggle("face-left",dir<0);runner.classList.toggle("face-right",dir>0);runner.dataset.stage=String(i);void runner.offsetWidth;runner.classList.add("mascot-hop");$$(".node").forEach((b,j)=>b.classList.toggle("on",i===j));runner.style.left=(i+.5)*(100/EV.length)+"%";
-const v=EV[i],st=ST[stt(v)],d=$("#det"),rq=(v.req&&v.req.length?v.req:["Persyaratan tahap ini belum diisi panitia."]).map(x=>`<li>${esc(x)}</li>`).join("");
-d.innerHTML=`<span class="chip">${st[0]} · ${st[1]}</span><h3>${ico(v.pi,v.i)} ${esc(v.k)}</h3><p><b>Mulai:</b> ${fm(D(v.s))} · <b>Berakhir:</b> ${fm(D(v.e))} WIB</p><p>${esc(v.d)}</p><p><b>Persyaratan:</b></p><ul class="rq">${rq}</ul><div><button class="btn" id="pv">←</button><button class="btn" id="nv">→</button> <button class="btn gold" id="go">${esc(v.gl||"Buka halaman terkait")} ↗</button> <a class="btn" href="#hitung">⏱️ Hitung mundur</a></div>`;
-$("#pv").onclick=()=>sel((i+EV.length-1)%EV.length);$("#nv").onclick=()=>sel((i+1)%EV.length);$("#go").onclick=()=>goTo(v.go||"berita");
-$("#det a").onclick=()=>setCd(i);d.style.animation="none";d.offsetWidth;d.style.animation="pop .5s"}
-// countdown
-let ci=1;function buildCd(){$("#cdTabs").innerHTML="";EV.forEach((v,i)=>{const b=document.createElement("button");b.textContent=v.k;b.onclick=()=>setCd(i);$("#cdTabs").append(b)});setCd(Math.min(ci,EV.length-1))}buildCd();
-function setCd(i){ci=i;$$("#cdTabs button").forEach((b,j)=>b.classList.toggle("on",i===j));$("#cdT").textContent=EV[i].k+" berakhir dalam…";tick()}
+function renderStage(i){
+  const runner=$("#run"),v=EV[i],st=ST[stt(v)],d=$("#det");
+  runner.classList.remove("mascot-hop","face-left","face-right");
+  runner.classList.toggle("face-left",i<Number(runner.dataset.stage??i));
+  runner.classList.toggle("face-right",i>=Number(runner.dataset.stage??i));
+  runner.dataset.stage=String(i);void runner.offsetWidth;runner.classList.add("mascot-hop");
+  $$('.node').forEach((b,j)=>b.classList.toggle("on",i===j));
+  runner.style.left=(i+.5)*(100/EV.length)+"%";
+  const rq=(v.req&&v.req.length?v.req:["Persyaratan tahap ini belum diisi panitia."]).map(x=>`<li>${esc(x)}</li>`).join("");
+  d.innerHTML=`<span class="chip">${st[0]} · ${st[1]}</span><h3>${ico(v.pi,v.i)} ${esc(v.k)}</h3><p><b>Mulai:</b> ${fm(D(v.s))} · <b>Berakhir:</b> ${fm(D(v.e))} WIB</p><p>${esc(v.d)}</p><p><b>Persyaratan:</b></p><ul class="rq">${rq}</ul><div><button class="btn" id="pv">←</button><button class="btn" id="nv">→</button> <button class="btn gold" id="go">${esc(v.gl||"Buka halaman terkait")} ↗</button> <a class="btn" href="#jadwal">⏱️ Lihat countdown</a></div>`;
+  $("#pv").onclick=()=>sel((i+EV.length-1)%EV.length,true);$("#nv").onclick=()=>sel((i+1)%EV.length,true);$("#go").onclick=()=>goTo(v.go||"berita");$("#det a").onclick=e=>{e.preventDefault();setCd(i)};
+  setCd(i);d.style.animation="none";d.offsetWidth;d.style.animation="pop .5s";
+}
+function sel(i,animate=true){
+  if(!EV[i])return;
+  // No page-slide animation: the book remains a stable visual frame.
+  // The selected timeline item is the single source for both detail and countdown.
+  renderStage(i);
+}
+// Countdown is linked directly to the selected timeline item. There are no independent countdown tabs.
+let ci=1;function buildCd(){setCd(Math.min(ci,EV.length-1))}
+function setCd(i){if(!EV[i])return;ci=i;$("#cdT").textContent=EV[i].k+" berakhir dalam…";tick()}
 function tick(){const v=EV[ci],t=D(v.e)-Date.now(),u=t<=0?[0,0,0,0]:[t/864e5|0,t/36e5%24|0,t/6e4%60|0,t/1e3%60|0];
 ["d","h","m","s"].forEach((x,i)=>{const f=$("#cd"+x),s=$("span",f),val=String(u[i]).padStart(2,"0");if(s.textContent!==val){s.textContent=val;f.classList.remove("tick");void f.offsetWidth;f.classList.add("tick")}});
 const p=Math.min(1,Math.max(0,(Date.now()-D(v.s))/(D(v.e)-D(v.s))));$("#cdBar").style.width=p*100+"%";
@@ -106,11 +127,27 @@ let CT=JSON.parse(JSON.stringify(DEF)),DB=null,UID=null,ADMIN=false,PS=[],ME=nul
 // Tiga jalur timeline independen; data lama tetap menjadi fallback.
 CT.evBranches=CT.evBranches||{};["lcc","infografis","esai"].forEach(k=>{if(!Array.isArray(CT.evBranches[k])||!CT.evBranches[k].length)CT.evBranches[k]=JSON.parse(JSON.stringify(CT.ev||DEF.ev));});
 let TL_BRANCH="esai",TL_INDEX=0;
-function chooseTimelineBranch(key){if(!["lcc","infografis","esai"].includes(key))return;TL_BRANCH=key;TL_INDEX=0;EV.splice(0,EV.length,...(CT.evBranches[key]||CT.ev||DEF.ev));const labels={lcc:"Timeline Lomba Cerdas Cermat",infografis:"Timeline Creative Competition",esai:"Timeline Call for Paper"};const title=$("#jadwal .sec-title"),sub=$("#jadwal .sub");if(title)title.textContent=labels[key];if(sub)sub.textContent="Ketuk titik pada jalur dan lihat maskot berlari ke tahap itu.";$("#timelineBranches")?.querySelectorAll("[data-tl]").forEach(b=>b.classList.toggle("on",b.dataset.tl===key));buildTl();buildCd();}
+function restorePaper(side,snap){const live=pagePaper(side);if(!live||!snap)return;live.innerHTML="";[...snap.childNodes].forEach(n=>live.appendChild(n.cloneNode(true)))}
+function chooseTimelineBranch(key){
+  if(!["lcc","infografis","esai"].includes(key))return;
+  if(TL_BRANCH===key)return;
+  TL_BRANCH=key;TL_INDEX=0;
+  EV.splice(0,EV.length,...(CT.evBranches[key]||CT.ev||DEF.ev));
+  const labels={lcc:"Timeline Lomba Cerdas Cermat",infografis:"Timeline Creative Competition",esai:"Timeline Call for Paper"};
+  const title=$("#jadwal .sec-title"),sub=$("#jadwal .sub");
+  if(title)title.textContent=labels[key];
+  if(sub)sub.textContent="Ketuk titik pada jalur dan lihat maskot berlari ke tahap itu.";
+  $("#timelineBranches")?.querySelectorAll("[data-tl]").forEach(b=>b.classList.toggle("on",b.dataset.tl===key));
+  // Keep the existing timeline as the single source of truth.
+  // The book is only a visual container; changing the branch immediately updates
+  // the detail and countdown to the selected timeline data.
+  buildTl(false);
+  buildCd();
+}
 document.addEventListener("click",e=>{const b=e.target.closest("[data-tl]");if(b)chooseTimelineBranch(b.dataset.tl)});
 
 function ANN(){const d=DEF.ann,a=CT.ann||{},m=(x,y)=>Object.assign({},x,y||{});const cat={};new Set([...Object.keys(d.cat),...Object.keys(a.cat||{}),...Object.keys(LB)]).forEach(k=>{cat[k]=m(d.cat[k]||{},(a.cat||{})[k])});return{hl:m(d.hl,a.hl),rv:m(d.rv,a.rv),cat}}
-function applyCT(){Object.assign(WIN,CT.winners);CT.evBranches=CT.evBranches||{};EV.splice(0,EV.length,...(CT.evBranches[TL_BRANCH]||CT.ev||DEF.ev));buildTl();buildCd();chooseTimelineBranch(TL_BRANCH);renderNews();renderInfo();renderTim();renderFaq();renderBan()}
+function applyCT(){Object.assign(WIN,CT.winners);CT.evBranches=CT.evBranches||{};EV.splice(0,EV.length,...(CT.evBranches[TL_BRANCH]||CT.ev||DEF.ev));buildTl(false);buildCd();chooseTimelineBranch(TL_BRANCH);renderNews();renderInfo();renderTim();renderFaq();renderBan()}
 // modal
 function openM(x){$("#mb").classList.remove("wide");$("#mb").innerHTML=x+'<button class="x" aria-label="Tutup" onclick="closeM()">✕</button>';$("#mod").classList.add("show")}
 function closeM(){$("#mod").classList.remove("show")}
