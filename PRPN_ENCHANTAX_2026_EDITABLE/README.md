@@ -65,3 +65,16 @@ Konten Web disimpan ke tab **WebsiteContent** di Google Sheet lewat Apps Script 
 2. Di website: Panitia > Konten Web > **💾 Cadangan** > isi kunci (sama dengan SECRET) > **Simpan kunci & uji koneksi**.
 3. Klik **🚀 Terbitkan semua konten sekarang** sekali untuk mengirim isi yang ada. Setelah itu tiap **Simpan & terapkan** langsung tayang untuk semua pengunjung.
 Pengunjung membaca konten publik dari Sheet; hanya yang memegang kunci yang bisa menulis. Hash kata sandi panitia tidak ikut dikirim. `data/content.json` tetap bisa dipakai sebagai cadangan.
+
+
+## Logo ikon pengganti emoji (BARU)
+Emoji ikon kini bisa diganti logo unggahan dari **Panitia → Konten Web** (kolom *Logo ikon*: unggah / tempel URL / Hapus). Kosong = emoji bawaan tetap dipakai.
+| Bagian | Menu dashboard |
+|---|---|
+| Titik timeline + judul detail tahap | 📅 Timeline |
+| Kartu "Pilih Cabang Lombamu" + kartu pengumpulan | 🏁 Cabang |
+| Kartu Narahubung | ☎️ Narahubung |
+| Kartu Materi Pendukung | 📚 Materi |
+| Menu bawah (Portal / Pendaftaran / Pengumpulan / Pengumuman) | 🏠 Umum → "Ikon menu navigasi bawah" |
+Gambar diperkecil otomatis (maks 256 px). Disarankan PNG/WebP/SVG transparan, rasio persegi.
+File yang berubah: `js/app.js` (helper `ico()`), `js/cms.js`, `css/cms.css`.
