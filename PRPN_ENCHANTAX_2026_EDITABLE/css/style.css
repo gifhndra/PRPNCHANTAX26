@@ -267,3 +267,17 @@ section>.hm.hm{position:absolute!important;bottom:0;z-index:3;height:var(--mh);w
   #hero>.greet.gl{left:3%;bottom:calc(var(--mh)*.9)}
   #hero>.greet.gr{right:2%;bottom:calc(var(--mh)*.9)}
 }
+
+
+/* Three-branch interactive timeline */
+.timeline-branches{justify-content:center;flex-wrap:wrap;margin:22px auto 10px;gap:10px}
+.timeline-branches button{border:1px solid rgba(202,165,73,.45);background:rgba(255,255,255,.78);color:var(--navy,#252b59);border-radius:999px;padding:10px 17px;font-family:inherit;font-weight:700;font-size:14px;box-shadow:0 5px 18px rgba(35,42,83,.06);transition:transform .2s,background .2s,box-shadow .2s}
+.timeline-branches button:hover{transform:translateY(-2px)}
+.timeline-branches button.on{background:linear-gradient(135deg,#d9b65d,#f0d98f);color:#332b19;box-shadow:0 7px 20px rgba(190,151,54,.2)}
+.runner{transform-origin:center bottom;will-change:left,transform;z-index:4}
+.runner.face-left{transform:translateX(-50%) scaleX(-1)}.runner.face-right{transform:translateX(-50%) scaleX(1)}
+.runner.mascot-hop{animation:timelineHop .72s cubic-bezier(.2,.7,.25,1)}
+.runner.mascot-hop:after{content:"✦  ·  ✧  ·  ✦";position:absolute;left:-48px;top:8px;color:#d9ad43;font-size:17px;white-space:nowrap;pointer-events:none;animation:starTrail .72s ease-out both;text-shadow:0 0 9px #f3d77c}
+@keyframes timelineHop{0%{margin-top:0}35%{margin-top:-42px}68%{margin-top:-30px}85%{margin-top:3px}100%{margin-top:0}}
+@keyframes starTrail{0%{opacity:0;transform:translateX(18px) scale(.4)}35%{opacity:1}100%{opacity:0;transform:translateX(-28px) scale(1.2)}}
+@media(max-width:640px){.timeline-branches{gap:7px}.timeline-branches button{font-size:12px;padding:8px 11px}.path{overflow-x:auto}}

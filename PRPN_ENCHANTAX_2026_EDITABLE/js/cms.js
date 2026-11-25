@@ -217,15 +217,23 @@ CMSE.gen=h=>{const g=CT.gen||{};
     v.dock={};DOCK.forEach(([k])=>{const e=$(`[data-f="dock_${k}"]`,h);if(e&&e.value.trim())v.dock[k]=e.value.trim()});
     v.about=ab;v.aboutV2=true;if(await cmsSave([["gen",v]]))admC()}};
 
-/* 📅 Timeline */
-CMSE.ev=h=>{h.innerHTML=`<h4>Timeline lomba</h4><p class="cms-note">Urutkan dari tahap paling awal. Centang <b>Tahap pengumpulan karya</b> pada satu tahap: tanggalnya dipakai sebagai buka/tutup pengumpulan.</p><div id="evl"></div>${cmsBar("Tambah tahap",'<button class="btn mini" id="csort">↕ Urutkan per tanggal</button>')}`;
-  const L=cfList($("#evl",h),{items:CT.ev,title:x=>(x.i||"")+" "+(x.k||""),min:1,fields:[{k:"k",l:"Nama tahap",t:"text"},{k:"i",l:"Ikon (emoji)",t:"text"},{k:"pi",l:"Logo ikon (opsional)",h:"(unggah / URL — menggantikan emoji; kosongkan untuk pakai emoji)",t:"img",max:256},{k:"s",l:"Mulai (WIB)",t:"dt"},{k:"e",l:"Berakhir (WIB)",t:"dt"},{k:"d",l:"Deskripsi",t:"area"},{k:"req",l:"Persyaratan tahap ini",h:"(satu per baris)",t:"lines"},{k:"go",l:"Tombol menuju bagian",t:"sel",o:GO_OPT},{k:"gl",l:"Label tombol",t:"text",ph:"mis. Daftar sekarang"},{k:"role",l:"Tahap pengumpulan karya (dipakai sebagai batas waktu)",t:"check"}],
-    blank:()=>({k:"Tahap baru",i:"📌",pi:"",s:nowWIB(0),e:nowWIB(7,true),d:"",req:[],go:"berita",gl:"Lihat info"})});
+/* 📅 Timeline tiga cabang */
+let EV_BRANCH="esai";
+CMSE.ev=h=>{
+  CT.evBranches=CT.evBranches||{};
+  ["lcc","infografis","esai"].forEach(k=>{if(!Array.isArray(CT.evBranches[k])||!CT.evBranches[k].length)CT.evBranches[k]=JSON.parse(JSON.stringify(CT.ev||[]));});
+  const labels={lcc:"🧠 Lomba Cerdas Cermat",infografis:"🎨 Creative Competition",esai:"📝 Call for Paper"};
+  h.innerHTML=`<h4>Pengelolaan Timeline Lomba</h4><p class="cms-note">Setiap cabang memiliki jadwal terpisah. Pilih cabang untuk mengedit tahapannya, lalu simpan perubahan.</p><div class="tabs ev-branch-tabs">${Object.entries(labels).map(([k,v])=>`<button type="button" data-evbranch="${k}" class="${EV_BRANCH===k?"on":""}">${v}</button>`).join("")}</div><div id="evl"></div>${cmsBar("Tambah tahap",'<button class="btn mini" id="csort">↕ Urutkan per tanggal</button>')}`;
+  const fields=[{k:"k",l:"Nama tahap",t:"text"},{k:"i",l:"Ikon (emoji)",t:"text"},{k:"pi",l:"Logo ikon (opsional)",h:"URL atau unggah gambar",t:"img",max:256},{k:"s",l:"Mulai (WIB)",t:"dt"},{k:"e",l:"Berakhir (WIB)",t:"dt"},{k:"d",l:"Deskripsi",t:"area"},{k:"req",l:"Persyaratan (satu per baris)",t:"lines"},{k:"go",l:"Tombol menuju bagian",t:"sel",o:GO_OPT},{k:"gl",l:"Label tombol",t:"text",ph:"mis. Lihat informasi"},{k:"role",l:"Tahap pengumpulan karya",t:"check"}];
+  const host=$("#evl",h);let L;
+  const mount=()=>{L=cfList(host,{items:CT.evBranches[EV_BRANCH],title:x=>(x.i||"")+" "+(x.k||""),min:1,fields,blank:()=>({k:"Tahap baru",i:"📌",pi:"",s:nowWIB(0),e:nowWIB(7,true),d:"",req:[],go:"berita",gl:"Lihat info"})});};mount();
+  h.querySelectorAll("[data-evbranch]").forEach(b=>b.onclick=()=>{CT.evBranches[EV_BRANCH]=L.get();EV_BRANCH=b.dataset.evbranch;h.querySelectorAll("[data-evbranch]").forEach(x=>x.classList.toggle("on",x===b));mount()});
   $("#cadd").onclick=L.add;$("#csort").onclick=()=>L.sortBy((a,b)=>String(a.s).localeCompare(String(b.s)));
   $("#csave").onclick=async()=>{const v=L.get().map(x=>{x.role=x.role?"submit":"";if(!x.role)delete x.role;if(x.s&&x.s.length===16)x.s+=":00";if(x.e&&x.e.length===16)x.e+=":00";return x});
-    for(const x of v){if(!x.k)return toast("Nama tahap wajib diisi");if(!x.s||!x.e)return toast("Tanggal mulai & berakhir wajib diisi untuk: "+x.k);if(D(x.e)<=D(x.s))return toast("Tanggal berakhir harus setelah mulai: "+x.k)}
+    for(const x of v){if(!x.k)return toast("Nama tahap wajib diisi");if(!x.s||!x.e)return toast("Tanggal mulai & berakhir wajib diisi: "+x.k);if(D(x.e)<=D(x.s))return toast("Tanggal berakhir harus setelah mulai: "+x.k)}
     let seen=0;v.forEach(x=>{if(x.role){if(seen)delete x.role;seen=1}});if(!seen&&v.length>1)v[1].role="submit";else if(!seen)v[0].role="submit";
-    if(await cmsSave([["ev",v]]))admC()}};
+    CT.evBranches[EV_BRANCH]=v;if(await cmsSave([["evBranches",CT.evBranches]]))admC()};
+};
 
 /* 🏁 Cabang */
 CMSE.br=h=>{h.innerHTML=`<h4>Cabang lomba</h4><p class="cms-note">Nama, ikon, dan deskripsi tampil di kartu pendaftaran & tab "Tentang". Matikan centang <b>Tampilkan</b> untuk menyembunyikan cabang tanpa menghapus data juara/penilaiannya.</p><div id="brl"></div>${cmsBar("Tambah cabang")}`;
