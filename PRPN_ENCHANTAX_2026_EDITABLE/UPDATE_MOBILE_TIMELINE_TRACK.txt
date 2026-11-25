@@ -1,0 +1,14 @@
+PRPN x ENCHANTAX 2026 — MOBILE TIMELINE TRACK FIX
+
+Tujuan: mengembalikan lingkaran/titik Timeline, garis penghubung, dan maskot yang bergerak/meloncat pada tampilan HP. Elemen tersebut diperkecil agar muat di lebar layar ponsel.
+
+Pemasangan:
+1. Ekstrak ZIP ini.
+2. Salin folder PRPN_ENCHANTAX_2026_EDITABLE/css/style.css ke proyek website kamu, timpa file css/style.css yang sekarang.
+3. Deploy ulang, lalu refresh browser HP (bisa gunakan mode incognito atau hapus cache jika perubahan belum terlihat).
+
+Catatan:
+- File CSS ini merupakan gabungan perbaikan mobile Tentang + layout vertikal buku Timeline sebelumnya, ditambah aturan untuk menampilkan kembali jalur Timeline asli di HP dalam ukuran lebih kecil.
+- Tidak ada perubahan pada HTML, JavaScript, Google Apps Script, Google Sheets, autentikasi, atau backend.
+- Aturan tambahan hanya berlaku pada layar <=640px (dan penyesuaian lebih kecil <=380px). Tampilan laptop/desktop tidak disentuh.
+- Bagian lain tidak dimodifikasi.
