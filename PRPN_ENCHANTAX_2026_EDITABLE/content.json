@@ -1,0 +1,336 @@
+{
+ "news": [
+  {
+   "id": "n1",
+   "cat": "General Information",
+   "date": "2026-11-18",
+   "title": "[Placeholder] Judul pengumuman resmi",
+   "sum": "Ringkasan diisi panitia melalui dashboard admin.",
+   "body": "Isi lengkap pengumuman diisi panitia.",
+   "urgent": false,
+   "featured": true
+  }
+ ],
+ "faq": [
+  {
+   "q": "[Placeholder] Pertanyaan yang sering diajukan?",
+   "a": "Jawaban resmi diisi panitia."
+  }
+ ],
+ "req": [
+  {
+   "t": "Persyaratan Peserta",
+   "d": "",
+   "l": "",
+   "lt": ""
+  },
+  {
+   "t": "Ketentuan Tim",
+   "d": "",
+   "l": "",
+   "lt": ""
+  },
+  {
+   "t": "Batas Anggota",
+   "d": "",
+   "l": "",
+   "lt": ""
+  },
+  {
+   "t": "Orisinalitas",
+   "d": "",
+   "l": "",
+   "lt": ""
+  },
+  {
+   "t": "Ketentuan Diskualifikasi",
+   "d": "",
+   "l": "",
+   "lt": ""
+  }
+ ],
+ "crit": {
+  "esai": [
+   {
+    "i": "Indikator 1 (placeholder)",
+    "w": null
+   },
+   {
+    "i": "Indikator 2 (placeholder)",
+    "w": null
+   }
+  ],
+  "policy": [
+   {
+    "i": "Indikator 1 (placeholder)",
+    "w": null
+   },
+   {
+    "i": "Indikator 2 (placeholder)",
+    "w": null
+   }
+  ],
+  "infografis": [
+   {
+    "i": "Indikator 1 (placeholder)",
+    "w": null
+   },
+   {
+    "i": "Indikator 2 (placeholder)",
+    "w": null
+   }
+  ],
+  "lcc": []
+ },
+ "judges": [
+  {
+   "n": "Nama Juri",
+   "r": "Jabatan",
+   "o": "Institusi",
+   "x": "Pengalaman diisi panitia",
+   "p": ""
+  }
+ ],
+ "spons": {
+  "Sponsor": [
+   {
+    "n": "[Placeholder] Diisi panitia"
+   }
+  ],
+  "Media Partner": [
+   {
+    "n": "[Placeholder] Diisi panitia"
+   }
+  ],
+  "Supporting Partner": [
+   {
+    "n": "[Placeholder] Diisi panitia"
+   }
+  ]
+ },
+ "set": {
+  "winnersPublished": true,
+  "maxMB": 20,
+  "maxTeam": 5,
+  "allowRevision": true,
+  "types": {
+   "doc": "pdf,jpg,png",
+   "esai": "pdf,docx",
+   "policy": "pdf,docx",
+   "infografis": "png,jpg,pdf"
+  }
+ },
+ "winners": {
+  "lcc": [
+   [
+    "Thirza",
+    "PKN STAN",
+    "100"
+   ],
+   [
+    "Amrita",
+    "UB",
+    "99"
+   ],
+   [
+    "Aura",
+    "SMA 8",
+    "98"
+   ]
+  ],
+  "esai": [
+   [
+    "Gifa",
+    "PKN STAN",
+    "100"
+   ],
+   [
+    "Makalalag",
+    "UNER",
+    "99,9"
+   ],
+   [
+    "Arzha",
+    "MAN 1",
+    "99,8"
+   ]
+  ],
+  "policy": [
+   [
+    "Nama Juara 1",
+    "Asal Kampus"
+   ],
+   [
+    "Nama Juara 2",
+    "Asal Kampus"
+   ],
+   [
+    "Nama Juara 3",
+    "Asal Kampus"
+   ]
+  ],
+  "infografis": [
+   [
+    "Nama Juara 1",
+    "Asal Kampus"
+   ],
+   [
+    "Nama Juara 2",
+    "Asal Kampus"
+   ],
+   [
+    "Nama Juara 3",
+    "Asal Kampus"
+   ]
+  ]
+ },
+ "finalis": {
+  "esai": [],
+  "policy": [],
+  "infografis": []
+ },
+ "ev": [
+  {
+   "k": "Pendaftaran",
+   "i": "📝",
+   "s": "2026-11-17T00:00:00",
+   "e": "2026-12-31T23:59:59",
+   "d": "Isi formulir dan pilih cabang lombamu.",
+   "go": "daftar",
+   "gl": "Daftar sekarang"
+  },
+  {
+   "k": "Pengiriman Karya",
+   "i": "📤",
+   "s": "2027-01-01T00:00:00",
+   "e": "2027-02-17T23:59:59",
+   "d": "Kumpulkan esai, policy brief, atau infografis beserta sampul dan surat orisinalitas.",
+   "role": "submit",
+   "go": "kumpul",
+   "gl": "Kumpulkan karya"
+  },
+  {
+   "k": "Penjurian",
+   "i": "⚖️",
+   "s": "2027-02-18T00:00:00",
+   "e": "2027-02-27T23:59:59",
+   "d": "Dewan juri menilai seluruh karya yang masuk.",
+   "go": "berita",
+   "gl": "Lihat pengumuman"
+  },
+  {
+   "k": "Pengumuman Juara",
+   "i": "🏆",
+   "s": "2027-02-28T00:00:00",
+   "e": "2027-02-28T23:59:59",
+   "d": "Para juara diumumkan. Siapa yang akan membawa pulang gelar?",
+   "go": "juara",
+   "gl": "Lihat hasil"
+  }
+ ],
+ "gen": {
+  "brand": "PRPN × ENCHANTAX",
+  "welcome": "Selamat Datang di",
+  "title": "PRPN x ENCHANTAX 2026",
+  "tagline": "Shaping Fiscal Transformation through Artificial Intelligence and Tax Innovation",
+  "footer": "© 2026 PRPN x Enchantax · Sampai jumpa di lomba!",
+  "branchIntro": "Tiga cabang menantimu. Pilih yang paling cocok dengan gayamu.",
+  "about": [
+   {
+    "t": "PRPN",
+    "d": "Pekan Raya Perpajakan Nasional adalah rangkaian kegiatan untuk memperkenalkan dan menumbuhkan kesadaran perpajakan bagi masyarakat luas.",
+    "c": [
+     "Edukasi pajak",
+     "Kolaboratif",
+     "Nasional"
+    ]
+   },
+   {
+    "t": "Enchantax 2.0",
+    "d": "Kompetisi yang mengusung tema Shaping Fiscal Transformation through Artificial Intelligence and Tax Innovation: ruang bagi gagasan segar tentang masa depan perpajakan.",
+    "c": [
+     "Artificial Intelligence",
+     "Inovasi pajak",
+     "Transformasi fiskal"
+    ]
+   }
+  ]
+ },
+ "branches": [
+  {
+   "id": "lcc",
+   "name": "LCC",
+   "ic": "🧠",
+   "desc": "Lomba Cerdas Cermat.",
+   "on": true,
+   "daftar": "https://forms.gle/r9wJU8ANRaTaRYE89",
+   "kumpul": ""
+  },
+  {
+   "id": "esai",
+   "name": "Call for Paper",
+   "ic": "📝",
+   "desc": "Tuangkan gagasan inovasi perpajakan berbasis AI.",
+   "on": true,
+   "daftar": "https://forms.gle/pbE6emz7HnuRdiLk8",
+   "kumpul": "https://forms.gle/dVMtZrFriCRLLn4k8"
+  },
+  {
+   "id": "infografis",
+   "name": "Infografis",
+   "ic": "📊",
+   "desc": "Visualisasikan isu pajak dengan desain yang menarik.",
+   "on": true,
+   "daftar": "https://forms.gle/69d1E4WiGZukscAP6",
+   "kumpul": "https://forms.gle/dVMtZrFriCRLLn4k8"
+  }
+ ],
+ "contacts": [
+  {
+   "ic": "📸",
+   "t": "Instagram",
+   "s": "@akun_instagram",
+   "u": ""
+  },
+  {
+   "ic": "💬",
+   "t": "WhatsApp 1",
+   "s": "Nama Narahubung · 08xx",
+   "u": ""
+  },
+  {
+   "ic": "💬",
+   "t": "WhatsApp 2",
+   "s": "Nama Narahubung · 08xx",
+   "u": ""
+  }
+ ],
+ "materi": [
+  {
+   "ic": "📄",
+   "t": "Format Sampul",
+   "d": "Template sampul karya resmi.",
+   "u": "",
+   "b": "Buka di Drive"
+  },
+  {
+   "ic": "✍️",
+   "t": "Surat Orisinalitas",
+   "d": "Pernyataan keaslian karya.",
+   "u": "",
+   "b": "Buka di Drive"
+  },
+  {
+   "ic": "🗂️",
+   "t": "Materi Lainnya",
+   "d": "Panduan dan referensi tambahan.",
+   "u": "",
+   "b": "Buka di Drive"
+  }
+ ],
+ "links": {
+  "handbook": "",
+  "twibbon": "",
+  "poster": ""
+ }
+}
