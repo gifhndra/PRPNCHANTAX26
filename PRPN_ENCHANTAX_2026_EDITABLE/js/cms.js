@@ -64,18 +64,22 @@ function buildKit(){const H=$("#kcs");if(!H)return;const L=kitList(CT.gen||{}).f
       `<div class="kcb" id="kcb${i}"><div class="kci">${x.d?`<p>${nl2br(x.d)}</p>`:""}${u?`<a class="btn" href="${esc(u)}" target="_blank" rel="noopener noreferrer">${esc(x.b||"Buka")}</a>`:""}</div></div></div>`}).join("")||'<div class="empty">Belum ada kartu akses cepat.</div>';
   $$(".kc",H).forEach(c=>{c.onclick=e=>{if(e.target.closest("a"))return;const o=c.classList.toggle("open");$(".kch",c).setAttribute("aria-expanded",o)}})}
 
+/* ---------- Ikon menu bawah (dock): emoji bawaan, bisa diganti logo dari dashboard ---------- */
+const DOCK=[["portal","Portal","🏛️"],["daftar","Pendaftaran","📝"],["kumpul","Pengumpulan","📤"],["umum","Pengumuman","🏆"]];
+function applyDock(){const d=(CT.gen||{}).dock||{};DOCK.forEach(([k,,e])=>{const b=$(`.db[data-p="${k}"] span`);if(b)b.innerHTML=ico(d[k],e)})}
+
 /* ---------- 2. Cabang lomba (kartu pendaftaran + pengumpulan) ---------- */
 function pickCat(c,fromUser){const r=$("#reg");$$(".cat").forEach(x=>{x.classList.remove("sel");$(".pick",x).textContent="Ketuk untuk memilih"});
   c.classList.add("sel");$(".pick",c).textContent="✓ Terpilih";cat=c.dataset.c;r.removeAttribute("disabled");r.textContent="Daftar "+$("h3",c).textContent+" →";
   const b=(CT.branches||[]).find(x=>x.id===cat);go(r,toLink(b&&b.daftar));if(fromUser)c.scrollIntoView({behavior:"smooth",inline:"center",block:"nearest"})}
 function buildCats(){const T=$("#track"),act=actBr(),keep=cat;
-  T.innerHTML=act.map(b=>`<div class="card cat" data-c="${esc(b.id)}"><div class="ic">${esc(b.ic)}</div><h3>${esc(b.name)}</h3><p>${esc(b.desc)}</p><span class="pick">Ketuk untuk memilih</span></div>`).join("")||'<div class="empty">Belum ada cabang lomba yang aktif.</div>';
+  T.innerHTML=act.map(b=>`<div class="card cat" data-c="${esc(b.id)}"><div class="ic">${ico(b.pi,b.ic)}</div><h3>${esc(b.name)}</h3><p>${esc(b.desc)}</p><span class="pick">Ketuk untuk memilih</span></div>`).join("")||'<div class="empty">Belum ada cabang lomba yang aktif.</div>';
   $$(".cat",T).forEach(c=>c.onclick=()=>{if(mv){mv=0;return}pickCat(c,true)});
   const r=$("#reg"),k=keep&&$$(".cat",T).find(c=>c.dataset.c===keep);
   if(k)pickCat(k,false);else{cat=null;r.setAttribute("disabled","");r.textContent="Pilih cabang dulu ☝️";go(r,"")}}
 function buildSubs(){const S=$("#subs");S.innerHTML="";const act=actBr();
   act.forEach(b=>{const d=document.createElement("div");d.className="card sub-c";d.dataset.bid=b.id||"";d.dataset.bn=b.name||"";
-    d.innerHTML=`<h3>${esc(b.ic)} ${esc(b.name)}</h3>${CK.map(c=>`<label class="ck"><input type="checkbox"> ${c}</label>`).join("")}<div class="meter"><i></i></div><a class="btn gold" disabled>Kumpulkan ${esc(b.name)} ✈️</a>`;
+    d.innerHTML=`<h3>${ico(b.pi,b.ic)} ${esc(b.name)}</h3>${CK.map(c=>`<label class="ck"><input type="checkbox"> ${c}</label>`).join("")}<div class="meter"><i></i></div><a class="btn gold" disabled>Kumpulkan ${esc(b.name)} ✈️</a>`;
     const a=$(".btn",d),cs=$$("input",d);go(a,toLink(b.kumpul));
     cs.forEach(c=>c.onchange=()=>{const n=cs.filter(x=>x.checked).length;$(".meter i",d).style.width=n/3*100+"%";if(n===3)a.removeAttribute("disabled");else a.setAttribute("disabled","")});
     a.addEventListener("click",()=>{const p=document.createElement("div");p.className="plane";p.textContent="✈️";const r=a.getBoundingClientRect();p.style.left=r.left+"px";p.style.top=r.top+"px";document.body.append(p);
@@ -85,7 +89,7 @@ function buildSubs(){const S=$("#subs");S.innerHTML="";const act=actBr();
 /* ---------- 3. Tautan, narahubung ---------- */
 function applyLinks(){$$("[data-link]").forEach(a=>{const k=a.dataset.link;if(CT.links&&k in CT.links)go(a,toLink(CT.links[k]))})}
 function renderContacts(){const C=$(".cons");if(!C)return;
-  C.innerHTML=(CT.contacts||[]).map((c,i)=>`<a class="card con" data-i="${i}"><div class="ic">${esc(c.ic||"📞")}</div><h3>${esc(c.t)}</h3><small>${esc(c.s)}</small></a>`).join("")||'<div class="empty">Narahubung belum diisi panitia.</div>';
+  C.innerHTML=(CT.contacts||[]).map((c,i)=>`<a class="card con" data-i="${i}"><div class="ic">${ico(c.pi,c.ic||"📞")}</div><h3>${esc(c.t)}</h3><small>${esc(c.s)}</small></a>`).join("")||'<div class="empty">Narahubung belum diisi panitia.</div>';
   $$(".con",C).forEach(a=>go(a,toLink(CT.contacts[+a.dataset.i].u)))}
 
 /* ---------- 4. Info: dokumen persyaratan + penilaian ---------- */
@@ -106,7 +110,7 @@ renderTim=function(){$("#judges").innerHTML=(CT.judges||[]).map(j=>`<div class="
 /* ---------- 6. Materi pendukung: animasi "deal" — semua kartu langsung terlihat ---------- */
 let dealQ="";
 function buildDeal(){const H=$("#deal");if(!H)return;const M=CT.materi||[],sr=$("#dsr");
-  H.innerHTML=M.map((m,i)=>`<article class="card dcard" data-q="${esc((m.t+" "+m.d).toLowerCase())}" style="--i:${i};--rot:${((i%3)-1)*2.2+(i%2?.8:-.8)}deg"><div class="dglow"></div><div class="dic">${esc(m.ic||"📄")}</div><h3>${esc(m.t)}</h3><p>${esc(m.d)}</p><a class="btn" data-mi="${i}">${esc(m.b||"Buka materi")}</a></article>`).join("")||'<div class="empty">Materi belum ditambahkan panitia.</div>';
+  H.innerHTML=M.map((m,i)=>`<article class="card dcard" data-q="${esc((m.t+" "+m.d).toLowerCase())}" style="--i:${i};--rot:${((i%3)-1)*2.2+(i%2?.8:-.8)}deg"><div class="dglow"></div><div class="dic">${ico(m.pi,m.ic||"📄")}</div><h3>${esc(m.t)}</h3><p>${esc(m.d)}</p><a class="btn" data-mi="${i}">${esc(m.b||"Buka materi")}</a></article>`).join("")||'<div class="empty">Materi belum ditambahkan panitia.</div>';
   $$(".dcard",H).forEach(c=>{go($(".btn",c),toLink(M[+$(".btn",c).dataset.mi].u));
     c.onpointermove=e=>{if(e.pointerType==="touch")return;const r=c.getBoundingClientRect(),x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;c.style.setProperty("--rx",(-y*10).toFixed(1)+"deg");c.style.setProperty("--ry",(x*12).toFixed(1)+"deg");c.style.setProperty("--gx",(x+.5)*100+"%");c.style.setProperty("--gy",(y+.5)*100+"%")};
     c.onpointerleave=()=>{c.style.setProperty("--rx","0deg");c.style.setProperty("--ry","0deg")}});
@@ -129,15 +133,11 @@ function playDeal(){const H=$("#deal");if(!H)return;const cs=$$(".dcard",H);if(!
    ===================================================================== */
 const REMOTE_SKIP=["certs","roster"];
 const syncApi=()=>{try{return KONF.API||""}catch(e){return""}};
-const syncKey=()=>{try{return localStorage.getItem("prpn_sheetkey")||""}catch(e){return""}};
-const setSyncKey=v=>{try{localStorage.setItem("prpn_sheetkey",v)}catch(e){}};
+const syncKey=()=>{try{return AUTH.token()}catch(e){return""}};
 function syncNote(long){if(!syncApi())return"<b>Database tidak aktif</b>: tersimpan di browser ini. Gunakan tab 💾 Cadangan untuk menerbitkan.";
-  return syncKey()?(long?"Kunci tersimpan. Setiap menekan <b>Simpan & terapkan</b>, konten otomatis dikirim ke Google Sheet dan langsung tayang untuk semua pengunjung.":" — otomatis tayang untuk semua pengunjung (via Google Sheet)."):
-  (long?"<b>Belum terhubung.</b> Isi kunci di bawah agar perubahan langsung tayang di website tanpa unduh content.json.":". <b>Kunci Apps Script belum diisi</b> — buka tab 💾 Cadangan agar perubahan langsung tayang.")}
-async function syncPost(body){const key=syncKey();if(!key)throw Error("Kunci Apps Script belum diisi (tab 💾 Cadangan)");
-  let r;try{r=await fetch(syncApi(),{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(Object.assign({key},body)),redirect:"follow"})}catch(e){throw Error("Tidak bisa menghubungi Apps Script (cek internet / URL /exec)")}
-  let j;try{j=await r.json()}catch(e){throw Error("Respons Apps Script tidak terbaca. Pastikan deployment 'Siapa saja' dan memakai Code.gs terbaru.")}
-  if(!j.ok)throw Error(j.error||"Ditolak Apps Script");return j}
+  return syncKey()?(long?"Kamu sedang masuk sebagai panitia. Setiap menekan <b>Simpan & terapkan</b>, konten otomatis dikirim ke Google Sheet dan langsung tayang untuk semua pengunjung.":" — otomatis tayang untuk semua pengunjung (via Google Sheet)."):
+  (long?"<b>Belum masuk.</b> Masuk panitia (akun Google + password) agar perubahan langsung tayang di website tanpa unduh content.json.":". <b>Belum masuk panitia</b> — login dulu agar perubahan langsung tayang.")}
+async function syncPost(body){if(!syncKey())throw Error("Belum masuk sebagai panitia (login Google + password)");return AUTH.post(body)}
 async function syncSave(keys){const items={};
   keys.forEach(k=>{if(REMOTE_SKIP.includes(k)||!(k in DEF))return;let v=CT[k];if(k==="set"){v={...v};delete v.adminHash}const j=JSON.stringify(v);if(j.length>900000)throw Error("Data '"+k+"' terlalu besar (>900 KB). Perkecil gambar atau pakai URL gambar.");items[k]=j});
   if(Object.keys(items).length)await syncPost({action:"saveContent",items})}
@@ -152,7 +152,7 @@ async function remoteLoad(){if(DB||!syncApi())return;
 (async()=>{for(let i=0;i<200&&!loaded;i++)await new Promise(r=>setTimeout(r,100));remoteLoad()})();
 
 /* ---------- terapkan semua ---------- */
-function cmsApply(){applyGen();buildAbout();buildKit();buildCats();buildSubs();applyLinks();renderContacts();buildDeal()}
+function cmsApply(){applyGen();applyDock();buildAbout();buildKit();buildCats();buildSubs();applyLinks();renderContacts();buildDeal()}
 {const _a=applyCT;applyCT=function(){syncLB();_a();cmsApply()}}
 syncLB();cmsApply();
 
@@ -173,7 +173,7 @@ function cfField(f,v){const id=f.k,L=f.l?`<label>${esc(f.l)}${f.h?` <span class=
     case"sel":return L+`<select data-f="${id}">${f.o.map(([a,b])=>`<option value="${esc(a)}" ${a===(v||"")?"selected":""}>${esc(b)}</option>`).join("")}</select>`;
     case"dt":return L+`<input type="datetime-local" step="1" data-f="${id}" value="${esc(String(v||"").slice(0,19))}">`;
     case"num":return L+`<input type="number" min="0" max="100" step="any" data-f="${id}"${ph} value="${v==null?"":esc(v)}">`;
-    case"img":{const isD=/^data:/.test(v||"");return L+`<div class="imgf"><span class="pv">${v?`<img src="${esc(v)}" alt="">`:"🖼️"}</span><div><input type="hidden" data-f="${id}" value="${esc(v||"")}"><input class="iurl" placeholder="Tempel URL gambar…" value="${isD?"":esc(v||"")}"><div class="row" style="justify-content:flex-start;margin:0"><label class="btn mini up">⬆️ Unggah<input type="file" accept="image/*" hidden></label><button type="button" class="btn mini clr">Hapus</button></div></div></div>`}
+    case"img":{const isD=/^data:/.test(v||"");return L+`<div class="imgf"${f.max?` data-max="${f.max}"`:""}><span class="pv">${v?`<img src="${esc(v)}" alt="">`:"🖼️"}</span><div><input type="hidden" data-f="${id}" value="${esc(v||"")}"><input class="iurl" placeholder="Tempel URL gambar…" value="${isD?"":esc(v||"")}"><div class="row" style="justify-content:flex-start;margin:0"><label class="btn mini up">⬆️ Unggah<input type="file" accept="image/*" hidden></label><button type="button" class="btn mini clr">Hapus</button></div></div></div>`}
     default:return L+`<input data-f="${id}"${ph} value="${esc(v??"")}">`}}
 function cfRead(root,fields,base){const o={...(base||{})};fields.forEach(f=>{const e=$(`[data-f="${f.k}"]`,root);if(!e)return;
   if(f.t==="check")o[f.k]=e.checked;else if(f.t==="lines")o[f.k]=e.value.split("\n").map(x=>x.trim()).filter(Boolean);
@@ -204,21 +204,23 @@ const CMSE={};
 /* 🏠 Umum */
 CMSE.gen=h=>{const g=CT.gen||{};
   h.innerHTML=`<h4>Informasi umum website</h4>${[["brand","Nama di header"],["welcome","Teks sapaan (hero)"],["title","Judul utama"],["tagline","Tagline / tema"],["footer","Teks footer"]].map(([k,l])=>cfField({k,l,t:"text"},g[k])).join("")}
+  <h4>Ikon menu navigasi bawah</h4><p class="cms-note">Ganti emoji pada menu bawah (Portal, Pendaftaran, Pengumpulan, Pengumuman) dengan logo unggahan. Kosongkan untuk memakai emoji bawaan.</p>${DOCK.map(([k,l,e])=>cfField({k:"dock_"+k,l:e+" "+l,t:"img",max:256},((g.dock||{})[k])||"")).join("")}
   <h4>Bagian "Tentang" — kotak logo</h4><p class="cms-note">Tiap item tampil sebagai <b>kotak berisi logo + judul</b>. Deskripsi & label baru muncul saat pengunjung mengeklik kotak. Kamu bisa <b>tambah / hapus / urutkan (↑ ↓)</b> kotak, ganti <b>logo</b> (unggah atau URL), judul, deskripsi, dan label. Hilangkan centang <b>Tampilkan</b> untuk menyembunyikan kotak tanpa menghapusnya.</p>
   ${[["aboutTitle","Judul bagian"],["aboutSub","Kalimat di bawah judul"]].map(([k,l])=>cfField({k,l,t:"text",ph:k==="aboutTitle"?"Apa itu PRPN x Enchantax?":"Ketuk kotak di bawah untuk mengenal lebih dekat."},g[k])).join("")}
-  <div id="abl"></div>${cmsBar("Tambah kotak Tentang")}`;
+  <div id="abl"></div>${cmsBar("Tambah kotak Tentang")}`;cfBindImg(h);
   const L=cfList($("#abl",h),{items:aboutList(g),title:x=>(x.t||"")+(x.on===false?"  (disembunyikan)":""),min:1,empty:"Belum ada kotak.",
     fields:[{k:"p",l:"Logo (gambar di depan kotak)",t:"img"},{k:"t",l:"Judul (tampil di depan kotak)",t:"text"},{k:"d",l:"Deskripsi (tampil saat kotak diklik)",t:"area"},{k:"c",l:"Label/chip",h:"(satu per baris)",t:"lines"},
       {k:"auto",l:"Label otomatis: isi dengan nama cabang lomba yang aktif (menu 🏁 Cabang)",t:"check"},{k:"on",l:"Tampilkan di website",t:"check"}],
     blank:()=>({t:"Kotak baru",d:"",c:[],p:"",auto:false,on:true})});
   $("#cadd").onclick=L.add;$("#csave").onclick=async()=>{const v={...g};["brand","welcome","title","tagline","footer","aboutTitle","aboutSub"].forEach(k=>{const e=$(`[data-f="${k}"]`,h);if(e)v[k]=e.value.trim()});
     const ab=L.get();if(ab.some(x=>!x.t))return toast("Judul kotak Tentang wajib diisi");if(!ab.some(x=>x.on!==false))return toast("Minimal satu kotak harus ditampilkan");
+    v.dock={};DOCK.forEach(([k])=>{const e=$(`[data-f="dock_${k}"]`,h);if(e&&e.value.trim())v.dock[k]=e.value.trim()});
     v.about=ab;v.aboutV2=true;if(await cmsSave([["gen",v]]))admC()}};
 
 /* 📅 Timeline */
 CMSE.ev=h=>{h.innerHTML=`<h4>Timeline lomba</h4><p class="cms-note">Urutkan dari tahap paling awal. Centang <b>Tahap pengumpulan karya</b> pada satu tahap: tanggalnya dipakai sebagai buka/tutup pengumpulan.</p><div id="evl"></div>${cmsBar("Tambah tahap",'<button class="btn mini" id="csort">↕ Urutkan per tanggal</button>')}`;
-  const L=cfList($("#evl",h),{items:CT.ev,title:x=>(x.i||"")+" "+(x.k||""),min:1,fields:[{k:"k",l:"Nama tahap",t:"text"},{k:"i",l:"Ikon (emoji)",t:"text"},{k:"s",l:"Mulai (WIB)",t:"dt"},{k:"e",l:"Berakhir (WIB)",t:"dt"},{k:"d",l:"Deskripsi",t:"area"},{k:"req",l:"Persyaratan tahap ini",h:"(satu per baris)",t:"lines"},{k:"go",l:"Tombol menuju bagian",t:"sel",o:GO_OPT},{k:"gl",l:"Label tombol",t:"text",ph:"mis. Daftar sekarang"},{k:"role",l:"Tahap pengumpulan karya (dipakai sebagai batas waktu)",t:"check"}],
-    blank:()=>({k:"Tahap baru",i:"📌",s:nowWIB(0),e:nowWIB(7,true),d:"",req:[],go:"berita",gl:"Lihat info"})});
+  const L=cfList($("#evl",h),{items:CT.ev,title:x=>(x.i||"")+" "+(x.k||""),min:1,fields:[{k:"k",l:"Nama tahap",t:"text"},{k:"i",l:"Ikon (emoji)",t:"text"},{k:"pi",l:"Logo ikon (opsional)",h:"(unggah / URL — menggantikan emoji; kosongkan untuk pakai emoji)",t:"img",max:256},{k:"s",l:"Mulai (WIB)",t:"dt"},{k:"e",l:"Berakhir (WIB)",t:"dt"},{k:"d",l:"Deskripsi",t:"area"},{k:"req",l:"Persyaratan tahap ini",h:"(satu per baris)",t:"lines"},{k:"go",l:"Tombol menuju bagian",t:"sel",o:GO_OPT},{k:"gl",l:"Label tombol",t:"text",ph:"mis. Daftar sekarang"},{k:"role",l:"Tahap pengumpulan karya (dipakai sebagai batas waktu)",t:"check"}],
+    blank:()=>({k:"Tahap baru",i:"📌",pi:"",s:nowWIB(0),e:nowWIB(7,true),d:"",req:[],go:"berita",gl:"Lihat info"})});
   $("#cadd").onclick=L.add;$("#csort").onclick=()=>L.sortBy((a,b)=>String(a.s).localeCompare(String(b.s)));
   $("#csave").onclick=async()=>{const v=L.get().map(x=>{x.role=x.role?"submit":"";if(!x.role)delete x.role;if(x.s&&x.s.length===16)x.s+=":00";if(x.e&&x.e.length===16)x.e+=":00";return x});
     for(const x of v){if(!x.k)return toast("Nama tahap wajib diisi");if(!x.s||!x.e)return toast("Tanggal mulai & berakhir wajib diisi untuk: "+x.k);if(D(x.e)<=D(x.s))return toast("Tanggal berakhir harus setelah mulai: "+x.k)}
@@ -227,8 +229,8 @@ CMSE.ev=h=>{h.innerHTML=`<h4>Timeline lomba</h4><p class="cms-note">Urutkan dari
 
 /* 🏁 Cabang */
 CMSE.br=h=>{h.innerHTML=`<h4>Cabang lomba</h4><p class="cms-note">Nama, ikon, dan deskripsi tampil di kartu pendaftaran & tab "Tentang". Matikan centang <b>Tampilkan</b> untuk menyembunyikan cabang tanpa menghapus data juara/penilaiannya.</p><div id="brl"></div>${cmsBar("Tambah cabang")}`;
-  const L=cfList($("#brl",h),{items:CT.branches,title:x=>(x.ic||"")+" "+(x.name||"")+(x.on===false?"  (disembunyikan)":""),min:1,fields:[{k:"name",l:"Nama cabang",t:"text"},{k:"ic",l:"Ikon (emoji)",t:"text"},{k:"desc",l:"Deskripsi",t:"area"},{k:"on",l:"Tampilkan di halaman pendaftaran",t:"check"},{k:"daftar",l:"Tautan formulir pendaftaran",h:"(Google Form dll.)",t:"text",ph:"https://forms.gle/…"},{k:"kumpul",l:"Tautan formulir pengumpulan",h:"(opsional)",t:"text",ph:"https://forms.gle/…"}],
-    blank:()=>({id:"",name:"Cabang baru",ic:"🏅",desc:"",on:true,daftar:"",kumpul:""})});
+  const L=cfList($("#brl",h),{items:CT.branches,title:x=>(x.ic||"")+" "+(x.name||"")+(x.on===false?"  (disembunyikan)":""),min:1,fields:[{k:"name",l:"Nama cabang",t:"text"},{k:"ic",l:"Ikon (emoji)",t:"text"},{k:"pi",l:"Logo ikon (opsional)",h:"(unggah / URL — menggantikan emoji; kosongkan untuk pakai emoji)",t:"img",max:256},{k:"desc",l:"Deskripsi",t:"area"},{k:"on",l:"Tampilkan di halaman pendaftaran",t:"check"},{k:"daftar",l:"Tautan formulir pendaftaran",h:"(Google Form dll.)",t:"text",ph:"https://forms.gle/…"},{k:"kumpul",l:"Tautan formulir pengumpulan",h:"(opsional)",t:"text",ph:"https://forms.gle/…"}],
+    blank:()=>({id:"",name:"Cabang baru",ic:"🏅",pi:"",desc:"",on:true,daftar:"",kumpul:""})});
   $("#cadd").onclick=L.add;$("#csave").onclick=async()=>{const v=L.get(),used=new Set(v.map(x=>x.id).filter(Boolean));
     for(const x of v){if(!x.name)return toast("Nama cabang wajib diisi");if(!x.id){let b=slug(x.name)||"cabang",n=b,k=2;while(used.has(n))n=b+"-"+k++;x.id=n;used.add(n)}}
     const crit={...CT.crit},win={...CT.winners};v.forEach(x=>{if(!crit[x.id])crit[x.id]=[];if(!win[x.id])win[x.id]=[[],[],[]]});
@@ -271,12 +273,12 @@ CMSE.fq=h=>{h.innerHTML=`<h4>Pertanyaan umum (FAQ)</h4><div id="fql"></div>${cms
 
 /* ☎️ Narahubung */
 CMSE.ct=h=>{h.innerHTML=`<h4>Narahubung</h4><p class="cms-note">Kolom tautan boleh berisi URL, <b>nomor WhatsApp</b> (08… / 62…), atau <b>@akun Instagram</b> — otomatis diubah menjadi tautan.</p><div id="ctl"></div>${cmsBar("Tambah narahubung")}`;
-  const L=cfList($("#ctl",h),{items:CT.contacts,title:x=>(x.ic||"")+" "+x.t,fields:[{k:"ic",l:"Ikon (emoji)",t:"text"},{k:"t",l:"Judul",t:"text",ph:"mis. WhatsApp Admin"},{k:"s",l:"Keterangan yang tampil",t:"text",ph:"mis. Nama · 0812…"},{k:"u",l:"Tautan / nomor / @akun",t:"text"}],blank:{ic:"💬",t:"Kontak baru",s:"",u:""}});
+  const L=cfList($("#ctl",h),{items:CT.contacts,title:x=>(x.ic||"")+" "+x.t,fields:[{k:"ic",l:"Ikon (emoji)",t:"text"},{k:"pi",l:"Logo ikon (opsional)",h:"(unggah / URL — menggantikan emoji; kosongkan untuk pakai emoji)",t:"img",max:256},{k:"t",l:"Judul",t:"text",ph:"mis. WhatsApp Admin"},{k:"s",l:"Keterangan yang tampil",t:"text",ph:"mis. Nama · 0812…"},{k:"u",l:"Tautan / nomor / @akun",t:"text"}],blank:{ic:"💬",pi:"",t:"Kontak baru",s:"",u:""}});
   $("#cadd").onclick=L.add;$("#csave").onclick=async()=>{const v=L.get();for(const x of v){if(!x.t)return toast("Judul wajib diisi");if(x.u&&!toLink(x.u))return toast("Tautan/nomor tidak dikenali: "+x.t)}if(await cmsSave([["contacts",v]]))admC()}};
 
 /* 📚 Materi */
 CMSE.mt=h=>{h.innerHTML=`<h4>Materi pendukung</h4><p class="cms-note">Semua kartu langsung tampil di halaman Pengumpulan dengan animasi "dibagikan" — peserta tidak perlu mencari satu per satu.</p><div id="mtl"></div>${cmsBar("Tambah materi")}`;
-  const L=cfList($("#mtl",h),{items:CT.materi,title:x=>(x.ic||"")+" "+x.t,fields:[{k:"ic",l:"Ikon (emoji)",t:"text"},{k:"t",l:"Judul materi",t:"text"},{k:"d",l:"Deskripsi singkat",t:"area"},{k:"u",l:"Tautan file",t:"text",ph:"https://drive.google.com/…"},{k:"b",l:"Label tombol",t:"text",ph:"Buka di Drive"}],blank:{ic:"📄",t:"Materi baru",d:"",u:"",b:"Buka di Drive"}});
+  const L=cfList($("#mtl",h),{items:CT.materi,title:x=>(x.ic||"")+" "+x.t,fields:[{k:"ic",l:"Ikon (emoji)",t:"text"},{k:"pi",l:"Logo ikon (opsional)",h:"(unggah / URL — menggantikan emoji; kosongkan untuk pakai emoji)",t:"img",max:256},{k:"t",l:"Judul materi",t:"text"},{k:"d",l:"Deskripsi singkat",t:"area"},{k:"u",l:"Tautan file",t:"text",ph:"https://drive.google.com/…"},{k:"b",l:"Label tombol",t:"text",ph:"Buka di Drive"}],blank:{ic:"📄",pi:"",t:"Materi baru",d:"",u:"",b:"Buka di Drive"}});
   $("#cadd").onclick=L.add;$("#csave").onclick=async()=>{const v=L.get();for(const x of v){if(!x.t)return toast("Judul materi wajib diisi");if(x.u&&!toLink(x.u))return toast("Tautan tidak valid: "+x.t)}if(await cmsSave([["materi",v]]))admC()}};
 
 /* 🏆 Pengumuman: teks animasi pengumuman per kategori + seluruh isi layar "Hasil lengkap" */
@@ -312,8 +314,7 @@ CMSE.lk=h=>{const g=CT.gen||{};
 /* 💾 Cadangan */
 CMSE.bk=h=>{h.innerHTML=`<h4>🌐 Tayang langsung ke website (tanpa unduh content.json)</h4>
   <p class="cms-note">${syncNote(true)}</p>
-  <label>Kunci akses Apps Script <span class="hint">(sama dengan SECRET di Code.gs; tersimpan hanya di browser ini)</span></label><input id="skey" type="password" autocomplete="off" placeholder="Kunci rahasia" value="${esc(syncKey())}">
-  <div class="row" style="justify-content:flex-start"><button class="btn mini" id="skeysv">🔌 Simpan kunci & uji koneksi</button><button class="btn gold" id="spub">🚀 Terbitkan semua konten sekarang</button></div><div id="smsg" class="cms-note"></div>
+  <div class="row" style="justify-content:flex-start"><span class="au-who">👤 ${esc(AUTH.name()||"belum masuk")}</span><button class="btn mini" id="skeysv">🔌 Uji koneksi & sesi</button><button class="btn gold" id="spub">🚀 Terbitkan semua konten sekarang</button></div><div id="smsg" class="cms-note"></div>
   <h4>Cadangan & penerbitan manual</h4>
   <p class="cms-note">${DB?"Database aktif: perubahan langsung dilihat semua pengunjung.":"<b>Database tidak aktif.</b> Perubahan hanya tersimpan di browser panitia ini. Agar pengunjung melihatnya: unduh <code>content.json</code>, letakkan di folder <code>data/</code> website, lalu unggah ulang situs."}</p>
   <div class="row" style="justify-content:flex-start"><button class="btn" id="bex">⬇️ Unduh content.json</button><label class="btn" style="cursor:pointer">⬆️ Impor content.json<input id="bim" type="file" accept=".json,application/json" hidden></label><button class="btn mini" id="brs">↩️ Hapus perubahan lokal browser ini</button></div><div id="bmsg"></div>`;
@@ -321,8 +322,8 @@ CMSE.bk=h=>{h.innerHTML=`<h4>🌐 Tayang langsung ke website (tanpa unduh conten
   $("#bim").onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const j=JSON.parse(await f.text()),ks=Object.keys(j).filter(k=>k in DEF&&!["certs","roster"].includes(k));if(!ks.length)throw Error("Tidak ada data yang dikenali");if(!confirm("Timpa "+ks.length+" bagian konten ("+ks.join(", ")+")?"))return;ks.forEach(k=>{CT[k]=k==="set"?{...j.set,adminHash:CT.set.adminHash}:j[k]});await svc(...ks);admC()}catch(x){toast("Impor gagal: "+x.message)}};
   $("#brs").onclick=()=>{if(!confirm("Hapus semua perubahan konten yang tersimpan di browser ini?"))return;Object.keys(DEF).forEach(k=>{try{localStorage.removeItem("prpn_c_"+k)}catch(e){}});location.reload()};
   const sm=t=>{$("#smsg").innerHTML=t};
-  $("#skeysv").onclick=async()=>{const v=$("#skey").value.trim();if(v.length<6)return sm("<b>Kunci terlalu pendek.</b>");setSyncKey(v);sm("Menguji koneksi…");
-    try{const g=await (await fetch(syncApi()+"?action=content&t="+Date.now(),{redirect:"follow"})).json();if(!g||!g.ok||!(g.v>=6))throw Error("Apps Script belum diperbarui ke kode terbaru (apps-script/Code.gs versi 6). Perbarui lalu Deploy > New version.");
-      await syncPost({action:"saveContent",items:{}});sm("✅ <b>Terhubung.</b> Kunci benar — simpan di menu Konten Web akan langsung tayang di website.")}catch(e){sm("❌ "+esc(e.message))}};
-  $("#spub").onclick=async()=>{if(!syncKey())return sm("Isi kunci dulu, lalu klik <b>Simpan kunci & uji koneksi</b>.");if(!confirm("Terbitkan SEMUA konten yang ada di browser ini ke website? Konten lama di server akan ditimpa."))return;sm("Menerbitkan…");
+  $("#skeysv").onclick=async()=>{sm("Menguji koneksi…");
+    try{const g=await (await fetch(syncApi()+"?action=content&t="+Date.now(),{redirect:"follow"})).json();if(!g||!g.ok||!(g.v>=8))throw Error("Apps Script belum diperbarui ke kode terbaru (apps-script/Code.gs versi 8). Perbarui lalu Deploy > New version.");
+      await syncPost({action:"whoami"});sm("✅ <b>Terhubung.</b> Sesi panitia sah — simpan di menu Konten Web akan langsung tayang di website.")}catch(e){sm("❌ "+esc(e.message))}};
+  $("#spub").onclick=async()=>{if(!syncKey())return sm("Masuk panitia dulu.");if(!confirm("Terbitkan SEMUA konten yang ada di browser ini ke website? Konten lama di server akan ditimpa."))return;sm("Menerbitkan…");
     try{const ks=Object.keys(DEF).filter(k=>!REMOTE_SKIP.includes(k));await syncSave(ks);sm("✅ <b>"+ks.length+" bagian konten</b> sudah tayang untuk semua pengunjung.")}catch(e){sm("❌ "+esc(e.message))}}};

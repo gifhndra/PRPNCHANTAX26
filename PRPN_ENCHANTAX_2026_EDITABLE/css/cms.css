@@ -102,3 +102,11 @@ button.mini:hover{background:var(--s3)}
 .kci .btn{font-size:14px;padding:9px 20px}
 @media (max-width:640px){.kc{flex-basis:100%;max-width:340px}}
 @media (prefers-reduced-motion:reduce){.kcb,.kc.open .kcb,.kcl img{transition:none}}
+
+/* ---------- Logo ikon unggahan (pengganti emoji) ---------- */
+.ico{display:inline-block;width:1em;height:1em;object-fit:contain;vertical-align:-.14em;-webkit-user-drag:none;user-select:none}
+.node .c{overflow:hidden}.node .c .ico{width:32px;height:32px;vertical-align:middle}
+.db span{display:grid;place-items:center;min-height:26px}.db span .ico{width:26px;height:26px;vertical-align:middle}
+.cat .ic,.con .ic,.dic{display:grid;place-items:center}
+.cat .ic .ico,.con .ic .ico,.dic .ico{filter:drop-shadow(0 6px 6px #1e2a5a33)}
+.dic .ico{width:64px;height:64px}.cat .ic .ico{width:64px;height:64px}.con .ic .ico{width:52px;height:52px}

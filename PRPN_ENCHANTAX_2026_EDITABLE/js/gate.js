@@ -32,7 +32,7 @@ async function gCheck(email,tim,silent){
   try{
     const r=await fetch(KONF.API+"?action=check&email="+encodeURIComponent(email)+"&tim="+encodeURIComponent(tim),{redirect:"follow"});
     const j=await r.json();
-    if(j.v!==5)throw Error("Script Apps Script di server belum versi terbaru (masih ada kode lama). Panitia: hapus semua isi Apps Script, tempel hanya apps-script/Code.gs yang baru, lalu Deploy > New version.");
+    if(!(j.v>=7))throw Error("Script Apps Script di server belum versi terbaru (masih ada kode lama). Panitia: hapus semua isi Apps Script, tempel hanya apps-script/Code.gs yang baru, lalu Deploy > New version.");
     if(!j.ok)throw Error(j.error||"Gagal memeriksa");
     if(j.verified){GATE.ok={email,tim:j.tim||tim,cabang:j.cabang||"",kode:j.kode||""};try{localStorage.setItem(GATE.KEY,JSON.stringify({email,tim}))}catch(e){}if(!silent&&typeof confetti==="function")confetti(60)}
     else{GATE.ok=null;try{localStorage.removeItem(GATE.KEY)}catch(e){}

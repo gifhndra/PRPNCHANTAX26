@@ -49,13 +49,13 @@ const EV=[{k:"Pendaftaran",i:"📝",s:"2026-11-17T00:00:00",e:"2026-12-31T23:59:
 function SUBEV(){return EV.find(v=>v.role==="submit")||EV[1]||EV[EV.length-1]}
 EV[1].role="submit";EV[0].go="daftar";EV[0].gl="Daftar sekarang";EV[1].go="kumpul";EV[1].gl="Kumpulkan karya";EV[2].go="berita";EV[2].gl="Lihat pengumuman";EV[3].go="juara";EV[3].gl="Lihat hasil";
 const rng=v=>v.s.slice(0,10)===v.e.slice(0,10)?fm(D(v.s)):fm(D(v.s))+" – "+fm(D(v.e)),stt=v=>{const n=Date.now();return n>D(v.e)?"done":n>=D(v.s)?"now":"next"};
-function buildTl(){const nd=$("#nodes");nd.innerHTML="";EV.forEach((v,i)=>{const b=document.createElement("button"),st=stt(v);b.className="node "+st;b.setAttribute("aria-label",v.k);b.innerHTML=`<span class="c">${st==="done"?"✓":esc(v.i)}</span><b>${esc(v.k)}</b><small>${rng(v)}</small>`;b.onclick=()=>sel(i);nd.append(b)});
+function buildTl(){const nd=$("#nodes");nd.innerHTML="";EV.forEach((v,i)=>{const b=document.createElement("button"),st=stt(v);b.className="node "+st;b.setAttribute("aria-label",v.k);b.innerHTML=`<span class="c">${st==="done"?"✓":ico(v.pi,v.i)}</span><b>${esc(v.k)}</b><small>${rng(v)}</small>`;b.onclick=()=>sel(i);nd.append(b)});
 const n=Date.now(),p=EV.reduce((s,v)=>s+Math.min(1,Math.max(0,(n-D(v.s))/(D(v.e)-D(v.s)))),0)/EV.length;$("#lf").style.width=p*100+"%";$("#lf").title="Progres aktual "+Math.round(p*100)+"%";
 const c=EV.findIndex(v=>n<=D(v.e));sel(c<0?EV.length-1:c)}
 const ST={done:["Completed","Selesai ✓"],now:["Ongoing","Sedang berlangsung 🔥"],next:["Upcoming","Akan datang ⏳"]};
 function sel(i){$$(".node").forEach((b,j)=>b.classList.toggle("on",i===j));$("#run").style.left=(i+.5)*(100/EV.length)+"%";
 const v=EV[i],st=ST[stt(v)],d=$("#det"),rq=(v.req&&v.req.length?v.req:["Persyaratan tahap ini belum diisi panitia."]).map(x=>`<li>${esc(x)}</li>`).join("");
-d.innerHTML=`<span class="chip">${st[0]} · ${st[1]}</span><h3>${esc(v.i)} ${esc(v.k)}</h3><p><b>Mulai:</b> ${fm(D(v.s))} · <b>Berakhir:</b> ${fm(D(v.e))} WIB</p><p>${esc(v.d)}</p><p><b>Persyaratan:</b></p><ul class="rq">${rq}</ul><div><button class="btn" id="pv">←</button><button class="btn" id="nv">→</button> <button class="btn gold" id="go">${esc(v.gl||"Buka halaman terkait")} ↗</button> <a class="btn" href="#hitung">⏱️ Hitung mundur</a></div>`;
+d.innerHTML=`<span class="chip">${st[0]} · ${st[1]}</span><h3>${ico(v.pi,v.i)} ${esc(v.k)}</h3><p><b>Mulai:</b> ${fm(D(v.s))} · <b>Berakhir:</b> ${fm(D(v.e))} WIB</p><p>${esc(v.d)}</p><p><b>Persyaratan:</b></p><ul class="rq">${rq}</ul><div><button class="btn" id="pv">←</button><button class="btn" id="nv">→</button> <button class="btn gold" id="go">${esc(v.gl||"Buka halaman terkait")} ↗</button> <a class="btn" href="#hitung">⏱️ Hitung mundur</a></div>`;
 $("#pv").onclick=()=>sel((i+EV.length-1)%EV.length);$("#nv").onclick=()=>sel((i+1)%EV.length);$("#go").onclick=()=>goTo(v.go||"berita");
 $("#det a").onclick=()=>setCd(i);d.style.animation="none";d.offsetWidth;d.style.animation="pop .5s"}
 // countdown
@@ -87,6 +87,8 @@ PRPNHasil.init({cats:LB,getWinners:()=>WIN,confetti,ann:ANN});
 
 // ===== SISTEM KONTEN, PESERTA, ADMIN =====
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+/* ico(gambar, emoji): bila panitia mengunggah logo ikon dari dashboard -> tampil gambar; jika kosong -> emoji bawaan */
+const ico=(img,emo)=>img?`<img class="ico" src="${esc(img)}" alt="" draggable="false">`:esc(emo||"");
 const LS={get:(k,d)=>{try{const v=localStorage.getItem("prpn_"+k);return v==null?d:JSON.parse(v)}catch(e){return d}},set:(k,v)=>{try{localStorage.setItem("prpn_"+k,JSON.stringify(v))}catch(e){}}};
 const ts=t=>new Date(t).toLocaleString("id-ID",{timeZone:"Asia/Jakarta",dateStyle:"medium",timeStyle:"short"})+" WIB";
 const CATS=["General Information","Registration","Competition Updates","Technical Meeting","Finalist Announcement","Winners Announcement"];
@@ -167,11 +169,10 @@ async function doLink(){const u=$("#wl").value.trim();if(!/^https:\/\/(drive|doc
 async function doWork(){const f=$("#wf").files[0];if(!f)return toast("Pilih file dulu");if(Date.now()>D(SUBEV().e))return toast("Deadline sudah lewat");const b=$("#wb");b.disabled=true;b.textContent="Mengunggah…";
 try{const r=await up(f,CT.set.types[ME.cab],CT.set.maxMB);r.rev=ME.subs.length+1;ME.subs.push(r);ME.log.push({t:r.ts,x:(r.rev>1?"Revisi "+r.rev:"Karya dikumpulkan")+": "+r.name});await saveMe(ME);toast("Karya terkumpul ✅ "+ts(r.ts));confetti(60);renderDash()}catch(e){toast(e.message||"Gagal mengunggah");b.disabled=false;b.textContent="Kumpulkan karya"}}
 // admin
-const ADMIN_HASH="f4331316a3e3f3dc8ef31146d4c2a40bbcc406281dad184bfeb70c22bb3a66d8";let UNL=false,tries=0,lockUntil=0;
+let UNL=false;
 async function sha(s){const b=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(s));return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,"0")).join("")}
-function askCode(){if(UNL)return openAdmin();openM('<h3>🔒 Akses Panitia</h3><label for="ac">Kata sandi panitia</label><input id="ac" class="pw" type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" aria-label="Kata sandi panitia"><div id="ae"></div><button class="btn" id="ab">Masuk</button>');
-const go=async()=>{if(Date.now()<lockUntil){$("#ae").innerHTML='<div class="bad">Terlalu banyak percobaan. Tunggu 1 menit.</div>';return}let h="";try{h=await sha($("#ac").value.trim())}catch(e){return toast("Verifikasi tidak tersedia di browser ini")}
-if(h===(CT.set.adminHash||ADMIN_HASH)){UNL=true;tries=0;openAdmin()}else{if(++tries>=5){lockUntil=Date.now()+60000;tries=0}$("#ae").innerHTML='<div class="bad">Kode salah.</div>'}};$("#ab").onclick=go;$("#ac").onkeydown=e=>{e.stopPropagation();if(e.key==="Enter")go()};setTimeout(()=>$("#ac").focus(),120)}
+/* login panitia: akun Google + password pribadi, diverifikasi server (lihat js/auth.js & apps-script/Code.gs) */
+function askCode(){if(UNL&&AUTH.token())return openAdmin();AUTH.open()}
 let AT="f",WK="esai",PEND=[],SUB=[],subOn=0;
 const nk=(t,k)=>(t+"|"+k).toLowerCase().replace(/\s+/g," ").trim();
 const svc=async(...ks)=>{try{for(const k of ks)await persist(k);toast(DB?"Tersimpan ✅":"Tersimpan lokal (database tidak aktif)")}catch(e){toast("Gagal menyimpan ke database (butuh akses Editor)")}};
@@ -192,13 +193,12 @@ $("#subd").onclick=openSub;
 function admS(){$("#ap").innerHTML=(`<h3>Panel Panitia</h3><p style="color:var(--mut);font-size:14px">Pendaftaran dan pengumpulan karya dikelola lewat tautan Google Form/Docs di slide. Panel ini untuk konten publik.</p><label style="display:flex;gap:8px;align-items:center"><input type="checkbox" id="wp" style="width:auto;margin:0" ${CT.set.winnersPublished?"checked":""}> Hasil juara sudah disahkan (tampil ke publik)</label>
 <h4>Kelola konten publik</h4><select id="ck">${Object.keys(DEF).map(k=>`<option>${k}</option>`).join("")}</select><textarea id="ct" style="min-height:200px;font-family:monospace"></textarea><button class="btn gold" id="sc">Simpan</button>
 <h4>Buat sertifikat</h4><input id="cn" placeholder="Nama penerima"><input id="cc" placeholder="Kategori (mis. Juara 1 Esai)"><button class="btn" id="cg">Buat nomor &amp; simpan</button>
-<h4>Ganti kode akses</h4><input id="nc" type="password" placeholder="Kode baru (min. 10 karakter)"><button class="btn" id="nk">Simpan kode</button><div class="row" style="margin-top:14px"><button class="btn" id="lo">Keluar</button></div>`);
+<h4>Akun panitia</h4><p style="color:var(--mut);font-size:14px">Masuk sebagai <b>${esc(AUTH.name()||"-")}</b> (${esc(AUTH.email())}). Daftar panitia &amp; password dikelola pemilik Apps Script (lihat PANDUAN_LOGIN_PANITIA.md).</p><div class="row" style="margin-top:14px"><button class="btn" id="lo">Keluar</button></div>`);
 const fill=()=>$("#ct").value=JSON.stringify(CT[$("#ck").value],null,1);fill();$("#ck").onchange=fill;$("#sc").onclick=saveC;
 const sv=async k=>{try{await persist(k);toast(DB?"Tersimpan ✅":"Tersimpan lokal (database tidak aktif)")}catch(e){toast("Gagal menyimpan ke database (butuh akses Editor)")}};
 $("#wp").onchange=e=>{CT.set.winnersPublished=e.target.checked;sv("set")};
 $("#cg").onclick=()=>{const n=$("#cn").value.trim(),c=$("#cc").value.trim();if(!n||!c)return toast("Isi nama dan kategori");CT.certs.push({no:"CERT-2026-"+Math.random().toString(36).slice(2,8).toUpperCase(),name:n,cat:c,valid:true});sv("certs")};
-$("#nk").onclick=async()=>{const k=$("#nc").value.trim();if(k.length<10)return toast("Kode minimal 10 karakter");CT.set.adminHash=await sha(k);sv("set")};
-$("#lo").onclick=()=>{UNL=false;closeM()}}
+$("#lo").onclick=async()=>{await AUTH.logout();closeM();toast("Berhasil keluar")}}
 function _oldAdmin(){const ok=PS.length;openM(`<h3>Dashboard Admin</h3><div class="st"><div><b>${PS.length}</b>Peserta</div><div><b>${PS.filter(p=>p.status==="pending").length}</b>Menunggu</div><div><b>${PS.filter(p=>p.status==="verified").length}</b>Terverifikasi</div><div><b>${PS.filter(p=>p.subs.length).length}</b>Karya masuk</div></div>
 <div class="row"><button class="btn" id="ex">⬇️ Ekspor data (tab)</button></div><div class="tw2">${ok?`<table><tr><th>No</th><th>Nama</th><th>Cabang</th><th>Status</th><th>Karya</th><th></th></tr>${PS.map((p,i)=>`<tr><td>${esc(p.no)}</td><td>${esc(p.name)}</td><td>${LB[p.cab]||""}</td><td>${p.status}</td><td>${p.subs.length}</td><td><button class="btn" data-i="${i}" data-s="verified">✓</button> <button class="btn" data-i="${i}" data-s="rejected">✕</button></td></tr>`).join("")}</table>`:'<div class="empty">Belum ada peserta. 📭</div>'}</div>
 <h4>Kelola konten publik (tanpa ubah kode)</h4><select id="ck">${Object.keys(DEF).map(k=>`<option>${k}</option>`).join("")}</select><textarea id="ct" style="min-height:200px;font-family:monospace"></textarea><button class="btn gold" id="sc">Simpan</button>
