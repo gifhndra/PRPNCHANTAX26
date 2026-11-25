@@ -1,0 +1,21 @@
+PATCH RESPONSIVE MOBILE — ABOUT + TIMELINE
+
+File yang perlu diganti:
+- css/style.css
+
+Cara pemasangan:
+1. Backup css/style.css versi website saat ini.
+2. Salin css/style.css dari folder patch ini ke folder proyek:
+   PRPN_ENCHANTAX_2026_EDITABLE/css/style.css
+3. Replace file lama.
+4. Tidak perlu mengganti index.html, js/app.js, Code.gs, konfigurasi API,
+   autentikasi, Google Sheets, atau file backend lainnya.
+5. Deploy ulang website, lalu refresh browser dengan Ctrl+F5.
+
+Perbaikan:
+- Konten Tentang dipaksa tampil pada layar kecil agar tidak blank karena animasi reveal.
+- Bagian Tentang menggunakan alur vertikal normal di HP.
+- Jalur Timeline horizontal lama disembunyikan pada HP.
+- Buku Timeline menjadi satu kolom: detail tahap lalu countdown.
+- Tombol cabang, detail, tombol aksi, dan countdown menyesuaikan lebar layar.
+- Tidak mengubah backend atau alur pendaftaran/verifikasi.

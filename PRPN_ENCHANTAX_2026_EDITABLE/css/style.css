@@ -434,3 +434,154 @@ section>.hm.hm{position:absolute!important;bottom:0;z-index:3;height:var(--mh);w
 .book-shell.book-turn-next,
 .book-shell.book-turn-prev{animation:none!important;}
 .book-turn-leaf{display:none!important;opacity:0!important;pointer-events:none!important;}
+
+/* ===== MOBILE RESPONSIVE PATCH: ABOUT + TIMELINE ===== */
+@media (max-width: 640px) {
+  /* Reveal content reliably on small screens; prevent the About section looking empty. */
+  .rv,
+  .in .rv,
+  .rv.in {
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: none !important;
+  }
+
+  /* About: use a normal vertical document flow instead of a full-screen panel. */
+  #about {
+    min-height: auto;
+    height: auto;
+    justify-content: flex-start;
+    padding: 88px 16px 42px;
+    overflow: visible;
+    scroll-snap-align: start;
+  }
+  #about .sec-title { font-size: clamp(25px, 7vw, 34px); }
+  #about .sub { margin: 8px auto 20px; }
+  #about .abx {
+    width: 100%;
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 14px;
+  }
+  #about .abx > * { max-width: 100%; min-width: 0; }
+  #about .about-box {
+    width: 100%;
+    max-width: 100%;
+    padding: 18px 16px;
+    gap: 12px;
+    flex-direction: column;
+    text-align: center;
+  }
+  #about .about-box .m { flex: 0 0 auto; width: 104px; max-width: 34vw; }
+  #about .pane h3 { font-size: 23px; }
+  #about .pane p { font-size: 14px; }
+  #about .chips { justify-content: center; }
+
+  /* Timeline: remove the legacy horizontal track. The book is the mobile timeline. */
+  #jadwal {
+    min-height: auto;
+    height: auto;
+    justify-content: flex-start;
+    padding: 88px 12px 42px;
+    overflow: visible;
+    scroll-snap-align: start;
+  }
+  #jadwal .sec-title { font-size: clamp(27px, 7vw, 36px); }
+  #jadwal .sub { font-size: 14px; margin: 8px auto 16px; }
+  #jadwal .path { display: none !important; }
+  .timeline-branches {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+    margin: 12px auto 16px;
+  }
+  .timeline-branches button {
+    width: 100%;
+    white-space: normal;
+    line-height: 1.3;
+    padding: 10px 12px;
+    font-size: 13px;
+  }
+  .timeline-book {
+    width: 100%;
+    max-width: 100%;
+    margin: 8px auto 0;
+    perspective: none;
+  }
+  .book-shell {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-height: 0;
+    transform: none !important;
+    filter: drop-shadow(0 12px 18px rgba(31,38,78,.16));
+  }
+  .book-shell::before { inset: -5px -3px -6px; }
+  .book-shell::after,
+  .book-spine,
+  .book-ribbon,
+  .book-spark { display: none !important; }
+  .book-page,
+  .book-left,
+  .book-right {
+    width: 100%;
+    min-width: 0;
+    border-radius: 18px;
+    overflow: visible;
+  }
+  .book-right { margin-top: 0; }
+  .book-page-paper {
+    position: relative;
+    inset: auto;
+    width: 100%;
+    min-height: 0;
+    padding: 22px 16px;
+    border-radius: 18px;
+    background-size: cover;
+  }
+  .book-page-paper::after { inset: 8px; background-size: 42px 42px, 42px 42px; }
+  .book-page-content {
+    height: auto;
+    min-height: 0;
+    width: 100%;
+    gap: 8px;
+  }
+  .book-left .detail {
+    width: 100%;
+    max-width: 100%;
+    padding: 16px 13px;
+    overflow-wrap: anywhere;
+  }
+  .book-left .detail h3 { font-size: 21px; }
+  .book-left .detail p,
+  .book-left .detail li { font-size: 13px; }
+  .book-left .detail > div:last-child {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px;
+  }
+  .book-left .detail .btn { font-size: 11px; padding: 8px 10px; }
+  .book-count { width: 100%; max-width: 100%; justify-content: center; gap: 6px; }
+  .book-count .unit { flex: 1 1 0; width: auto; min-width: 0; max-width: 76px; }
+  .book-count .flip {
+    width: 100%;
+    height: 58px;
+    line-height: 58px;
+    font-size: clamp(25px, 8vw, 36px);
+  }
+  .book-count .unit small { font-size: 9px; }
+  .book-count-title { font-size: 22px; }
+  .book-count + .meter { width: 92%; }
+  #jadwal .book-page .sub { max-width: 100%; overflow-wrap: anywhere; }
+}
+
+@media (max-width: 380px) {
+  #about, #jadwal { padding-left: 10px; padding-right: 10px; }
+  .book-left .detail { padding: 14px 10px; }
+  .book-count .flip { height: 52px; line-height: 52px; }
+}
