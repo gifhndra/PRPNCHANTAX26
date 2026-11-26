@@ -1,0 +1,21 @@
+PATCH — HALAMAN MENYATU (FLOW) + DOCK TENGAH + ANTI-LAG HP
+
+File yang diganti (timpa ke folder PRPN_ENCHANTAX_2026_EDITABLE):
+- css/style.css
+- js/app.js
+Tidak ada perubahan pada index.html, cms.js, Code.gs, atau backend.
+
+Pemasangan: timpa 2 file di atas, deploy ulang, lalu refresh (Ctrl+F5 / hapus cache di HP).
+
+Perubahan:
+1. Tiap halaman (Portal, Pendaftaran, Pengumpulan, Pengumuman) kini satu halaman mengalir
+   bersama FAQ & Narahubung di bawahnya. Latar gradien + pola titik dibuat SATU untuk seluruh
+   halaman, jadi tidak ada garis batas antar bagian. Isi/kartu tiap bagian tidak diubah.
+2. Panggung gelap Pengumuman memudar halus ke FAQ.
+3. Scroll-snap dan blok setinggi layar (100svh) dihapus; cincin berputar per-bagian dihapus.
+4. Dock bawah: dulu lebarnya terjepit (left:50%) sehingga melebar ke kanan di HP.
+   Sekarang selalu di tengah layar dan muat di lebar 320px ke atas.
+5. Anti-lag HP: drop-shadow/blur besar pada buku timeline, maskot, kilau & pita dimatikan
+   di layar <=900px / layar sentuh (desktop tidak berubah); blur dock & header dimatikan di HP;
+   animasi bagian yang jauh dari layar dijeda; progress bar scroll pakai transform.
+6. Pemicu animasi muncul (reveal) diganti agar bagian yang panjang tetap muncul dengan benar.

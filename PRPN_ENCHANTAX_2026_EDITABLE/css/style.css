@@ -16,7 +16,7 @@ section{min-height:100svh;scroll-snap-align:start;position:relative;display:flex
 .rv{opacity:0;transform:translateY(40px);transition:1s cubic-bezier(.2,.8,.2,1)}.in .rv,.rv.in{opacity:1;transform:none}
 nav.dots{position:fixed;right:10px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:10px;z-index:50}
 nav.dots a{width:12px;height:12px;border-radius:50%;background:#1e2a5a55;border:2px solid #fff;transition:.3s}nav.dots a.on{background:var(--wine);transform:scale(1.5)}
-#bar{position:fixed;top:0;left:0;height:5px;background:linear-gradient(90deg,var(--wine),var(--gold));z-index:60;width:0;padding-top:0}
+#bar{position:fixed;top:0;left:0;height:5px;background:linear-gradient(90deg,var(--wine),var(--gold));z-index:60;width:100%;transform:scaleX(0);transform-origin:0 50%;will-change:transform;padding-top:0}
 #toast{position:fixed;bottom:calc(24px + env(safe-area-inset-bottom,0px));left:50%;transform:translate(-50%,120px);background:var(--navy);color:#fff;padding:12px 22px;border-radius:99px;z-index:99;transition:.4s;max-width:90vw}#toast.show{transform:translate(-50%,0)}
 /* 1 hero */
 #hero{background:linear-gradient(var(--s1),var(--s2))}
@@ -697,4 +697,54 @@ section>.hm.hm{position:absolute!important;bottom:0;z-index:3;height:var(--mh);w
   .book-mascots { gap: 2px; margin-top: 4px; }
   .book-mascots .cdm { width: 34px; }
   .book-ribbon { width: 24px; height: 72px; }
+}
+
+
+/* =====================================================================
+   FLOW — tiap halaman (Portal / Pendaftaran / Pengumpulan / Pengumuman)
+   menyatu jadi satu halaman mengalir bersama FAQ & Narahubung.
+   Tanpa scroll-snap, tanpa blok 100svh, tanpa garis batas antar bagian.
+   ===================================================================== */
+html{scroll-snap-type:none!important;scroll-behavior:smooth;overflow-x:clip}
+body{overflow-x:clip;max-width:100%}
+.page{position:relative;isolation:isolate;overflow-x:clip;
+  background:linear-gradient(180deg,var(--s2) 0%,var(--s3) 14%,var(--s4) 30%,var(--s2) 46%,var(--s5) 60%,var(--s4) 74%,var(--s1) 92%,var(--bg) 100%)}
+.page::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;opacity:.5;
+  background:radial-gradient(circle,#d4a63c55 1.5px,transparent 2.5px) 0 0/38px 38px,radial-gradient(circle,#8b1e2e22 1px,transparent 2px) 19px 19px/38px 38px}
+.page::after{content:"";position:absolute;width:75vmin;aspect-ratio:1;right:-22vmin;top:-12vmin;border-radius:50%;z-index:-1;pointer-events:none;opacity:.16;
+  background:conic-gradient(var(--wine),var(--gold),var(--teal),var(--navy),var(--wine));
+  -webkit-mask:radial-gradient(circle,transparent 56%,#000 57% 61%,transparent 62% 70%,#000 71% 73%,transparent 74%);
+  mask:radial-gradient(circle,transparent 56%,#000 57% 61%,transparent 62% 70%,#000 71% 73%,transparent 74%)}
+.page section,#shared section{min-height:0!important;height:auto;scroll-snap-align:none!important;overflow:visible!important;
+  background:none!important;justify-content:flex-start;padding:44px 20px 24px!important}
+.page section:before,.page section:after,#shared section:before,#shared section:after{content:none!important;animation:none!important}
+.page>section:first-child{padding-top:88px!important}
+#shared section:last-of-type{padding-bottom:120px!important}
+/* Pengumuman: panggung gelap memudar halus ke FAQ */
+.page #juara{color:#fff;padding-bottom:140px!important}
+.page #juara::before{content:""!important;position:absolute;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(circle at 50% 40%,#4a2f7a,#1e2a5a 55%,#0b1030);
+  -webkit-mask-image:linear-gradient(#000 calc(100% - 190px),transparent);mask-image:linear-gradient(#000 calc(100% - 190px),transparent)}
+/* hemat tenaga: animasi section yang jauh dari layar dijeda */
+section.off *{animation-play-state:paused!important}
+
+/* Dock bawah: selalu di tengah layar, tidak melebar ke kanan */
+#dock{left:0!important;right:0;margin-inline:auto;transform:none!important;width:max-content;max-width:calc(100vw - 16px);justify-content:center}
+.db{white-space:nowrap}
+@media(max-width:900px){
+  #dock{backdrop-filter:none;-webkit-backdrop-filter:none;background:color-mix(in srgb,var(--card) 97%,transparent)}
+  .top{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+}
+@media(max-width:480px){
+  #dock{padding:5px 7px;gap:2px}.dg{gap:0}
+  .db{min-width:0;padding:5px 5px;font-size:10px}.dklogo{width:50px;margin:0 2px}
+}
+@media(max-width:360px){
+  .db{font-size:9px;padding:5px 3px}.db span{font-size:17px}.dklogo{width:44px}
+}
+
+/* Mobile/layar sentuh: drop-shadow & blur berukuran besar pada elemen yang terus bergerak
+   adalah penyebab utama lag saat scroll. Dimatikan di sini; desktop tidak berubah. */
+@media (max-width:900px),(pointer:coarse){
+  .book-shell,.timeline-book::before,.m,.cdm,.ablg img,.book-mascots .cdm,.book-spark,.book-ribbon,.cloud{filter:none}
 }

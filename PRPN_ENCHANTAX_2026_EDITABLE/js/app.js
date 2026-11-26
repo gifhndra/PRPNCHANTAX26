@@ -11,8 +11,9 @@ function crop(){$$(".m[data-c],.m[data-k]").forEach(e=>{const k=KM[e.dataset.c]|
 const i=document.createElement("img");i.className=e.className+" mascot-image";i.style.cssText=e.style.cssText;i.id=e.id;i.dataset.c=e.dataset.c||"";i.dataset.k=k;i.alt="Maskot PRPN x Enchantax";i.loading="lazy";i.decoding="async";i.src=CH[k];e.replaceWith(i)})}crop();
 // nav dots + progress + reveal
 const secs=$$("section");secs.forEach(s=>{const a=document.createElement("a");a.href="#"+s.id;a.setAttribute("aria-label",s.id);$("#dots").append(a)});
-const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add("in");const i=secs.indexOf(e.target);$$("#dots a").forEach((d,j)=>d.classList.toggle("on",i===j))}}),{threshold:.45});secs.forEach(s=>io.observe(s));
-addEventListener("scroll",()=>{$("#bar").style.width=scrollY/(document.documentElement.scrollHeight-innerHeight)*100+"%"},{passive:true});
+const io=new IntersectionObserver(es=>es.forEach(e=>{e.target.classList.toggle("off",!e.isIntersecting);if(e.isIntersecting)e.target.classList.add("in")}),{threshold:0,rootMargin:"160px 0px -6% 0px"});secs.forEach(s=>io.observe(s));
+const io2=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){const i=secs.indexOf(e.target);$$("#dots a").forEach((d,k)=>d.classList.toggle("on",i===k))}}),{rootMargin:"-50% 0px -50% 0px"});secs.forEach(s=>io2.observe(s));
+let bt=0;addEventListener("scroll",()=>{if(bt)return;bt=requestAnimationFrame(()=>{bt=0;const m=document.documentElement.scrollHeight-innerHeight;$("#bar").style.transform="scaleX("+(m>0?Math.min(1,scrollY/m):0)+")"})},{passive:true});
 // about tabs
 let AB=[["PRPN","Pekan Raya Perpajakan Nasional adalah rangkaian kegiatan untuk memperkenalkan dan menumbuhkan kesadaran perpajakan bagi masyarakat luas.",["Edukasi pajak","Kolaboratif","Nasional"],"95,5,100,160"],
 ["Enchantax 2.0","Kompetisi yang mengusung tema Shaping Fiscal Transformation through Artificial Intelligence and Tax Innovation: ruang bagi gagasan segar tentang masa depan perpajakan.",["Artificial Intelligence","Inovasi pajak","Transformasi fiskal"],"80,175,115,165"],
