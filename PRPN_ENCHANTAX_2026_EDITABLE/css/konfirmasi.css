@@ -13,6 +13,22 @@
 #gate input{width:100%;font:600 15px Nunito;padding:10px 14px;border-radius:12px;border:2px solid #d4a63c88;background:var(--bg);color:var(--tx);margin:4px 0 8px}
 #gate .ok{color:#1e8e5a;font-weight:800;margin-top:8px}
 #gate .bad{margin-top:8px}
+/* detail status: penjelasan, status sekarang, keterangan panitia, narahubung LO */
+#gate .gd{text-align:left;margin-top:12px;border:2px solid #d4a63c88;border-radius:16px;padding:12px 16px;background:var(--bg);color:var(--tx)}
+#gate .gd h4{margin:14px 0 4px;font:700 15px Fredoka}
+#gate .gd h4:first-child{margin-top:0}
+#gate .gd p{margin:0;font-size:14px;line-height:1.55;word-break:break-word}
+#gate .gd small{color:var(--mut)}
+#gate .gs{display:inline-block;padding:3px 12px;border-radius:99px;font:800 13px Nunito;border:1px solid transparent}
+#gate .gs-imp{background:#fff1c9;color:#7a5600;border-color:#d4a63c}
+#gate .gs-rej{background:#fde3e3;color:#8b1e2e;border-color:#c0525f}
+#gate .gs-reg{background:#e4ecf7;color:#1e2a5a;border-color:#8aa0c8}
+#gate .lo{display:flex;flex-direction:column;gap:8px}
+#gate .lo-i{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:12px;border:1px solid #d4a63c66;background:var(--card);color:var(--tx);text-decoration:none}
+#gate a.lo-i:hover{border-color:var(--gold)}
+#gate .lo-ic{font-size:20px;line-height:1}
+#gate .lo-tx{display:flex;flex-direction:column;min-width:0;word-break:break-word}
+#gate .lo-tx small{font-size:12px}
 #subs .sub-c[inert]{opacity:.5;filter:grayscale(.85);position:relative;user-select:none}
 #subs .sub-c[inert]::after{content:"🔒";position:absolute;top:14px;right:18px;font-size:22px}
 

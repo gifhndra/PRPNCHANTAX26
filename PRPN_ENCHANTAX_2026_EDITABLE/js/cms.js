@@ -131,6 +131,9 @@ function playDeal(){const H=$("#deal");if(!H)return;const cs=$$(".dcard",H);if(!
    (dipakai bila database Claude tidak aktif). Memakai URL /exec yang sama dengan
    dashboard konfirmasi (KONF.API). Baca: publik. Tulis: wajib kunci (SECRET).
    ===================================================================== */
+/* narahubung LO untuk kotak "Buka kunci pengumpulan" (diatur di Konten Web > Pengumpulan) */
+if(!("kumpulLO" in DEF))DEF.kumpulLO=[];
+if(!Array.isArray(CT.kumpulLO))CT.kumpulLO=[];
 const REMOTE_SKIP=["certs","roster"];
 const syncApi=()=>{try{return KONF.API||""}catch(e){return""}};
 const syncKey=()=>{try{return AUTH.token()}catch(e){return""}};
@@ -160,7 +163,7 @@ syncLB();cmsApply();
    EDITOR: tab "🛠️ Konten Web" di dashboard panitia
    ===================================================================== */
 let CMS_T="gen";
-const CMS_TABS=[["gen","🏠 Umum"],["ev","📅 Timeline"],["br","🏁 Cabang"],["rq","📎 Dokumen & Syarat"],["cr","⚖️ Penilaian"],["jr","👩‍⚖️ Dewan Juri"],["sp","🤝 Mitra"],["fq","❓ FAQ"],["ct","☎️ Narahubung"],["mt","📚 Materi"],["an","🏆 Pengumuman"],["lk","🔗 Akses Cepat"],["bk","💾 Cadangan"]];
+const CMS_TABS=[["gen","🏠 Umum"],["ev","📅 Timeline"],["br","🏁 Cabang"],["rq","📎 Dokumen & Syarat"],["cr","⚖️ Penilaian"],["jr","👩‍⚖️ Dewan Juri"],["sp","🤝 Mitra"],["fq","❓ FAQ"],["ct","☎️ Narahubung"],["kl","📤 Pengumpulan"],["mt","📚 Materi"],["an","🏆 Pengumuman"],["lk","🔗 Akses Cepat"],["bk","💾 Cadangan"]];
 const GO_OPT=[["","(tidak ada)"],["daftar","Pendaftaran"],["kumpul","Pengumpulan karya"],["materi","Materi pendukung"],["info","Ketentuan & penilaian"],["berita","Berita"],["jadwal","Timeline"],["tim","Juri & mitra"],["juara","Pengumuman juara"],["faq","FAQ"],["kontak","Narahubung"]];
 const nowWIB=(addDays=0,end=false)=>{const d=new Date(Date.now()+addDays*864e5),s=d.toLocaleString("sv-SE",{timeZone:"Asia/Jakarta"}).replace(" ","T").slice(0,10);return s+(end?"T23:59:59":"T00:00:00")};
 
@@ -283,6 +286,18 @@ CMSE.fq=h=>{h.innerHTML=`<h4>Pertanyaan umum (FAQ)</h4><div id="fql"></div>${cms
 CMSE.ct=h=>{h.innerHTML=`<h4>Narahubung</h4><p class="cms-note">Kolom tautan boleh berisi URL, <b>nomor WhatsApp</b> (08… / 62…), atau <b>@akun Instagram</b> — otomatis diubah menjadi tautan.</p><div id="ctl"></div>${cmsBar("Tambah narahubung")}`;
   const L=cfList($("#ctl",h),{items:CT.contacts,title:x=>(x.ic||"")+" "+x.t,fields:[{k:"ic",l:"Ikon (emoji)",t:"text"},{k:"pi",l:"Logo ikon (opsional)",h:"(unggah / URL — menggantikan emoji; kosongkan untuk pakai emoji)",t:"img",max:256},{k:"t",l:"Judul",t:"text",ph:"mis. WhatsApp Admin"},{k:"s",l:"Keterangan yang tampil",t:"text",ph:"mis. Nama · 0812…"},{k:"u",l:"Tautan / nomor / @akun",t:"text"}],blank:{ic:"💬",pi:"",t:"Kontak baru",s:"",u:""}});
   $("#cadd").onclick=L.add;$("#csave").onclick=async()=>{const v=L.get();for(const x of v){if(!x.t)return toast("Judul wajib diisi");if(x.u&&!toLink(x.u))return toast("Tautan/nomor tidak dikenali: "+x.t)}if(await cmsSave([["contacts",v]]))admC()}};
+
+/* 📤 Pengumpulan — narahubung LO yang tampil di kotak "Buka kunci pengumpulan" */
+CMSE.kl=h=>{
+  const br=(CT.branches||[]).filter(b=>b&&b.id),items=Array.isArray(CT.kumpulLO)?CT.kumpulLO:[];
+  const opts=[["","Semua cabang"],...br.map(b=>[b.id,b.name||b.id])];
+  items.forEach(x=>{if(x&&x.b&&!opts.some(o=>o[0]===x.b))opts.push([x.b,x.b+" (cabang sudah dihapus)"])});
+  const bn=id=>{const o=opts.find(o=>o[0]===(id||""));return o?o[1]:"Semua cabang"};
+  h.innerHTML=`<h4>Pengumpulan — Narahubung LO</h4><p class="cms-note">Daftar ini tampil di kotak <b>Buka kunci pengumpulan</b> (bagian <b>Penjelasan · Status sekarang · Keterangan · Narahubung LO terkait</b>) saat status tim <b>Improvement</b>, <b>Rejected</b>, atau belum diverifikasi. Pilih <b>Cabang lomba terkait</b> agar hanya tim cabang itu yang melihat LO tersebut; pilih <b>Semua cabang</b> bila berlaku untuk semua. Kolom tautan boleh berisi URL, <b>nomor WhatsApp</b> (08… / 62…), atau <b>@akun Instagram</b>. <b>Keterangan</b> perbaikan/penolakan tetap diisi di tab <b>✅ Konfirmasi Pendaftar</b>.</p><div id="kll"></div>${cmsBar("Tambah narahubung LO")}`;
+  const L=cfList($("#kll",h),{items,title:x=>(x.ic||"💬")+" "+(x.t||"")+" — "+bn(x.b),empty:"Belum ada narahubung LO.",
+    fields:[{k:"b",l:"Cabang lomba terkait",t:"sel",o:opts},{k:"ic",l:"Ikon (emoji)",t:"text"},{k:"t",l:"Nama LO",t:"text",ph:"mis. Kak Rani (LO LCC)"},{k:"s",l:"Keterangan yang tampil",t:"text",ph:"mis. WhatsApp · 0812…"},{k:"u",l:"Tautan / nomor / @akun",t:"text"}],
+    blank:{b:"",ic:"💬",t:"LO baru",s:"",u:""}});
+  $("#cadd").onclick=L.add;$("#csave").onclick=async()=>{const v=L.get();for(const x of v){if(!x.t)return toast("Nama LO wajib diisi");if(x.u&&!toLink(x.u))return toast("Tautan/nomor tidak dikenali: "+x.t)}if(await cmsSave([["kumpulLO",v]]))admC()}};
 
 /* 📚 Materi */
 CMSE.mt=h=>{h.innerHTML=`<h4>Materi pendukung</h4><p class="cms-note">Semua kartu langsung tampil di halaman Pengumpulan dengan animasi "dibagikan" — peserta tidak perlu mencari satu per satu.</p><div id="mtl"></div>${cmsBar("Tambah materi")}`;

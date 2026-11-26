@@ -1,6 +1,6 @@
 /**
  * BACKEND DASHBOARD KONFIRMASI PENDAFTAR — PRPN x ENCHANTAX 2026
- * VERSION 8
+ * VERSION 9
  *
  * Login panitia: Google Identity Token + password dashboard pribadi.
  * Sesi admin disimpan di CacheService selama 6 jam.
@@ -36,7 +36,7 @@ const CONF_HEADERS = [
 const LOG_SHEET = 'Riwayat Konfirmasi';
 const STATUSES = ['', 'Verified', 'Improvement', 'Rejected'];
 const MIN_NOTE = 10;
-const VERSION = 8;
+const VERSION = 9;
 
 const CONTENT_SHEET = 'WebsiteContent';
 const CONTENT_HEAD = ['key', 'part', 'data', 'updated'];
@@ -528,6 +528,7 @@ function check_(email, tim) {
 
   const ss = SpreadsheetApp.openById(SPREADSHEET_ID);
   let found = false;
+  let info = null; // detail baris terakhir yang cocok tetapi belum Verified
 
   for (let a = 0; a < TABS.length; a++) {
     const t = TABS[a];
@@ -554,6 +555,7 @@ function check_(email, tim) {
     if (iE < 0 || iT < 0) continue;
 
     const iS = m.idx['Status Konfirmasi'];
+    const iK = m.idx['Keterangan Konfirmasi'];
     const vals = sh.getRange(
       2, 1, sh.getLastRow() - 1, m.head.length
     ).getDisplayValues();
@@ -575,11 +577,28 @@ function check_(email, tim) {
             kode: t.kode
           };
         }
+
+        // Simpan status & keterangan panitia agar bisa ditampilkan ke peserta.
+        info = {
+          tim: r[iT],
+          cabang: t.label,
+          kode: t.kode,
+          status: String(r[iS] || '').trim() || 'Registered',
+          keterangan: String(r[iK] || '').trim()
+        };
       }
     }
   }
 
-  return { ok: true, v: VERSION, found: found, verified: false };
+  const res = { ok: true, v: VERSION, found: found, verified: false };
+  if (info) {
+    res.tim = info.tim;
+    res.cabang = info.cabang;
+    res.kode = info.kode;
+    res.status = info.status;
+    res.keterangan = info.keterangan;
+  }
+  return res;
 }
 
 /* ============================================================

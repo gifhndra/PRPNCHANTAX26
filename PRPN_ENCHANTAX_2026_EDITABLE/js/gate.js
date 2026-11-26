@@ -26,6 +26,37 @@ function gApply(){
     b.hidden=true;x.hidden=false;document.getElementById("ge").readOnly=document.getElementById("gt").readOnly=true}
   else{b.hidden=false;x.hidden=true;document.getElementById("ge").readOnly=document.getElementById("gt").readOnly=false}}
 
+/* ---------- detail status (Improvement / Rejected / menunggu) ---------- */
+const gH=s=>esc(s).replace(/\n/g,"<br>");
+const G_ST={
+  improvement:{c:"gs-imp",l:"Improvement (perlu perbaikan)",d:"Data pendaftaran timmu sudah kami terima, tetapi masih ada bagian yang perlu diperbaiki sebelum dapat diverifikasi. Baca keterangan panitia di bawah, lakukan perbaikan sesuai arahan, lalu hubungi narahubung LO bila masih ada yang kurang jelas. Setelah berstatus Verified, pengumpulan karya akan terbuka untuk timmu."},
+  rejected:{c:"gs-rej",l:"Rejected (ditolak)",d:"Pendaftaran timmu belum dapat diterima oleh panitia. Baca alasan dari panitia di bawah. Jika merasa ada kekeliruan atau ingin bertanya lebih lanjut, silakan hubungi narahubung LO terkait."},
+  registered:{c:"gs-reg",l:"Registered (menunggu verifikasi)",d:"Pendaftaran timmu sudah masuk, tetapi belum diverifikasi oleh panitia. Mohon tunggu konfirmasi dari panitia. Bila sudah cukup lama, silakan hubungi narahubung LO terkait."}
+};
+/* narahubung LO terkait cabang tim; daftar diatur panitia di Dashboard > Konten Web > Pengumpulan */
+function gLO(v){
+  try{
+    const all=(Array.isArray(CT.kumpulLO)?CT.kumpulLO:[]).filter(x=>x&&x.t);
+    if(!all.length)return[];
+    const ids=(CT.branches||[]).filter(b=>b&&b.on!==false&&gMatch({dataset:{bn:b.name||"",bid:b.id||""}},v)).map(b=>b.id);
+    return all.filter(x=>!x.b||!ids.length||ids.includes(x.b))
+  }catch(e){return[]}}
+function gLOHtml(v){
+  const L=gLO(v);
+  if(!L.length)return"<p>Narahubung LO belum diisi panitia. Silakan cek bagian Narahubung di halaman Portal.</p>";
+  return`<div class="lo">${L.map(x=>{
+    const u=typeof toLink==="function"?toLink(x.u):"",inner=`<span class="lo-ic">${esc(x.ic||"💬")}</span><span class="lo-tx"><b>${esc(x.t)}</b>${x.s?`<small>${esc(x.s)}</small>`:""}</span>`;
+    return u?`<a class="lo-i" href="${esc(u)}" target="_blank" rel="noopener noreferrer">${inner}</a>`:`<div class="lo-i">${inner}</div>`}).join("")}</div>`}
+function gDetail(j){
+  const key=String(j.status||"").toLowerCase(),st=G_ST[key];
+  /* backend lama (belum versi 9) tidak mengirim status: tampilkan pesan umum + narahubung */
+  if(!st)return`<div class="bad">Tim kamu ditemukan, tetapi belum berstatus <b>Verified</b>. Tunggu konfirmasi panitia atau cek informasi perbaikan dari panitia.</div><div class="gd"><h4>☎️ Narahubung LO terkait</h4>${gLOHtml(j)}</div>`;
+  const note=String(j.keterangan||"").trim();
+  return`<div class="gd"><h4>📋 Penjelasan</h4><p>${esc(st.d)}</p>
+<h4>📌 Status sekarang</h4><p><span class="gs ${st.c}">${esc(st.l)}</span>${j.tim?` <small>· ${esc(j.tim)}${j.cabang?" ("+esc(j.cabang)+")":""}</small>`:""}</p>
+<h4>📝 Keterangan dari panitia</h4><p>${note?gH(note):"<i>Belum ada keterangan dari panitia.</i>"}</p>
+<h4>☎️ Narahubung LO terkait</h4>${gLOHtml(j)}</div>`}
+
 async function gCheck(email,tim,silent){
   const b=document.getElementById("gb"),m=document.getElementById("gm");
   if(!silent){b.disabled=true;b.textContent="Memeriksa…";m.innerHTML=""}
@@ -36,7 +67,7 @@ async function gCheck(email,tim,silent){
     if(!j.ok)throw Error(j.error||"Gagal memeriksa");
     if(j.verified){GATE.ok={email,tim:j.tim||tim,cabang:j.cabang||"",kode:j.kode||""};try{localStorage.setItem(GATE.KEY,JSON.stringify({email,tim}))}catch(e){}if(!silent&&typeof confetti==="function")confetti(60)}
     else{GATE.ok=null;try{localStorage.removeItem(GATE.KEY)}catch(e){}
-      if(!silent)m.innerHTML=`<div class="bad">${j.found?"Tim kamu ditemukan, tetapi belum berstatus <b>Verified</b>. Tunggu konfirmasi panitia atau cek informasi perbaikan dari panitia.":"Data tidak ditemukan. Pastikan email ketua dan nama tim persis sama dengan yang diisi di formulir pendaftaran."}</div>`}
+      if(!silent)m.innerHTML=j.found?gDetail(j):`<div class="bad">Data tidak ditemukan. Pastikan email ketua dan nama tim persis sama dengan yang diisi di formulir pendaftaran.</div>`}
   }catch(e){GATE.ok=null;if(!silent)m.innerHTML=`<div class="bad">${esc(e.message||String(e))}</div>`}
   if(!silent){b.disabled=false;b.textContent="🔓 Cek & buka kunci"}
   gApply()}
