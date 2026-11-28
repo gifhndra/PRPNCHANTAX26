@@ -1,49 +1,53 @@
 /**
  * ==============================================================================
  * HERO STAGE CONTROLLER — PRPN x ENCHANTAX 2026 (INFINITAX)
- * TAHAP 1: State Machine 5 Adegan Hero & Maskot Storytelling
+ * TAHAP 1B: State Machine 5 Adegan Hero & Maskot Storytelling
  * ==============================================================================
  */
 
 (function () {
   'use strict';
 
+  // Konstanta Nama Maskot Resmi (ganti nilai di sini bila nama resmi sudah ditetapkan)
+  const MASKOT_PUTRA_NAMA = '[NAMA]';
+  const MASKOT_PUTRI_NAMA = '[NAMA]';
+
   // State
   let currentScene = 1;
   const totalScenes = 5;
   let storyStep = 0; // 0 to 4 (5 dialogs)
-  let posterPhase = 0; // 0: two posters, 1: slide 1, 2: slide 2, 3: slide 3
+  let posterPhase = 0; // 0: two posters, 1..3: slide 1..3
   const totalSlides = 3;
 
   // Maskot dialogues (5 official story prompts)
   const storyDialogues = [
     {
       speaker: 'Maskot Putra',
-      name: '[TULIS DI SINI]',
-      text: 'Hai, aku [TULIS DI SINI]!',
+      name: MASKOT_PUTRA_NAMA,
+      text: `Hai, aku ${MASKOT_PUTRA_NAMA}!`,
       activeMascot: 'boy'
     },
     {
       speaker: 'Maskot Putri',
-      name: '[TULIS DI SINI]',
+      name: MASKOT_PUTRI_NAMA,
       text: 'Kamu tau nggak, Infinitax itu apa?',
       activeMascot: 'girl'
     },
     {
       speaker: 'Maskot Putra',
-      name: '[TULIS DI SINI]',
+      name: MASKOT_PUTRA_NAMA,
       text: 'Infinitax itu gabungan 2 lomba besar, lohh!',
       activeMascot: 'boy'
     },
     {
       speaker: 'Maskot Putri',
-      name: '[TULIS DI SINI]',
+      name: MASKOT_PUTRI_NAMA,
       text: 'Inget kan PRPN sama Enchantax?',
       activeMascot: 'girl'
     },
     {
       speaker: 'Maskot Putra',
-      name: '[TULIS DI SINI]',
+      name: MASKOT_PUTRA_NAMA,
       text: 'Yaudah, aku bantu ingetin deh.',
       activeMascot: 'boy'
     }
@@ -57,8 +61,16 @@
   const legacySkip = document.getElementById('ldk');
   const enterBtn = document.getElementById('btn-enter-kingdom');
   const lgBtn = document.getElementById('lg');
+  const dklBtn = document.getElementById('dkl');
 
   if (!hero) return;
+
+  // Simpan dan nonaktifkan onclick lama pada #lg agar klik logo di Adegan 1
+  // mengalir mulus ke Adegan 2 tanpa memicu loader bintang lama (#ld)
+  const legacyLgOnClick = lgBtn ? lgBtn.onclick : null;
+  if (lgBtn) {
+    lgBtn.onclick = null;
+  }
 
   // Update dots indicator
   function updateDots(idx) {
@@ -82,10 +94,22 @@
     });
   }
 
+  // Subtle parallax update on Scene 2
+  function applyForestParallax(nx, ny) {
+    const layers = document.querySelectorAll('.forest-layer[data-depth]');
+    layers.forEach(layer => {
+      const depth = parseFloat(layer.getAttribute('data-depth')) || 0.1;
+      const x = nx * depth * 32;
+      const y = ny * depth * 18;
+      layer.style.transform = `translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, 0)`;
+    });
+  }
+
   // Scene Switcher
   function goToScene(target) {
     if (target < 1 || target > totalScenes) return;
     currentScene = target;
+    hero.setAttribute('data-active-scene', String(currentScene));
 
     scenes.forEach(s => {
       const sNum = parseInt(s.dataset.scene, 10);
@@ -95,8 +119,9 @@
     updateDots(currentScene);
     preloadScene(currentScene + 1);
 
-    // Initializations per scene
-    if (currentScene === 3) {
+    if (currentScene === 2) {
+      applyForestParallax(0, 0);
+    } else if (currentScene === 3) {
       storyStep = 0;
       renderStoryStep(storyStep);
     } else if (currentScene === 4) {
@@ -113,12 +138,16 @@
     const numEl = document.getElementById('storyBubbleNum');
     const textEl = document.getElementById('storyBubbleText');
     const speakerEl = document.getElementById('storySpeakerName');
+    const storyCard = document.getElementById('storyCard');
+    const storyInner = document.querySelector('.stage-inner-story');
     const boyMascot = document.getElementById('storyBoyMascot');
     const girlMascot = document.getElementById('storyGirlMascot');
 
     if (numEl) numEl.textContent = `Bagian ${stepIdx + 1} dari 5`;
     if (textEl) textEl.textContent = `"${data.text}"`;
     if (speakerEl) speakerEl.textContent = `— ${data.speaker}`;
+    if (storyCard) storyCard.setAttribute('data-speaker', data.activeMascot);
+    if (storyInner) storyInner.setAttribute('data-speaker', data.activeMascot);
 
     if (boyMascot) boyMascot.classList.toggle('active', data.activeMascot === 'boy');
     if (girlMascot) girlMascot.classList.toggle('active', data.activeMascot === 'girl');
@@ -188,14 +217,13 @@
     }
   }
 
-  // Enter portal logic (Existing handler)
+  // Enter portal logic (memakai fungsi BEKU openSite dari app.js)
   function enterPortal() {
     if (typeof window.openSite === 'function') {
       window.openSite();
-    } else if (lgBtn && typeof lgBtn.onclick === 'function') {
-      lgBtn.onclick();
+    } else if (typeof legacyLgOnClick === 'function') {
+      legacyLgOnClick();
     } else {
-      // Fallback
       document.body.classList.add('app-on', 'in-app');
       hero.style.display = 'none';
       const dock = document.getElementById('dock');
@@ -207,7 +235,6 @@
 
   // Click & tap listeners
   hero.addEventListener('click', function (e) {
-    // If clicked on skip or enter button, don't trigger general advance
     if (e.target.closest('#hero-skip') || e.target.closest('#ldk') || e.target.closest('#btn-enter-kingdom')) {
       return;
     }
@@ -242,6 +269,13 @@
     });
   }
 
+  // Ketika kembali ke home via logo dock (#dkl), reset adegan ke Pembuka (1)
+  if (dklBtn) {
+    dklBtn.addEventListener('click', function () {
+      goToScene(1);
+    });
+  }
+
   // Keyboard accessibility
   window.addEventListener('keydown', function (e) {
     if (hero.style.display === 'none' || document.body.classList.contains('in-app')) {
@@ -256,23 +290,25 @@
     }
   });
 
-  // Parallax handling for Scene 2 (max 4 layers, transform only)
+  // Parallax handling for Scene 2 (mengikuti pointer & wheel, maksimal 4 lapis SVG)
   hero.addEventListener('pointermove', function (e) {
     if (currentScene !== 2) return;
     const px = (e.clientX / window.innerWidth) - 0.5;
     const py = (e.clientY / window.innerHeight) - 0.5;
-
-    const layers = document.querySelectorAll('.forest-layer[data-depth]');
-    layers.forEach(layer => {
-      const depth = parseFloat(layer.getAttribute('data-depth')) || 0.1;
-      const x = px * depth * 35;
-      const y = py * depth * 20;
-      layer.style.transform = `translate3d(${x}px, ${y}px, 0)`;
-    });
+    applyForestParallax(px, py);
   }, { passive: true });
 
-  // Expose API for testing / verification
+  let wheelOffset = 0;
+  hero.addEventListener('wheel', function (e) {
+    if (currentScene !== 2) return;
+    wheelOffset = Math.max(-0.5, Math.min(0.5, wheelOffset + e.deltaY * 0.001));
+    applyForestParallax(0, wheelOffset);
+  }, { passive: true });
+
+  // Expose API
   window.HeroStage = {
+    MASKOT_PUTRA_NAMA,
+    MASKOT_PUTRI_NAMA,
     goToScene,
     getCurrentScene: () => currentScene,
     getStoryStep: () => storyStep,
