@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+  <!-- Portal / Kerajaan -->
+  <symbol id="icon-portal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 21h18"/>
+    <path d="M5 21V9a7 7 0 0 1 14 0v12"/>
+    <path d="M9 21v-7a3 3 0 0 1 6 0v7"/>
+    <path d="M12 3v3"/>
+    <circle cx="12" cy="7" r="1" fill="currentColor"/>
+    <path d="M2 21h20"/>
+  </symbol>
+
+  <!-- Pendaftaran / Naskah Titah -->
+  <symbol id="icon-daftar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+    <polyline points="14 2 14 8 20 8"/>
+    <path d="M9 13h6"/>
+    <path d="M9 17h4"/>
+    <path d="M18 13l3-3-2-2-3 3v2h2z" fill="currentColor" fill-opacity="0.2"/>
+  </symbol>
+
+  <!-- Pengumpulan / Berkas Peti Segel -->
+  <symbol id="icon-kumpul" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+    <polyline points="22,6 12,13 2,6"/>
+    <path d="M12 17v-6"/>
+    <path d="M9.5 13.5L12 11l2.5 2.5"/>
+  </symbol>
+
+  <!-- Pengumuman / Mahkota Juara -->
+  <symbol id="icon-umum" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4 18h16l1-12-5 4-4-7-4 7-5-4 1 12z"/>
+    <path d="M4 21h16"/>
+    <circle cx="12" cy="15" r="1.5" fill="currentColor"/>
+    <circle cx="7" cy="16" r="1" fill="currentColor"/>
+    <circle cx="17" cy="16" r="1" fill="currentColor"/>
+  </symbol>
+
+  <!-- Lewati Intro / Skip -->
+  <symbol id="icon-skip" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M5 4l8 8-8 8"/>
+    <path d="M13 4l8 8-8 8"/>
+  </symbol>
+
+  <!-- Masuk ke Kerajaan / Royal Seal -->
+  <symbol id="icon-enter" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="9"/>
+    <polygon points="12 6 13.8 10.2 18 12 13.8 13.8 12 18 10.2 13.8 6 12 10.2 10.2" fill="currentColor" fill-opacity="0.3"/>
+  </symbol>
+
+  <!-- Navigasi Geser -->
+  <symbol id="icon-prev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="15 18 9 12 15 6"/>
+  </symbol>
+  <symbol id="icon-next" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="9 18 15 12 9 6"/>
+  </symbol>
+
+  <!-- Gagak Siluet Kerajaan -->
+  <symbol id="icon-crow" viewBox="0 0 64 64" fill="currentColor">
+    <path d="M12 28 C16 22 24 16 34 16 C38 16 42 18 46 22 C52 20 58 22 62 26 C60 28 56 29 53 29 C52 33 48 37 42 39 C36 41 30 43 24 47 C18 51 14 56 10 60 C11 54 13 48 16 43 C12 43 8 41 6 38 C4 35 6 32 10 30 Z M46 24 C47 24 48 23 48 22 C48 21 47 20 46 20 C45 20 44 21 44 22 C44 23 45 24 46 24 Z"/>
+  </symbol>
+</svg>

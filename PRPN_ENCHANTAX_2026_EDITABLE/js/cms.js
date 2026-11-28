@@ -64,9 +64,14 @@ function buildKit(){const H=$("#kcs");if(!H)return;const L=kitList(CT.gen||{}).f
       `<div class="kcb" id="kcb${i}"><div class="kci">${x.d?`<p>${nl2br(x.d)}</p>`:""}${u?`<a class="btn" href="${esc(u)}" target="_blank" rel="noopener noreferrer">${esc(x.b||"Buka")}</a>`:""}</div></div></div>`}).join("")||'<div class="empty">Belum ada kartu akses cepat.</div>';
   $$(".kc",H).forEach(c=>{c.onclick=e=>{if(e.target.closest("a"))return;const o=c.classList.toggle("open");$(".kch",c).setAttribute("aria-expanded",o)}})}
 
-/* ---------- Ikon menu bawah (dock): emoji bawaan, bisa diganti logo dari dashboard ---------- */
-const DOCK=[["portal","Portal","🏛️"],["daftar","Pendaftaran","📝"],["kumpul","Pengumpulan","📤"],["umum","Pengumuman","🏆"]];
-function applyDock(){const d=(CT.gen||{}).dock||{};DOCK.forEach(([k,,e])=>{const b=$(`.db[data-p="${k}"] span`);if(b)b.innerHTML=ico(d[k],e)})}
+/* ---------- Ikon menu bawah (dock): ikon SVG motif logo, bisa diganti logo dari dashboard ---------- */
+const DOCK=[
+  ["portal","Portal",`<svg viewBox="0 0 24 24"><use href="assets/icons/icons.svg#icon-portal"></use></svg>`],
+  ["daftar","Pendaftaran",`<svg viewBox="0 0 24 24"><use href="assets/icons/icons.svg#icon-daftar"></use></svg>`],
+  ["kumpul","Pengumpulan",`<svg viewBox="0 0 24 24"><use href="assets/icons/icons.svg#icon-kumpul"></use></svg>`],
+  ["umum","Pengumuman",`<svg viewBox="0 0 24 24"><use href="assets/icons/icons.svg#icon-umum"></use></svg>`]
+];
+function applyDock(){const d=(CT.gen||{}).dock||{};DOCK.forEach(([k,,e])=>{const b=$(`.db[data-p="${k}"] span`);if(b)b.innerHTML=d[k]?ico(d[k]):e})}
 
 /* ---------- 2. Cabang lomba (kartu pendaftaran + pengumpulan) ---------- */
 function pickCat(c,fromUser){const r=$("#reg");$$(".cat").forEach(x=>{x.classList.remove("sel");$(".pick",x).textContent="Ketuk untuk memilih"});

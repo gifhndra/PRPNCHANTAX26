@@ -1,0 +1,137 @@
+/**
+ * ==============================================================================
+ * DESIGN TOKENS — PRPN x ENCHANTAX 2026 (INFINITAX)
+ * TAHAP 0: FONDASI SISTEM DESAIN
+ * ------------------------------------------------------------------------------
+ * Arah Visual: Undangan Kerajaan Vintage (Vintage Royal Invitation).
+ * Palet Warna: Diekstrak langsung dari logo resmi (Marun, Merah, Emas Gelap, Emas Terang).
+ * Latar: Gelap bernuansa Marun-Hitam dan Krem Kertas Bertekstur.
+ * Bebas dari hitam murni (#000000) dan putih murni (#ffffff).
+ * ==============================================================================
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Hanken+Grotesk:wght@400;500;600;700&display=swap');
+
+:root {
+  /* ----------------------------------------------------------------------------
+   * 1. WARNA RESMI LOGO (Extracted via Pixel Script)
+   * ---------------------------------------------------------------------------- */
+  --color-maroon: #731215;      /* Marun dalam (rgb: 115, 18, 21 / hsl: 358, 73%, 26%) */
+  --color-red: #a71823;         /* Merah kerajaan (rgb: 167, 24, 35 / hsl: 355, 75%, 37%) */
+  --color-gold-dark: #be6f24;   /* Emas gelap / perunggu (rgb: 190, 111, 36 / hsl: 29, 68%, 44%) */
+  --color-gold-light: #e29a3f;  /* Emas terang / champagne (rgb: 226, 154, 63 / hsl: 33, 74%, 57%) */
+
+  /* ----------------------------------------------------------------------------
+   * 2. LATAR GELAP MARUN-HITAM (Subtle Deep Maroon Night - Bukan Hitam Murni)
+   * ---------------------------------------------------------------------------- */
+  --color-bg-base: #14080a;              /* Latar kanvas utama */
+  --color-bg-surface: #1e0d10;           /* Permukaan kartu / kontainer */
+  --color-bg-elevated: #281216;          /* Kartu mengambang / header */
+  --color-bg-card: #1c0c0f;              /* Kartu section */
+  --color-bg-overlay: rgba(20, 8, 10, 0.92); /* Latar overlay modal dialog */
+
+  /* ----------------------------------------------------------------------------
+   * 3. KREM KERTAS KERAJAAN (Vintage Royal Paper - Bukan Putih Murni)
+   * ---------------------------------------------------------------------------- */
+  --color-paper-cream: #f7f1e6;          /* Permukaan kertas sertifikat / naskah */
+  --color-paper-soft: #efe6d5;           /* Kertas hangat */
+  --color-paper-muted: #dfd2bc;          /* Kertas berbayang */
+  --color-paper-gold-rim: #c8a572;        /* Pinggiran kertas bersepuh emas */
+
+  /* ----------------------------------------------------------------------------
+   * 4. TIPOGRAFI WARNA (Teks Foreground)
+   * ---------------------------------------------------------------------------- */
+  /* Di atas latar gelap: */
+  --color-text-primary: #f5eedf;         /* Krem gading lembut untuk judul & teks penting */
+  --color-text-secondary: #d1c1af;       /* Krem redup untuk teks tubuh bacaan */
+  --color-text-muted: #9e8a7d;           /* Keterangan sekunder & metadata */
+  --color-text-gold: #e29a3f;            /* Teks aksen emas */
+  
+  /* Di atas latar kertas krem terang: */
+  --color-text-dark: #1f1013;            /* Marun-hitam untuk teks pada kertas */
+  --color-text-dark-muted: #664b50;      /* Teks sekunder pada kertas */
+
+  /* ----------------------------------------------------------------------------
+   * 5. AKSEN BINGKAI & GARIS (Royal Gold Foil Lines)
+   * ---------------------------------------------------------------------------- */
+  --color-border-gold: rgba(226, 154, 63, 0.36);
+  --color-border-gold-subtle: rgba(226, 154, 63, 0.16);
+  --color-border-gold-bright: #e29a3f;
+  --color-border-maroon: rgba(167, 24, 35, 0.35);
+
+  /* ----------------------------------------------------------------------------
+   * 6. KELUARGA FONT (Typography Families)
+   * ---------------------------------------------------------------------------- */
+  --font-title: 'Cormorant Garamond', Georgia, serif;
+  --font-body: 'Hanken Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-ui: 'Hanken Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  /* ----------------------------------------------------------------------------
+   * 7. SKALA TIPOGRAFI FLUID (Responsif HP 390px - Desktop 1440px)
+   * ---------------------------------------------------------------------------- */
+  --text-xs: clamp(0.75rem, 0.72rem + 0.15vw, 0.8125rem);     /* 12px -> 13px */
+  --text-sm: clamp(0.8438rem, 0.81rem + 0.18vw, 0.9375rem);  /* 13.5px -> 15px */
+  --text-base: clamp(0.9375rem, 0.9rem + 0.25vw, 1.0625rem);  /* 15px -> 17px */
+  --text-lg: clamp(1.0625rem, 1.01rem + 0.35vw, 1.25rem);    /* 17px -> 20px */
+  --text-xl: clamp(1.25rem, 1.18rem + 0.5vw, 1.5rem);        /* 20px -> 24px */
+  --text-2xl: clamp(1.5rem, 1.35rem + 0.8vw, 2rem);          /* 24px -> 32px */
+  --text-3xl: clamp(1.875rem, 1.65rem + 1.2vw, 2.75rem);     /* 30px -> 44px */
+  --text-4xl: clamp(2.25rem, 1.95rem + 1.8vw, 3.5rem);       /* 36px -> 56px */
+  --text-5xl: clamp(2.75rem, 2.3rem + 2.5vw, 4.5rem);        /* 44px -> 72px */
+
+  --leading-tight: 1.15;
+  --leading-snug: 1.3;
+  --leading-normal: 1.6;
+  --leading-relaxed: 1.8;
+
+  --tracking-tight: -0.02em;
+  --tracking-normal: 0;
+  --tracking-wide: 0.04em;
+  --tracking-royal: 0.12em; /* Digunakan pada label tag kapital vintage */
+
+  /* ----------------------------------------------------------------------------
+   * 8. SKALA JARAK (Spacing Scale)
+   * ---------------------------------------------------------------------------- */
+  --space-3xs: 2px;
+  --space-2xs: 4px;
+  --space-xs: 8px;
+  --space-sm: 12px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-2xl: 48px;
+  --space-3xl: 64px;
+  --space-4xl: 96px;
+
+  /* ----------------------------------------------------------------------------
+   * 9. RADIUS SUDUT (Elegan Vintage: Sudut Tegas & Halus, Bukan Sudut Membal)
+   * ---------------------------------------------------------------------------- */
+  --radius-none: 0px;
+  --radius-xs: 2px;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 10px;
+  --radius-seal: 50%; /* Untuk segel lilin / wax seal bulat */
+
+  /* ----------------------------------------------------------------------------
+   * 10. BAYANGAN (Soft Royal Shadows, Pendaran Halus Emas)
+   * ---------------------------------------------------------------------------- */
+  --shadow-sm: 0 1px 3px rgba(20, 8, 10, 0.4);
+  --shadow-card: 0 4px 20px rgba(18, 7, 9, 0.5), 0 0 0 1px rgba(226, 154, 63, 0.14);
+  --shadow-floating: 0 12px 36px rgba(18, 7, 9, 0.7), 0 0 0 1px rgba(226, 154, 63, 0.22);
+  --shadow-gold-sheen: 0 0 24px rgba(226, 154, 63, 0.16);
+  --shadow-emboss: inset 0 1px 0 rgba(226, 154, 63, 0.25), inset 0 -1px 0 rgba(0, 0, 0, 0.4);
+
+  /* ----------------------------------------------------------------------------
+   * 11. ANIMASI & TRANSISI (Keanggunan Gerakan Kerajaan)
+   * ---------------------------------------------------------------------------- */
+  --duration-instant: 100ms;
+  --duration-fast: 200ms;
+  --duration-normal: 350ms;
+  --duration-slow: 550ms;
+  --duration-ceremonial: 850ms;
+
+  --ease-royal: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-page: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-fade: cubic-bezier(0.16, 1, 0.3, 1);
+}

@@ -1,0 +1,217 @@
+{
+  "canvas": {
+    "width": 1080,
+    "height": 1080
+  },
+  "units": "px",
+  "exportedFormat": "webp",
+  "webpQuality": 85,
+  "pieces": {
+    "kelopak-kanan": {
+      "file": "kelopak-kanan.webp",
+      "originalFile": "kelopak kanan.png",
+      "originalCanvas": {
+        "width": 1080,
+        "height": 1080
+      },
+      "position": {
+        "x": 296,
+        "y": 180,
+        "width": 546,
+        "height": 790,
+        "right": 841,
+        "bottom": 969
+      },
+      "relativePosition": {
+        "leftPct": 27.4074,
+        "topPct": 16.6667,
+        "widthPct": 50.5556,
+        "heightPct": 73.1481
+      }
+    },
+    "kelopak-kiri": {
+      "file": "kelopak-kiri.webp",
+      "originalFile": "kelopak kiri.png",
+      "originalCanvas": {
+        "width": 1080,
+        "height": 1080
+      },
+      "position": {
+        "x": 49,
+        "y": 370,
+        "width": 489,
+        "height": 545,
+        "right": 537,
+        "bottom": 914
+      },
+      "relativePosition": {
+        "leftPct": 4.537,
+        "topPct": 34.2593,
+        "widthPct": 45.2778,
+        "heightPct": 50.463
+      }
+    },
+    "kelopak-tengah": {
+      "file": "kelopak-tengah.webp",
+      "originalFile": "kelopak tengah.png",
+      "originalCanvas": {
+        "width": 1080,
+        "height": 1080
+      },
+      "position": {
+        "x": 381,
+        "y": 160,
+        "width": 320,
+        "height": 606,
+        "right": 700,
+        "bottom": 765
+      },
+      "relativePosition": {
+        "leftPct": 35.2778,
+        "topPct": 14.8148,
+        "widthPct": 29.6296,
+        "heightPct": 56.1111
+      }
+    },
+    "bawah": {
+      "file": "bawah.webp",
+      "originalFile": "bawah.png",
+      "originalCanvas": {
+        "width": 1080,
+        "height": 1080
+      },
+      "position": {
+        "x": 58,
+        "y": 463,
+        "width": 964,
+        "height": 228,
+        "right": 1021,
+        "bottom": 690
+      },
+      "relativePosition": {
+        "leftPct": 5.3704,
+        "topPct": 42.8704,
+        "widthPct": 89.2593,
+        "heightPct": 21.1111
+      }
+    },
+    "panah": {
+      "file": "panah.webp",
+      "originalFile": "panah.png",
+      "originalCanvas": {
+        "width": 1080,
+        "height": 1080
+      },
+      "position": {
+        "x": 48,
+        "y": 242,
+        "width": 939,
+        "height": 509,
+        "right": 986,
+        "bottom": 750
+      },
+      "relativePosition": {
+        "leftPct": 4.4444,
+        "topPct": 22.4074,
+        "widthPct": 86.9444,
+        "heightPct": 47.1296
+      }
+    },
+    "pondasi": {
+      "file": "pondasi.webp",
+      "originalFile": "pondasi.png",
+      "originalCanvas": {
+        "width": 1080,
+        "height": 1080
+      },
+      "position": {
+        "x": 149,
+        "y": 413,
+        "width": 783,
+        "height": 196,
+        "right": 931,
+        "bottom": 608
+      },
+      "relativePosition": {
+        "leftPct": 13.7963,
+        "topPct": 38.2407,
+        "widthPct": 72.5,
+        "heightPct": 18.1481
+      }
+    },
+    "logo-utuh": {
+      "file": "logo-utuh.webp",
+      "originalCanvas": {
+        "width": 1080,
+        "height": 1080
+      },
+      "position": {
+        "x": 48,
+        "y": 160,
+        "width": 974,
+        "height": 810,
+        "right": 1021,
+        "bottom": 969
+      },
+      "canvasFile": "logo-utuh-canvas.webp"
+    }
+  },
+  "dominantColors": {
+    "marun": {
+      "hex": "#731215",
+      "rgb": "rgb(115, 18, 21)",
+      "hsl": "hsl(358, 73%, 26%)",
+      "pixelCount": 157383
+    },
+    "merah": {
+      "hex": "#a71823",
+      "rgb": "rgb(167, 24, 35)",
+      "hsl": "hsl(355, 75%, 37%)",
+      "pixelCount": 108579
+    },
+    "emas_gelap": {
+      "hex": "#be6f24",
+      "rgb": "rgb(190, 111, 36)",
+      "hsl": "hsl(29, 68%, 44%)",
+      "pixelCount": 1121
+    },
+    "emas_terang": {
+      "hex": "#e29a3f",
+      "rgb": "rgb(226, 154, 63)",
+      "hsl": "hsl(33, 74%, 57%)",
+      "pixelCount": 115647
+    }
+  },
+  "haloReport": {
+    "kelopak-kanan": {
+      "whiteHalosCleaned": 147,
+      "strayNoiseCleaned": 2493,
+      "hasIssue": true
+    },
+    "kelopak-kiri": {
+      "whiteHalosCleaned": 79,
+      "strayNoiseCleaned": 1724,
+      "hasIssue": true
+    },
+    "kelopak-tengah": {
+      "whiteHalosCleaned": 0,
+      "strayNoiseCleaned": 1001,
+      "hasIssue": true
+    },
+    "bawah": {
+      "whiteHalosCleaned": 0,
+      "strayNoiseCleaned": 212,
+      "hasIssue": false
+    },
+    "panah": {
+      "whiteHalosCleaned": 154,
+      "strayNoiseCleaned": 2843,
+      "hasIssue": true
+    },
+    "pondasi": {
+      "whiteHalosCleaned": 0,
+      "strayNoiseCleaned": 1307,
+      "hasIssue": true
+    }
+  }
+}

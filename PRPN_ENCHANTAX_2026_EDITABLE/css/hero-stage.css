@@ -1,0 +1,1042 @@
+/**
+ * ==============================================================================
+ * HERO STAGE — PRPN x ENCHANTAX 2026 (INFINITAX)
+ * TAHAP 1: Halaman Pembuka (Hero) dan Intro Maskot Kerajaan
+ * ------------------------------------------------------------------------------
+ * Arah Visual: Undangan Kerajaan Vintage (Royal Vintage Fantasy)
+ * State Machine: 5 Adegan (Pembuka, Jalan Hutan, Maskot Bercerita, Dua Poster, Gulungan Undangan)
+ * ==============================================================================
+ */
+
+/* ----------------------------------------------------------------------------
+ * 1. KONTEN UTAMA HERO
+ * ---------------------------------------------------------------------------- */
+#hero#hero {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  min-height: 100svh;
+  height: 100vh;
+  width: 100vw;
+  padding: 0 !important;
+  margin: 0;
+  overflow: hidden;
+  background: var(--color-bg-base, #14080a) !important;
+  background: radial-gradient(circle at 50% 45%, #2a0c12 0%, #170709 55%, var(--color-bg-base, #14080a) 100%) !important;
+  color: var(--color-text-primary, #f5eedf);
+  font-family: var(--font-body, 'Hanken Grotesk', sans-serif);
+  transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+#hero#hero:before,
+#hero#hero:after {
+  display: none !important;
+}
+
+#hero.fade {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* Tekstur Kertas Halus */
+.hero-texture-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.28;
+  background-image: radial-gradient(#be6f24 0.6px, transparent 0.6px), radial-gradient(#731215 0.6px, transparent 0.6px);
+  background-size: 24px 24px;
+  background-position: 0 0, 12px 12px;
+}
+
+/* Bingkai Emas Tipis Sekeliling Layar */
+.hero-royal-frame {
+  position: absolute;
+  inset: 12px;
+  border: 1px solid var(--color-border-gold, rgba(226, 154, 63, 0.35));
+  pointer-events: none;
+  z-index: 50;
+  box-shadow: inset 0 0 30px rgba(20, 8, 10, 0.8);
+}
+.hero-royal-frame::before {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  border: 1px solid var(--color-border-gold-subtle, rgba(226, 154, 63, 0.15));
+}
+
+/* Sudut Ornamen Bingkai Emas */
+.frame-corner {
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  border-color: var(--color-gold-light, #e29a3f);
+  border-style: solid;
+}
+.frame-corner.tl { top: -2px; left: -2px; border-width: 2px 0 0 2px; }
+.frame-corner.tr { top: -2px; right: -2px; border-width: 2px 2px 0 0; }
+.frame-corner.bl { bottom: -2px; left: -2px; border-width: 0 0 2px 2px; }
+.frame-corner.br { bottom: -2px; right: -2px; border-width: 0 2px 2px 0; }
+
+/* Tirai Beludru Merah di Kedua Sisi */
+.royal-curtains {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 40;
+  overflow: hidden;
+}
+.curtain {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: clamp(65px, 13vw, 150px);
+  background: linear-gradient(to bottom, #540c11 0%, #36070a 60%, #1f0406 100%);
+  box-shadow: 0 0 24px rgba(10, 3, 4, 0.85);
+  border-bottom: 2px solid var(--color-gold-dark, #be6f24);
+}
+.curtain.left {
+  left: 0;
+  clip-path: polygon(0 0, 100% 0, 82% 12%, 96% 28%, 76% 48%, 92% 70%, 65% 100%, 0 100%);
+  border-right: 1px solid rgba(226, 154, 63, 0.3);
+}
+.curtain.right {
+  right: 0;
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 35% 100%, 8% 70%, 24% 48%, 4% 28%, 18% 12%);
+  border-left: 1px solid rgba(226, 154, 63, 0.3);
+}
+.curtain-swag {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: clamp(30px, 5vh, 50px);
+  background: radial-gradient(ellipse at 50% 0%, #681016 0%, #36070a 75%, transparent 100%);
+  border-bottom: 1px solid var(--color-border-gold-subtle, rgba(226, 154, 63, 0.25));
+}
+
+/* ----------------------------------------------------------------------------
+ * 2. KONTROL UMUM HERO (Skip & Indicator Dots)
+ * ---------------------------------------------------------------------------- */
+#hero #hero-skip.hero-skip-btn {
+  position: fixed !important;
+  top: 22px !important;
+  right: 26px !important;
+  z-index: 9999 !important;
+  display: inline-flex !important;
+  align-items: center;
+  gap: 8px;
+  background: rgba(30, 13, 16, 0.88);
+  border: 1px solid var(--color-border-gold, rgba(226, 154, 63, 0.36));
+  color: var(--color-gold-light, #e29a3f);
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-family: var(--font-body, sans-serif);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+  pointer-events: auto !important;
+}
+#hero #hero-skip.hero-skip-btn:hover,
+#hero #hero-skip.hero-skip-btn:focus-visible {
+  background: rgba(50, 20, 25, 0.95);
+  border-color: var(--color-gold-light, #e29a3f);
+  transform: translateY(-1px);
+}
+#hero #hero-skip.hero-skip-btn svg {
+  width: 16px;
+  height: 16px;
+  stroke: currentColor;
+}
+
+#hero .hero-progress-dots {
+  position: fixed !important;
+  bottom: 22px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  z-index: 9998 !important;
+  display: flex !important;
+  align-items: center;
+  gap: 10px;
+  pointer-events: none !important;
+}
+  transform: translateX(-50%);
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  pointer-events: none;
+}
+.hero-progress-dots .stage-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: rgba(226, 154, 63, 0.25);
+  transition: transform 0.3s ease, background 0.3s ease;
+}
+.hero-progress-dots .stage-dot.active {
+  background: var(--color-gold-light, #e29a3f);
+  transform: scale(1.4);
+  box-shadow: 0 0 8px rgba(226, 154, 63, 0.6);
+}
+
+.hero-tap-hint {
+  position: absolute;
+  bottom: 38px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 55;
+  color: var(--color-text-muted, #9e8a7d);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  opacity: 0.85;
+  animation: pulseHint 2.4s ease-in-out infinite;
+}
+@keyframes pulseHint {
+  0%, 100% { opacity: 0.5; transform: translate(-50%, 0); }
+  50% { opacity: 1; transform: translate(-50%, -3px); }
+}
+
+/* ----------------------------------------------------------------------------
+ * 3. SISTEM CONTAINER ADEGAN (SCENE STAGES)
+ * ---------------------------------------------------------------------------- */
+.stage-viewport {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.stage-scene {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transform: scale(0.98);
+  will-change: opacity, transform;
+}
+
+.stage-scene.active {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: scale(1);
+}
+
+/* ----------------------------------------------------------------------------
+ * 4. ADEGAN 1: PEMBUKA & PERAKITAN LOGO
+ * ---------------------------------------------------------------------------- */
+.scene-pembuka {
+  text-align: center;
+  padding: 40px 24px;
+  max-width: 900px;
+}
+
+#hero .hero-in {
+  position: relative;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 800px;
+}
+
+/* Assembled Brand Logo Container */
+.logo-assembly-wrap {
+  position: relative;
+  width: clamp(190px, 32vw, 290px);
+  aspect-ratio: 1 / 1;
+  margin: 0 auto 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Background Core Glow behind Logo */
+.logo-golden-aura {
+  position: absolute;
+  width: 78%;
+  height: 78%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(226, 154, 63, 0.32) 0%, rgba(115, 18, 21, 0.16) 55%, transparent 75%);
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0;
+  animation: auraGleam 1.2s 1.8s ease-out forwards;
+}
+@keyframes auraGleam {
+  to { opacity: 1; transform: scale(1.08); }
+}
+
+/* Brand Piece Layers (from brand-pieces.json) */
+.brand-piece {
+  position: absolute;
+  display: block;
+  pointer-events: none;
+  object-fit: contain;
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+/* Exact Coordinates and Delays (Total Assembly <= 2.5s) */
+.bp-pondasi {
+  left: 13.7963%;
+  top: 38.2407%;
+  width: 72.5%;
+  height: 18.1481%;
+  z-index: 2;
+  animation: piecePondasi 0.65s 0.1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+@keyframes piecePondasi {
+  0% { opacity: 0; transform: translateY(18px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+.bp-bawah {
+  left: 5.3704%;
+  top: 42.8704%;
+  width: 89.2593%;
+  height: 21.1111%;
+  z-index: 3;
+  animation: pieceBawah 0.65s 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+@keyframes pieceBawah {
+  0% { opacity: 0; transform: translateY(22px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+.bp-kelopak-tengah {
+  left: 35.2778%;
+  top: 14.8148%;
+  width: 29.6296%;
+  height: 56.1111%;
+  z-index: 4;
+  transform-origin: 50% 90%;
+  animation: pieceKelopakMid 0.75s 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+@keyframes pieceKelopakMid {
+  0% { opacity: 0; transform: scale(0.6) translateY(24px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.bp-kelopak-kiri {
+  left: 4.537%;
+  top: 34.2593%;
+  width: 45.2778%;
+  height: 50.463%;
+  z-index: 5;
+  transform-origin: 90% 80%;
+  animation: pieceKelopakL 0.75s 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+@keyframes pieceKelopakL {
+  0% { opacity: 0; transform: rotate(-18deg) scale(0.7); }
+  100% { opacity: 1; transform: rotate(0) scale(1); }
+}
+
+.bp-kelopak-kanan {
+  left: 27.4074%;
+  top: 16.6667%;
+  width: 50.5556%;
+  height: 73.1481%;
+  z-index: 6;
+  transform-origin: 20% 80%;
+  animation: pieceKelopakR 0.75s 1.15s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+@keyframes pieceKelopakR {
+  0% { opacity: 0; transform: rotate(18deg) scale(0.7); }
+  100% { opacity: 1; transform: rotate(0) scale(1); }
+}
+
+.bp-panah {
+  left: 4.4444%;
+  top: 22.4074%;
+  width: 86.9444%;
+  height: 47.1296%;
+  z-index: 7;
+  animation: piecePanah 0.8s 1.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+@keyframes piecePanah {
+  0% { opacity: 0; transform: translate(-30px, 30px) scale(0.85); }
+  100% { opacity: 1; transform: translate(0, 0) scale(1); }
+}
+
+/* BEKU: Tombol #lg lama */
+#hero #lg {
+  position: relative !important;
+  background: none !important;
+  border: none !important;
+  padding: 0 !important;
+  cursor: pointer !important;
+  outline: none !important;
+  display: block !important;
+  margin: 0 auto !important;
+  width: auto !important;
+  aspect-ratio: auto !important;
+}
+#hero #lg:before,
+#hero #lg .lcore,
+#hero #lg .lgold,
+#hero #lg .orb {
+  display: none !important;
+}
+
+/* Teks Resmi Pembuka */
+#hero .scene-pembuka .wel {
+  font-family: var(--font-title, 'Cormorant Garamond', serif) !important;
+  font-size: clamp(16px, 2.4vw, 22px) !important;
+  font-style: italic !important;
+  font-weight: 600 !important;
+  color: var(--color-gold-light, #e29a3f) !important;
+  background-image: none !important;
+  -webkit-text-fill-color: var(--color-gold-light, #e29a3f) !important;
+  letter-spacing: 0.08em !important;
+  margin: 0 0 4px 0 !important;
+  opacity: 0;
+  animation: fadeInText 0.7s 1.95s ease-out forwards;
+}
+
+#hero .scene-pembuka h1.ttl {
+  font-family: var(--font-title, 'Cormorant Garamond', serif) !important;
+  font-size: clamp(26px, 6vw, 56px) !important;
+  font-weight: 700 !important;
+  line-height: 1.15 !important;
+  letter-spacing: 0.04em !important;
+  margin: 0 0 8px 0 !important;
+  background: linear-gradient(135deg, #fef4df 0%, #e29a3f 50%, #be6f24 100%) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  color: transparent !important;
+  text-shadow: 0 4px 18px rgba(0, 0, 0, 0.6) !important;
+  opacity: 0;
+  animation: fadeInText 0.7s 2.1s ease-out forwards;
+}
+
+#hero .scene-pembuka .sub {
+  font-family: var(--font-body, 'Hanken Grotesk', sans-serif) !important;
+  font-size: clamp(12px, 1.7vw, 15px) !important;
+  font-weight: 400 !important;
+  color: var(--color-text-secondary, #d1c1af) !important;
+  max-width: 600px !important;
+  line-height: 1.5 !important;
+  margin: 0 auto !important;
+  opacity: 0;
+  animation: fadeInText 0.7s 2.25s ease-out forwards;
+}
+
+#hero .scene-pembuka .hint {
+  font-size: 13px !important;
+  color: var(--color-text-muted, #9e8a7d) !important;
+  margin-top: 10px !important;
+  opacity: 0;
+  animation: fadeInText 0.7s 2.4s ease-out forwards;
+}
+
+@keyframes fadeInText {
+  0% { opacity: 0; transform: translateY(8px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+/* Maskot Menyapa di Adegan 1 */
+#hero .scene-pembuka .hm.hm {
+  position: absolute !important;
+  bottom: 0 !important;
+  height: clamp(160px, 34vh, 300px) !important;
+  width: auto !important;
+  max-width: 36vw !important;
+  z-index: 25 !important;
+  pointer-events: none !important;
+  filter: drop-shadow(0 8px 20px rgba(10, 3, 5, 0.85)) !important;
+  opacity: 0;
+  animation: mascotSlideUp 0.8s 2.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+#hero .scene-pembuka .hm.l { left: clamp(10px, 3vw, 40px) !important; }
+#hero .scene-pembuka .hm.r { right: clamp(10px, 3vw, 40px) !important; }
+
+@keyframes mascotSlideUp {
+  0% { opacity: 0; transform: translateY(35px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+/* Gelembung Ucap Bergaya Naskah Perkamen Kerajaan */
+#hero .scene-pembuka .greet {
+  position: absolute !important;
+  z-index: 30 !important;
+  bottom: calc(clamp(160px, 34vh, 300px) * 0.78) !important;
+  background: var(--color-bg-surface, #1e0d10) !important;
+  border: 1px solid var(--color-border-gold-bright, #e29a3f) !important;
+  color: var(--color-text-primary, #f5eedf) !important;
+  font-family: var(--font-body, sans-serif) !important;
+  font-size: clamp(11px, 1.4vw, 13px) !important;
+  font-weight: 500 !important;
+  line-height: 1.4 !important;
+  padding: 8px 14px !important;
+  border-radius: 4px !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6), inset 0 0 10px rgba(115, 18, 21, 0.4) !important;
+  pointer-events: none !important;
+  opacity: 0;
+  animation: bubblePop 0.6s 2.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+#hero .scene-pembuka .greet:before,
+#hero .scene-pembuka .greet:after {
+  display: none !important;
+}
+#hero .scene-pembuka .greet.gl { left: clamp(35px, 6vw, 90px) !important; }
+#hero .scene-pembuka .greet.gr { right: clamp(35px, 6vw, 90px) !important; text-align: right !important; }
+
+@keyframes bubblePop {
+  0% { opacity: 0; transform: scale(0.85) translateY(6px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* ----------------------------------------------------------------------------
+ * 5. ADEGAN 2: JALAN HUTAN KERANGKA SILUET (4 LAYER PARALLAX)
+ * ---------------------------------------------------------------------------- */
+.forest-stage {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  z-index: 10;
+}
+.forest-layer {
+  position: absolute;
+  inset: -20px;
+  width: calc(100% + 40px);
+  height: calc(100% + 40px);
+  pointer-events: none;
+  will-change: transform;
+  transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.forest-caption {
+  position: absolute;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 25;
+  text-align: center;
+  max-width: 500px;
+  padding: 14px 24px;
+  background: rgba(26, 10, 13, 0.88);
+  border: 1px solid var(--color-border-gold, rgba(226, 154, 63, 0.4));
+  border-radius: 6px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8);
+}
+.forest-caption h2 {
+  font-family: var(--font-title, serif);
+  font-size: clamp(20px, 3.5vw, 28px);
+  color: var(--color-gold-light, #e29a3f);
+  margin: 0 0 6px 0;
+}
+.forest-caption p {
+  font-size: clamp(12px, 1.8vw, 14px);
+  color: var(--color-text-secondary, #d1c1af);
+  margin: 0;
+}
+
+/* ----------------------------------------------------------------------------
+ * 6. ADEGAN 3: MASKOT BERCERITA (5 BUBBLE PERCAKAPAN)
+ * ---------------------------------------------------------------------------- */
+.story-stage {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.story-mascot-box {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: clamp(220px, 45vh, 420px);
+  display: flex;
+  justify-content: space-between;
+  padding: 0 clamp(20px, 5vw, 80px);
+  pointer-events: none;
+}
+.story-mascot {
+  height: 100%;
+  width: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 12px 28px rgba(10, 2, 4, 0.9));
+  transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  opacity: 0.35;
+  transform: scale(0.92);
+}
+.story-mascot.active {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.story-card-center {
+  position: relative;
+  z-index: 25;
+  max-width: clamp(300px, 80vw, 540px);
+  background: var(--color-paper-cream, #f7f1e6);
+  color: var(--color-text-dark, #1f1013);
+  padding: 24px 28px;
+  border-radius: 4px;
+  border: 2px solid var(--color-paper-gold-rim, #c8a572);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.8), inset 0 0 18px rgba(190, 111, 36, 0.15);
+  text-align: center;
+  transform: translateY(-20px);
+}
+.story-card-center::before {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  border: 1px dashed rgba(190, 111, 36, 0.4);
+  pointer-events: none;
+}
+.story-bubble-num {
+  font-family: var(--font-title, serif);
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-maroon, #731215);
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+.story-bubble-text {
+  font-family: var(--font-body, sans-serif);
+  font-size: clamp(16px, 2.6vw, 21px);
+  font-weight: 600;
+  line-height: 1.45;
+  color: var(--color-text-dark, #1f1013);
+  margin: 0 0 12px 0;
+  min-height: 54px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.story-speaker-name {
+  font-size: 13px;
+  color: var(--color-text-dark-muted, #664b50);
+  font-style: italic;
+}
+
+/* ----------------------------------------------------------------------------
+ * 7. ADEGAN 4: DUA POSTER & PANEL STATIS
+ * ---------------------------------------------------------------------------- */
+.posters-container {
+  display: flex;
+  gap: clamp(16px, 3vw, 36px);
+  align-items: center;
+  justify-content: center;
+  width: 90%;
+  max-width: 840px;
+  margin: 0 auto;
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.poster-card {
+  flex: 1;
+  max-width: 360px;
+  background: linear-gradient(135deg, #220c10 0%, #150608 100%);
+  border: 1.5px solid var(--color-border-gold-bright, #e29a3f);
+  border-radius: 6px;
+  padding: 24px 20px;
+  text-align: center;
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.75), inset 0 0 20px rgba(226, 154, 63, 0.1);
+  transform: perspective(800px) rotateY(0deg);
+  transition: transform 0.3s ease, border-color 0.3s ease;
+}
+.poster-card:hover {
+  transform: perspective(800px) translateY(-4px);
+  border-color: #ffd88a;
+}
+.poster-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-gold-light, #e29a3f);
+  border: 1px solid var(--color-border-gold, rgba(226, 154, 63, 0.4));
+  border-radius: 2px;
+  margin-bottom: 12px;
+}
+.poster-card h3 {
+  font-family: var(--font-title, serif);
+  font-size: clamp(20px, 3.2vw, 26px);
+  color: var(--color-text-primary, #f5eedf);
+  margin: 0 0 6px 0;
+}
+.poster-card p.p-desc {
+  font-size: 13px;
+  color: var(--color-text-secondary, #d1c1af);
+  line-height: 1.5;
+  margin: 0 0 16px 0;
+}
+.poster-subbranches {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  text-align: left;
+  border-top: 1px solid var(--color-border-gold-subtle, rgba(226, 154, 63, 0.2));
+  padding-top: 12px;
+}
+.poster-subbranches li {
+  font-size: 12px;
+  color: var(--color-gold-light, #e29a3f);
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.poster-subbranches li::before {
+  content: "✦";
+  font-size: 9px;
+  color: var(--color-gold-dark, #be6f24);
+}
+
+/* Panel Statis Geser (Pengganti Video 1-7) */
+.slides-container {
+  display: none;
+  width: 90%;
+  max-width: 680px;
+  text-align: center;
+  position: relative;
+}
+.slides-container.active {
+  display: block;
+}
+.static-panel-card {
+  background: var(--color-bg-surface, #1e0d10);
+  border: 1.5px solid var(--color-border-gold, rgba(226, 154, 63, 0.4));
+  border-radius: 6px;
+  padding: 20px;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.8);
+}
+.panel-img-frame {
+  width: 100%;
+  height: clamp(180px, 32vh, 260px);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 14px;
+  background: #0f0507;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(226, 154, 63, 0.2);
+}
+.panel-img-frame img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+.static-panel-card h4 {
+  font-family: var(--font-title, serif);
+  font-size: clamp(18px, 2.5vw, 24px);
+  color: var(--color-gold-light, #e29a3f);
+  margin: 0 0 6px 0;
+}
+.static-panel-card p {
+  font-size: 13px;
+  color: var(--color-text-secondary, #d1c1af);
+  margin: 0;
+}
+
+/* ----------------------------------------------------------------------------
+ * 8. ADEGAN 5: GULUNGAN UNDANGAN & GAGAK
+ * ---------------------------------------------------------------------------- */
+.decree-stage {
+  position: relative;
+  width: 90%;
+  max-width: 580px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Gagak Siluet Terbang Mengantar Titah */
+.flying-crow {
+  position: absolute;
+  top: -80px;
+  left: -120px;
+  width: 72px;
+  height: 72px;
+  color: #2b0c10;
+  z-index: 15;
+  filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.9));
+  animation: crowFlight 2.2s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+@keyframes crowFlight {
+  0% { transform: translate(0, 0) scale(0.6); opacity: 0; }
+  30% { opacity: 1; }
+  85% { transform: translate(calc(50vw), 120px) scale(1); opacity: 1; }
+  100% { transform: translate(calc(50vw + 60px), 110px) scale(0.9); opacity: 0; }
+}
+
+/* Gulungan Titah Undangan */
+.royal-scroll-card {
+  position: relative;
+  width: 100%;
+  background: var(--color-paper-cream, #f7f1e6);
+  color: var(--color-text-dark, #1f1013);
+  padding: 36px 32px 30px;
+  border-radius: 4px;
+  border-top: 10px solid #5a1017;
+  border-bottom: 10px solid #5a1017;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9), inset 0 0 20px rgba(190, 111, 36, 0.15);
+  transform-origin: top center;
+  animation: scrollUnroll 1.0s 0.8s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+}
+@keyframes scrollUnroll {
+  0% { transform: scaleY(0.1); opacity: 0; }
+  100% { transform: scaleY(1); opacity: 1; }
+}
+
+.scroll-seal-mark {
+  width: 50px;
+  height: 50px;
+  margin: 0 auto 12px;
+  border-radius: 50%;
+  background: #731215;
+  border: 2px solid #be6f24;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #f7f1e6;
+  box-shadow: 0 4px 12px rgba(115, 18, 21, 0.6);
+}
+.scroll-seal-mark svg {
+  width: 26px;
+  height: 26px;
+}
+
+.royal-scroll-card h2 {
+  font-family: var(--font-title, serif);
+  font-size: clamp(14px, 2.3vw, 18px);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-maroon, #731215);
+  font-weight: 700;
+  margin: 0 0 10px 0;
+}
+
+.royal-scroll-card p.invitation-text {
+  font-family: var(--font-title, serif);
+  font-size: clamp(20px, 3.4vw, 28px);
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--color-text-dark, #1f1013);
+  margin: 0 0 22px 0;
+}
+
+/* Tombol Emas "Masuk ke Kerajaan" */
+.btn-enter-kingdom {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  background: linear-gradient(135deg, #a71823 0%, #731215 100%);
+  border: 1.5px solid var(--color-gold-light, #e29a3f);
+  color: var(--color-text-primary, #f5eedf);
+  font-family: var(--font-title, serif);
+  font-size: clamp(16px, 2.2vw, 20px);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  padding: 13px 30px;
+  border-radius: 4px;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(115, 18, 21, 0.5), inset 0 0 10px rgba(226, 154, 63, 0.2);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  min-height: 48px;
+}
+.btn-enter-kingdom:hover, .btn-enter-kingdom:focus-visible {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(115, 18, 21, 0.7), inset 0 0 14px rgba(226, 154, 63, 0.4);
+  background: linear-gradient(135deg, #ba1e2a 0%, #87161a 100%);
+}
+.btn-enter-kingdom svg {
+  width: 20px;
+  height: 20px;
+  stroke: var(--color-gold-light, #e29a3f);
+}
+
+/* ----------------------------------------------------------------------------
+ * 9. DOCK NAVIGASI IKON SVG MONOKROM (PENGGANTI EMOJI)
+ * ---------------------------------------------------------------------------- */
+#dock .db-ico {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  margin-bottom: 2px;
+}
+#dock .db-ico svg {
+  width: 20px;
+  height: 20px;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  display: block;
+  transition: transform 0.2s ease;
+}
+#dock .db:hover .db-ico svg,
+#dock .db.on .db-ico svg {
+  transform: translateY(-2px);
+  color: var(--color-gold-light, #e29a3f);
+}
+
+/* ----------------------------------------------------------------------------
+ * 10. RESPONSIVITAS MOBILE 390PX & LANDSCAPE PHONE (<520PX)
+ * ---------------------------------------------------------------------------- */
+@media (max-width: 600px) {
+  .hero-royal-frame {
+    inset: 8px;
+  }
+  .curtain {
+    width: 45px;
+  }
+  #hero #hero-skip.hero-skip-btn {
+    top: 14px !important;
+    right: 14px !important;
+    padding: 6px 12px !important;
+    font-size: 12px !important;
+  }
+  .posters-container {
+    flex-direction: column;
+    gap: 12px;
+  }
+  .poster-card {
+    padding: 16px 14px;
+  }
+  .poster-card p.p-desc {
+    margin-bottom: 10px;
+  }
+  .royal-scroll-card {
+    padding: 24px 18px 20px;
+  }
+  .story-mascot-box {
+    padding: 0 12px;
+  }
+}
+
+/* Landscape HP Fix (tinggi <= 520px) */
+@media (orientation: landscape) and (max-height: 520px) {
+  .hero-royal-frame {
+    inset: 6px;
+  }
+  .curtain {
+    width: 40px;
+  }
+  #hero #hero-skip.hero-skip-btn {
+    top: 8px !important;
+    right: 12px !important;
+    padding: 4px 10px !important;
+    font-size: 11px !important;
+  }
+  .logo-assembly-wrap {
+    width: 130px;
+    margin-bottom: 6px;
+  }
+  #hero .scene-pembuka h1.ttl {
+    font-size: 22px !important;
+    margin-bottom: 4px !important;
+  }
+  #hero .scene-pembuka .wel {
+    font-size: 13px !important;
+    margin-bottom: 2px !important;
+  }
+  #hero .scene-pembuka .sub {
+    font-size: 11px !important;
+    max-width: 460px !important;
+  }
+  #hero .scene-pembuka .hm.hm {
+    height: 110px !important;
+  }
+  #hero .scene-pembuka .greet {
+    display: none !important;
+  }
+  .story-card-center {
+    padding: 14px 20px;
+    transform: translateY(-5px);
+  }
+  .story-mascot-box {
+    height: 130px;
+  }
+  .posters-container {
+    flex-direction: row;
+    gap: 12px;
+  }
+  .poster-card {
+    padding: 10px 12px;
+  }
+  .royal-scroll-card {
+    padding: 16px 20px;
+  }
+  .royal-scroll-card p.invitation-text {
+    font-size: 17px;
+    margin-bottom: 10px;
+  }
+  .scroll-seal-mark {
+    width: 32px;
+    height: 32px;
+    margin-bottom: 6px;
+  }
+  .btn-enter-kingdom {
+    padding: 8px 18px;
+    font-size: 14px;
+    min-height: 40px;
+  }
+  .hero-tap-hint {
+    bottom: 15px;
+  }
+}
+
+/* ----------------------------------------------------------------------------
+ * 11. AKSESIBILITAS: PREFERS-REDUCED-MOTION
+ * ---------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .stage-scene {
+    transition: opacity 0.2s ease !important;
+    transform: none !important;
+  }
+  .brand-piece {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+  }
+  #hero .scene-pembuka .wel,
+  #hero .scene-pembuka h1.ttl,
+  #hero .scene-pembuka .sub,
+  #hero .scene-pembuka .hm,
+  #hero .scene-pembuka .greet,
+  .logo-golden-aura {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+  }
+}
