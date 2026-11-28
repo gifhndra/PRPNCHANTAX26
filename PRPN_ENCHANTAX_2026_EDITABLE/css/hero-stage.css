@@ -988,11 +988,13 @@ body.in-app #hero#hero {
   left: -36px;
   width: 68px;
   height: 68px;
-  color: #5c161d;
+  color: #8a2a30;
+  stroke: #e29a3f;
+  stroke-width: 1px;
   z-index: 30;
   pointer-events: none;
   opacity: 0;
-  filter: drop-shadow(0 4px 12px rgba(226, 154, 63, 0.3));
+  filter: drop-shadow(0 4px 12px rgba(226, 154, 63, 0.35));
 }
 #hero .stage-scene[data-scene="5"].active .flying-crow {
   animation: crowFlight 1.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;

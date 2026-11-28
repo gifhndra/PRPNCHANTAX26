@@ -1,0 +1,1660 @@
+/* ============================================================================
+ * TAHAP 2: PERJALANAN HUTAN (#pg-portal)
+ * Aturan ketat: Semua selektor dikunci di bawah #pg-portal (kecuali perbaikan
+ * gagak Hero yang dikerjakan di hero-stage.css).
+ * Palet: Marun #731215, Merah #a71823, Emas Gelap #be6f24, Emas Terang #e29a3f,
+ * Latar Gelap #14080a / #1e0d10, Perkamen Krem #f7f1e6 / #f5eedf.
+ * ============================================================================ */
+
+/* ----------------------------------------------------------------------------
+ * 1. PANGGUNG HUTAN & PENYESUAIAN GLOBAL DARI style.css
+ * ---------------------------------------------------------------------------- */
+#pg-portal.page {
+  position: relative;
+  /* Perlu !important untuk menimpa background pastel & font global .page di style.css:709 */
+  background: linear-gradient(180deg, #14080a 0%, #1c0b0e 42%, #17090c 100%) !important;
+  color: var(--color-text-primary, #f5eedf);
+  font-family: var(--font-body, 'Hanken Grotesk', sans-serif);
+  min-height: 100vh;
+  padding-top: 64px;
+  padding-bottom: 124px;
+  overflow-x: clip;
+}
+
+/* Matikan pola titik & cincin pelangi global .page::before / .page::after di style.css:710-715 */
+#pg-portal.page::before,
+#pg-portal.page::after {
+  content: none !important;
+  display: none !important;
+}
+
+/* Latar Hutan 4 Lapis SVG (memenuhi layar penuh 100% di belakang wadah <=1100px) */
+#pg-portal > .portal-forest-backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+#pg-portal .portal-forest-sticky {
+  position: sticky;
+  top: 0;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  background: radial-gradient(ellipse at 50% 24%, rgba(115, 18, 21, 0.34) 0%, rgba(20, 8, 10, 0) 64%),
+              linear-gradient(180deg, #18090c 0%, #240c11 58%, #14080a 100%);
+  overflow: hidden;
+}
+
+#pg-portal .portal-forest-sticky .pf-layer {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: auto;
+  min-height: 46%;
+  display: block;
+  pointer-events: none;
+  will-change: transform;
+}
+
+#pg-portal .portal-forest-sticky .pf-castle {
+  bottom: 12%;
+  opacity: 0.88;
+}
+
+#pg-portal .portal-forest-sticky .pf-mid {
+  bottom: 0;
+  opacity: 0.92;
+}
+
+#pg-portal .portal-forest-sticky .pf-fg {
+  bottom: -2%;
+  opacity: 0.96;
+}
+
+/* Override global .page section (style.css:717 pakai !important pada background & padding)
+   dan batas konten <= 1100px di layar lebar sambil menjaga latar memenuhi layar */
+#pg-portal.page > section {
+  position: relative;
+  z-index: 2;
+  max-width: 1100px;
+  margin: 0 auto;
+  scroll-margin-top: 74px;
+  /* Perlu !important untuk menimpa .page section { padding: ... !important } di style.css:718 */
+  padding: clamp(30px, 4.5vw, 52px) clamp(16px, 3vw, 28px) !important;
+  background: transparent !important;
+}
+
+#pg-portal.page > section#about {
+  padding-top: 84px !important;
+}
+
+/* Penanda non-kotak di style.css:96 (section>*:not(.cloud){position:relative;z-index:2}):
+   Pastikan seluruh elemen latar khusus dalam section tidak ikut terjebak jadi relative */
+#pg-portal section > .portal-bg-abs {
+  position: absolute !important;
+  z-index: 0;
+}
+
+/* Hilangkan animasi .rv tersembunyi bila di luar observer agar tidak ada blok macet opacity:0 */
+#pg-portal .rv {
+  opacity: 1 !important; /* Perlu !important untuk mengatasi aturan .rv{opacity:0} style.css:410 */
+  transform: none !important;
+}
+
+/* Tipografi & Tag Terkunci untuk #pg-portal */
+#pg-portal .tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(115, 18, 21, 0.45);
+  color: var(--color-gold-light, #e29a3f);
+  border: 1px solid rgba(200, 165, 114, 0.5);
+  border-radius: var(--radius-sm, 4px);
+  padding: 5px 14px;
+  font-family: var(--font-ui, 'Hanken Grotesk', sans-serif);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  box-shadow: none;
+}
+
+#pg-portal .sec-title {
+  font-family: var(--font-title, 'Cormorant Garamond', Georgia, serif);
+  font-size: clamp(26px, 4.4vw, 42px);
+  font-weight: 700;
+  line-height: 1.12;
+  letter-spacing: 0.015em;
+  color: var(--color-paper-cream, #f7f1e6);
+  margin: 12px 0 8px;
+  text-wrap: balance;
+}
+
+#pg-portal .sub {
+  font-family: var(--font-body, 'Hanken Grotesk', sans-serif);
+  font-size: clamp(14px, 1.7vw, 16px);
+  line-height: 1.55;
+  color: var(--color-text-secondary, #d4c3b0);
+  margin: 0;
+}
+
+/* Ikon SVG monokrom seragam di #pg-portal */
+#pg-portal .portal-svg-icon {
+  display: inline-block;
+  width: 1.15em;
+  height: 1.15em;
+  vertical-align: -0.18em;
+  flex-shrink: 0;
+  color: currentColor;
+}
+
+/* ----------------------------------------------------------------------------
+ * 2. BAGIAN A: TENTANG (PERKAMEN KREM BERBINGKAI EMAS)
+ * ---------------------------------------------------------------------------- */
+#pg-portal #about {
+  text-align: center;
+}
+
+#pg-portal #about .sub {
+  max-width: 580px;
+  margin: 0 auto 24px;
+}
+
+#pg-portal #about .abx {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 18px;
+  margin-top: 20px;
+  align-items: stretch;
+}
+
+@media (min-width: 680px) {
+  #pg-portal #about .abx {
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 22px;
+  }
+}
+
+/* Kartu Flip Perkamen Krem */
+#pg-portal #about .abc {
+  background: transparent;
+  perspective: 1100px;
+  min-height: 290px;
+  height: auto;
+  cursor: pointer;
+}
+
+#pg-portal #about .abi {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 290px;
+  transform-style: preserve-3d;
+  transition: transform 0.65s var(--ease-royal, cubic-bezier(0.2, 0.8, 0.2, 1));
+}
+
+#pg-portal #about .abc.open .abi {
+  transform: rotateY(180deg);
+}
+
+#pg-portal #about .abf,
+#pg-portal #about .abb {
+  position: relative;
+  grid-area: 1 / 1;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  background: radial-gradient(ellipse at 50% 40%, #fbf6ec 0%, #f3e9d6 80%, #eadbbf 100%);
+  color: var(--color-text-dark, #1f1013);
+  border: 1.5px solid var(--color-paper-gold-rim, #c8a572);
+  border-radius: var(--radius-md, 6px);
+  box-shadow: 0 14px 34px rgba(10, 3, 5, 0.58), inset 0 0 18px rgba(190, 111, 36, 0.14);
+  padding: 26px 22px 22px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  overflow: hidden;
+}
+
+/* Bingkai dalam tipis perkamen */
+#pg-portal #about .abf::before,
+#pg-portal #about .abb::before {
+  content: "";
+  position: absolute;
+  inset: 7px;
+  border: 1px solid rgba(190, 111, 36, 0.42);
+  border-radius: var(--radius-sm, 4px);
+  pointer-events: none;
+}
+
+/* Karena .abf & .abb sama-sama memakai absolute atau grid overlay agar tinggi kartu adaptif */
+#pg-portal #about .abi {
+  display: grid;
+}
+
+#pg-portal #about .abb {
+  transform: rotateY(180deg);
+  justify-content: flex-start;
+  overflow-y: auto;
+  text-align: left;
+  align-items: flex-start;
+}
+
+#pg-portal #about .abf h3,
+#pg-portal #about .abb h3 {
+  font-family: var(--font-title, 'Cormorant Garamond', Georgia, serif);
+  font-size: clamp(20px, 2.3vw, 24px);
+  font-weight: 700;
+  color: var(--color-maroon, #731215);
+  margin: 0 0 8px;
+  line-height: 1.2;
+}
+
+#pg-portal #about .abf p,
+#pg-portal #about .abb p,
+#pg-portal #about .abb .ab-body {
+  font-family: var(--font-body, 'Hanken Grotesk', sans-serif);
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--color-text-dark, #1f1013);
+  margin: 0;
+}
+
+#pg-portal #about .ablg {
+  width: 78px;
+  height: 78px;
+  margin: 0 auto 14px;
+  border-radius: 50%;
+  background: #fdf9f0;
+  border: 1.5px solid var(--color-paper-gold-rim, #c8a572);
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(31, 16, 19, 0.1);
+}
+
+#pg-portal #about .ablg img,
+#pg-portal #about .abc img {
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+#pg-portal #about .ab-hint,
+#pg-portal #about .abf small {
+  margin-top: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-gold-dark, #be6f24);
+}
+
+/* ----------------------------------------------------------------------------
+ * 3. BAGIAN B: TIGA JALAN MENUJU KERAJAAN (#timelineBranches)
+ * ---------------------------------------------------------------------------- */
+#pg-portal #jadwal {
+  text-align: center;
+}
+
+#pg-portal #jadwal > .sub {
+  max-width: 580px;
+  margin: 0 auto 22px;
+}
+
+#pg-portal #timelineBranches {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 14px;
+  margin: 18px auto 26px;
+  max-width: 980px;
+}
+
+@media (min-width: 720px) {
+  #pg-portal #timelineBranches {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+  }
+}
+
+#pg-portal #timelineBranches button[data-tl] {
+  position: relative;
+  width: 100%;
+  min-height: 76px;
+  display: grid;
+  grid-template-columns: 112px 1fr;
+  align-items: center;
+  gap: 12px;
+  text-align: left;
+  padding: 10px 14px;
+  border-radius: var(--radius-md, 6px);
+  background: linear-gradient(160deg, #270d11 0%, #19070a 100%);
+  border: 1.5px solid rgba(200, 165, 114, 0.32);
+  color: var(--color-text-secondary, #d4c3b0);
+  box-shadow: 0 8px 22px rgba(8, 2, 4, 0.55);
+  cursor: pointer;
+  overflow: visible;
+  opacity: 0.66;
+  transition: opacity 0.3s ease, border-color 0.3s ease, transform 0.3s var(--ease-royal, cubic-bezier(0.2, 0.8, 0.2, 1)), box-shadow 0.3s ease;
+}
+
+@media (min-width: 720px) {
+  #pg-portal #timelineBranches button[data-tl] {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    text-align: center;
+    padding: 14px 14px 16px;
+    gap: 10px;
+  }
+}
+
+#pg-portal #timelineBranches button[data-tl]:hover,
+#pg-portal #timelineBranches button[data-tl]:focus-visible {
+  opacity: 0.94;
+  border-color: rgba(226, 154, 63, 0.68);
+  transform: translateY(-2px);
+}
+
+#pg-portal #timelineBranches button[data-tl].on {
+  opacity: 1;
+  background: linear-gradient(160deg, #3c1117 0%, #24090d 100%);
+  border: 1.5px solid var(--color-gold-light, #e29a3f);
+  color: var(--color-paper-cream, #f7f1e6);
+  box-shadow: 0 12px 30px rgba(10, 2, 4, 0.72), inset 0 0 18px rgba(226, 154, 63, 0.14);
+}
+
+/* Wadah SVG Gerbang + Jalan Setapak (3 Lapis SVG) */
+#pg-portal #timelineBranches .gate-visual {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 76px;
+  border-radius: var(--radius-sm, 4px);
+  background: radial-gradient(ellipse at 50% 42%, rgba(190, 111, 36, 0.14) 0%, rgba(20, 8, 10, 0.75) 75%);
+  border: 1px solid rgba(200, 165, 114, 0.22);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+@media (min-width: 720px) {
+  #pg-portal #timelineBranches .gate-visual {
+    height: 112px;
+  }
+}
+
+#pg-portal #timelineBranches button.on .gate-visual {
+  background: radial-gradient(ellipse at 50% 40%, rgba(226, 154, 63, 0.34) 0%, rgba(45, 12, 17, 0.85) 76%);
+  border-color: rgba(226, 154, 63, 0.55);
+}
+
+#pg-portal #timelineBranches .gate-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Pintu Gerbang Terbuka via Transform saat Terpilih atau Dipicu Klik */
+#pg-portal #timelineBranches .gate-door-l,
+#pg-portal #timelineBranches .gate-door-r {
+  transition: transform 0.55s var(--ease-royal, cubic-bezier(0.2, 0.8, 0.2, 1));
+  transform-box: fill-box;
+}
+#pg-portal #timelineBranches .gate-door-l { transform-origin: left center; }
+#pg-portal #timelineBranches .gate-door-r { transform-origin: right center; }
+
+#pg-portal #timelineBranches button.on .gate-door-l,
+#pg-portal #timelineBranches button.gate-opening .gate-door-l {
+  transform: scaleX(0.32) translateX(-4px);
+}
+#pg-portal #timelineBranches button.on .gate-door-r,
+#pg-portal #timelineBranches button.gate-opening .gate-door-r {
+  transform: scaleX(0.32) translateX(4px);
+}
+
+#pg-portal #timelineBranches .gate-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+@media (min-width: 720px) {
+  #pg-portal #timelineBranches .gate-meta {
+    align-items: center;
+  }
+}
+
+#pg-portal #timelineBranches .gate-head-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+#pg-portal #timelineBranches .gate-ico {
+  width: 20px;
+  height: 20px;
+  color: var(--color-gold-light, #e29a3f);
+  flex-shrink: 0;
+}
+
+#pg-portal #timelineBranches .gate-title {
+  font-family: var(--font-title, 'Cormorant Garamond', Georgia, serif);
+  font-size: clamp(16px, 2vw, 20px);
+  font-weight: 700;
+  line-height: 1.18;
+  color: inherit;
+}
+
+#pg-portal #timelineBranches .gate-cue {
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-gold-dark, #be6f24);
+}
+
+#pg-portal #timelineBranches button.on .gate-cue {
+  color: var(--color-gold-light, #e29a3f);
+}
+
+/* Kembang Api Ringan: Maksimal 20 Partikel CSS (batas <=24), durasi 1.2s */
+#pg-portal #timelineBranches .branch-fireworks {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: visible;
+  z-index: 6;
+}
+
+#pg-portal #timelineBranches .fw-spark {
+  position: absolute;
+  left: 50%;
+  top: 28%;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--color-gold-light, #e29a3f);
+  opacity: 0;
+  transform: translate3d(-50%, -50%, 0) scale(0.3);
+}
+
+#pg-portal #timelineBranches .fw-spark:nth-child(even) {
+  background: var(--color-paper-cream, #f7f1e6);
+  width: 4px;
+  height: 4px;
+}
+
+#pg-portal #timelineBranches button.fw-firing .fw-spark {
+  animation: fwBurst 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes fwBurst {
+  0% {
+    opacity: 0.95;
+    transform: translate3d(-50%, -50%, 0) scale(0.5);
+  }
+  65% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(calc(-50% + var(--fx, 0px)), calc(-50% + var(--fy, -40px)), 0) scale(1.1);
+  }
+}
+
+/* ----------------------------------------------------------------------------
+ * 4. BAGIAN C: TIMELINE CABANG POHON & PAPAN KAYU BERGANTUNG (#jadwal .path)
+ * ---------------------------------------------------------------------------- */
+#pg-portal .portal-branch-scroll {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: visible;
+  -webkit-overflow-scrolling: touch;
+  padding: 6px 0 12px;
+  scrollbar-width: thin;
+}
+
+#pg-portal #jadwal .path {
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+  min-width: max(100%, calc(var(--tl-count, 4) * 80px));
+  /* Perlu !important untuk menimpa display/margin/padding mobile .path di style.css:592-667 */
+  display: block !important;
+  margin: 8px auto 18px !important;
+  padding: 68px 0 14px !important;
+  background: transparent;
+  overflow: visible !important;
+}
+
+/* Batang Cabang Pohon Hutan (diletakkan persis di atas tali papan & di bawah kaki maskot) */
+#pg-portal #jadwal .path .line {
+  /* Perlu !important untuk menimpa position:absolute; left:12.5%; right:12.5%; top:135px di style.css:107 & 600/653 */
+  position: relative !important;
+  left: auto !important;
+  right: auto !important;
+  top: auto !important;
+  bottom: auto !important;
+  width: 100% !important;
+  height: 15px !important;
+  margin: 0 !important;
+  border-radius: 99px;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgba(226, 154, 63, 0.08) 0px,
+      rgba(226, 154, 63, 0.08) 12px,
+      transparent 12px,
+      transparent 28px
+    ),
+    linear-gradient(180deg, #5e2226 0%, #3a1116 58%, #21080c 100%);
+  border-top: 1.5px solid rgba(200, 165, 114, 0.52);
+  border-bottom: 1.5px solid #0e0406;
+  box-shadow: 0 6px 14px rgba(8, 2, 4, 0.72);
+  overflow: hidden;
+  z-index: 3;
+}
+
+#pg-portal #jadwal .path .line > i#lf {
+  display: block;
+  height: 100%;
+  border-radius: 99px;
+  background: linear-gradient(90deg, #8c4d19 0%, var(--color-gold-dark, #be6f24) 55%, var(--color-gold-light, #e29a3f) 100%);
+  transition: width 0.55s var(--ease-royal, cubic-bezier(0.2, 0.8, 0.2, 1));
+}
+
+/* Maskot Berlari di Atas Dahan */
+#pg-portal #jadwal .path .runner {
+  position: absolute !important; /* Melawan !important mobile di style.css:640 */
+  top: 4px !important;
+  width: 58px;
+  height: 66px;
+  transform: translate3d(-50%, 0, 0);
+  transition: left 0.6s var(--ease-royal, cubic-bezier(0.2, 0.8, 0.2, 1)), transform 0.25s ease;
+  z-index: 6;
+  pointer-events: none;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: bottom center;
+  filter: drop-shadow(0 6px 10px rgba(8, 2, 4, 0.85));
+}
+
+#pg-portal #jadwal .path .runner.face-left {
+  transform: translate3d(-50%, 0, 0) scaleX(-1);
+}
+
+#pg-portal #jadwal .path .runner.mascot-hop {
+  animation: branchHop 0.45s cubic-bezier(0.25, 0.9, 0.35, 1) forwards;
+}
+
+/* Matikan konten '✦ · ✧ · ✦' dari style.css:279 */
+#pg-portal #jadwal .path .runner.mascot-hop::after {
+  content: none !important;
+  display: none !important;
+}
+
+@keyframes branchHop {
+  0%, 100% { transform: translate3d(-50%, 0, 0); }
+  50% { transform: translate3d(-50%, -12px, 0); }
+}
+
+#pg-portal #jadwal .path .runner.face-left.mascot-hop {
+  animation: branchHopLeft 0.45s cubic-bezier(0.25, 0.9, 0.35, 1) forwards;
+}
+
+@keyframes branchHopLeft {
+  0%, 100% { transform: translate3d(-50%, 0, 0) scaleX(-1); }
+  50% { transform: translate3d(-50%, -12px, 0) scaleX(-1); }
+}
+
+/* Wadah Papan Kayu Bergantung — lebar sel selalu 100% / N agar #run sejajar tepat di tengah */
+#pg-portal #jadwal .nodes {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: space-between;
+  width: 100%;
+  margin-top: 0;
+  padding-top: 16px;
+}
+
+#pg-portal #jadwal .nodes .node {
+  position: relative;
+  flex: 1 1 0;
+  min-width: 0;
+  margin: 0 3px;
+  min-height: 76px;
+  padding: 10px 6px 9px !important; /* Timpa mobile .node di style.css:618 */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 5px;
+  /* Papan kayu mahoni gelap bertekstur garis halus */
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgba(226, 154, 63, 0.03) 0px,
+      rgba(226, 154, 63, 0.03) 2px,
+      transparent 2px,
+      transparent 10px
+    ),
+    linear-gradient(180deg, #321317 0%, #230c10 62%, #19080b 100%);
+  border: 1.5px solid rgba(200, 165, 114, 0.36);
+  border-radius: 5px;
+  color: var(--color-paper-cream, #f7f1e6);
+  box-shadow: 0 8px 18px rgba(8, 2, 4, 0.72), inset 0 1px 0 rgba(226, 154, 63, 0.18);
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 0.25s ease, transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+/* Tali penggantung ganda menghubungkan dahan ke papan kayu */
+#pg-portal #jadwal .nodes .node::before,
+#pg-portal #jadwal .nodes .node::after {
+  content: "";
+  position: absolute;
+  top: -18px;
+  width: 2px;
+  height: 18px;
+  background: linear-gradient(180deg, #c8a572 0%, #7d5324 100%);
+  pointer-events: none;
+}
+#pg-portal #jadwal .nodes .node::before { left: 26%; }
+#pg-portal #jadwal .nodes .node::after { right: 26%; }
+
+/* Pembedaan status hanya via aksen emas & opasitas (bukan warna-warni) */
+#pg-portal #jadwal .nodes .node.done {
+  opacity: 0.8;
+  border-color: rgba(190, 111, 36, 0.55);
+}
+
+#pg-portal #jadwal .nodes .node.now {
+  opacity: 1;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgba(226, 154, 63, 0.05) 0px,
+      rgba(226, 154, 63, 0.05) 2px,
+      transparent 2px,
+      transparent 10px
+    ),
+    linear-gradient(180deg, #4b181f 0%, #310d13 100%);
+  border-color: var(--color-gold-light, #e29a3f);
+  box-shadow: 0 10px 24px rgba(10, 2, 4, 0.82), inset 0 0 14px rgba(226, 154, 63, 0.16);
+}
+
+#pg-portal #jadwal .nodes .node.next {
+  opacity: 0.64;
+  border-color: rgba(200, 165, 114, 0.22);
+}
+
+#pg-portal #jadwal .nodes .node.on {
+  opacity: 1;
+  transform: translateY(-2px);
+  border-color: var(--color-gold-light, #e29a3f);
+  box-shadow: 0 0 0 1.5px #e29a3f, 0 12px 26px rgba(8, 2, 4, 0.85);
+}
+
+#pg-portal #jadwal .nodes .node .c {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid rgba(200, 165, 114, 0.52);
+  background: rgba(20, 8, 10, 0.82);
+  color: var(--color-paper-cream, #f7f1e6);
+  font-size: 13px;
+  line-height: 1;
+  box-shadow: none;
+}
+
+#pg-portal #jadwal .nodes .node.done .c {
+  border-color: rgba(190, 111, 36, 0.52);
+  color: var(--color-gold-dark, #be6f24);
+}
+
+#pg-portal #jadwal .nodes .node.now .c,
+#pg-portal #jadwal .nodes .node.on .c {
+  border-color: var(--color-gold-light, #e29a3f);
+  background: var(--color-maroon, #731215);
+  color: var(--color-gold-light, #e29a3f);
+}
+
+#pg-portal #jadwal .nodes .node b {
+  font-family: var(--font-title, 'Cormorant Garamond', Georgia, serif);
+  font-size: clamp(12.5px, 1.8vw, 16px);
+  font-weight: 700;
+  line-height: 1.15;
+  color: var(--color-paper-cream, #f7f1e6);
+  word-break: break-word;
+  hyphens: auto;
+  text-align: center;
+}
+
+#pg-portal #jadwal .nodes .node small {
+  font-family: var(--font-ui, 'Hanken Grotesk', sans-serif);
+  font-size: clamp(10px, 1.3vw, 12px);
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--color-gold-light, #e29a3f);
+  font-variant-numeric: tabular-nums;
+}
+
+#pg-portal #jadwal .nodes .node.next small {
+  color: var(--color-text-secondary, #d4c3b0);
+}
+
+@media (max-width: 520px) {
+  #pg-portal #jadwal .path {
+    padding-top: 52px !important;
+  }
+  #pg-portal #jadwal .path .runner {
+    width: 44px;
+    height: 48px;
+    top: 4px !important;
+  }
+  #pg-portal #jadwal .nodes .node {
+    margin: 0 2px;
+    padding: 8px 4px !important;
+  }
+  #pg-portal #jadwal .nodes .node .c {
+    width: 28px;
+    height: 28px;
+  }
+}
+
+/* ----------------------------------------------------------------------------
+ * 5. BAGIAN D: KITAB KUNO, HITUNG MUNDUR & HANDBOOK (#timelineBook)
+ * ---------------------------------------------------------------------------- */
+#pg-portal #timelineBook {
+  position: relative;
+  max-width: 980px;
+  margin: 18px auto 8px;
+  perspective: 1400px;
+}
+
+/* Animasi jatuh SEKALI saat #timelineBook masuk layar */
+#pg-portal #timelineBook.book-await-drop {
+  opacity: 0;
+  transform: translate3d(0, -34px, 0) scale(0.96);
+}
+
+#pg-portal #timelineBook.book-dropped {
+  animation: tomeDropOnce 0.72s var(--ease-royal, cubic-bezier(0.2, 0.8, 0.2, 1)) forwards;
+}
+
+@keyframes tomeDropOnce {
+  0% { opacity: 0; transform: translate3d(0, -36px, 0) scale(0.96); }
+  72% { opacity: 1; transform: translate3d(0, 4px, 0) scale(1); }
+  100% { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
+}
+
+#pg-portal #timelineBook .book-shell {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0;
+  padding: 14px;
+  border-radius: 10px;
+  /* Sampul kitab kulit marun berbingkai emas */
+  background: linear-gradient(160deg, #5d1016 0%, #3e080d 55%, #280508 100%);
+  border: 2px solid var(--color-paper-gold-rim, #c8a572);
+  box-shadow: 0 24px 52px rgba(6, 2, 3, 0.86), inset 0 0 22px rgba(226, 154, 63, 0.14);
+  overflow: hidden;
+}
+
+/* Mode Tertutup: ringkas proporsional sampul kitab sebelum diketuk */
+#pg-portal #timelineBook.is-closed .book-shell {
+  max-width: 440px;
+  min-height: 360px;
+  max-height: 430px;
+  margin: 0 auto;
+}
+
+@media (min-width: 768px) {
+  #pg-portal #timelineBook.is-open .book-shell {
+    grid-template-columns: minmax(0, 1fr) 26px minmax(0, 1fr);
+    padding: 18px 20px;
+    border-radius: 12px;
+  }
+}
+
+/* Landscape HP: tetap bentangan 2 halaman sesuai UPDATE_LANDSCAPE_PHONE.txt */
+@media (orientation: landscape) and (max-height: 520px) and (min-width: 600px) and (max-width: 1100px) {
+  #pg-portal #timelineBook.is-closed .book-shell {
+    max-width: 420px;
+    min-height: 290px;
+    max-height: 320px;
+  }
+  #pg-portal #timelineBook.is-open .book-shell {
+    grid-template-columns: minmax(0, 1fr) 22px minmax(0, 1fr);
+    padding: 12px 14px;
+  }
+}
+
+/* Sampul Kitab Kuno Interaktif (Tertutup -> Terbuka saat Diketuk) */
+#pg-portal .book-cover-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 25;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 28px 24px;
+  text-align: center;
+  color: var(--color-gold-light, #e29a3f);
+  background:
+    radial-gradient(ellipse at 50% 42%, rgba(167, 24, 35, 0.35) 0%, rgba(28, 6, 9, 0.94) 76%),
+    linear-gradient(145deg, #621117 0%, #3a070b 58%, #240407 100%);
+  border: 1px solid rgba(226, 154, 63, 0.45);
+  border-left: 14px solid #2b0609;
+  box-shadow: inset 3px 0 0 #be6f24, inset 0 0 36px rgba(10, 2, 4, 0.65);
+  cursor: pointer;
+  transform-origin: left center;
+  transition: transform 0.6s var(--ease-royal, cubic-bezier(0.2, 0.8, 0.2, 1)), opacity 0.48s ease;
+}
+
+/* Bingkai emboss emas di atas sampul kitab */
+#pg-portal .book-cover-overlay::before {
+  content: "";
+  position: absolute;
+  inset: 14px 14px 14px 20px;
+  border: 1.5px solid rgba(200, 165, 114, 0.65);
+  outline: 1px solid rgba(200, 165, 114, 0.28);
+  outline-offset: -6px;
+  border-radius: 4px;
+  pointer-events: none;
+}
+
+#pg-portal #timelineBook.is-open .book-cover-overlay {
+  transform: perspective(1200px) rotateY(-92deg);
+  opacity: 0;
+  pointer-events: none;
+}
+
+#pg-portal .cover-crest {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  border: 1.5px solid var(--color-gold-light, #e29a3f);
+  background: rgba(20, 8, 10, 0.72);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 14px;
+  color: var(--color-gold-light, #e29a3f);
+}
+
+#pg-portal .cover-crest svg {
+  width: 28px;
+  height: 28px;
+}
+
+#pg-portal .cover-kicker {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-paper-gold-rim, #c8a572);
+  margin-bottom: 6px;
+}
+
+#pg-portal .cover-title {
+  font-family: var(--font-title, 'Cormorant Garamond', Georgia, serif);
+  font-size: clamp(24px, 4vw, 34px);
+  font-weight: 700;
+  color: var(--color-paper-cream, #f7f1e6);
+  margin: 0 0 6px;
+  line-height: 1.12;
+}
+
+#pg-portal .cover-event {
+  font-family: var(--font-title, 'Cormorant Garamond', Georgia, serif);
+  font-style: italic;
+  font-size: clamp(16px, 2.2vw, 20px);
+  color: var(--color-gold-light, #e29a3f);
+  margin: 0 0 18px;
+}
+
+#pg-portal .cover-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  min-height: 44px;
+  border-radius: var(--radius-sm, 4px);
+  border: 1px solid var(--color-gold-light, #e29a3f);
+  background: var(--color-maroon, #731215);
+  color: var(--color-paper-cream, #f7f1e6);
+  font-family: var(--font-ui, 'Hanken Grotesk', sans-serif);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  box-shadow: 0 6px 18px rgba(8, 2, 4, 0.65);
+}
+
+/* Tombol Tutup Kitab halus di sudut kanan atas halaman terbuka */
+#pg-portal .btn-close-book {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  z-index: 16;
+  min-height: 36px;
+  padding: 5px 11px;
+  border-radius: var(--radius-sm, 4px);
+  border: 1px solid rgba(190, 111, 36, 0.55);
+  background: rgba(247, 241, 230, 0.94);
+  color: var(--color-maroon, #731215);
+  font-family: var(--font-ui, 'Hanken Grotesk', sans-serif);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+#pg-portal #timelineBook.is-closed .btn-close-book {
+  display: none;
+}
+
+/* Pita Pembatas Buku Sutra Marun tanpa file book-bookmark.svg lama */
+#pg-portal #timelineBook .book-ribbon {
+  position: absolute;
+  right: 12%;
+  top: -2px;
+  width: 24px;
+  height: 54px;
+  z-index: 12;
+  background: linear-gradient(180deg, #9a1822 0%, #731215 85%);
+  background-image: none;
+  border-left: 1px solid #c8a572;
+  border-right: 1px solid #c8a572;
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 80%, 0 100%);
+  pointer-events: none;
+}
+#pg-portal #timelineBook.is-closed .book-ribbon {
+  display: none;
+}
+
+/* Punggung Kitab Bergaris Emas (matikan url ../assets/book/book-spine.svg di style.css pada semua ukuran layar) */
+#pg-portal #timelineBook .book-spine {
+  display: none;
+  background-image: none !important; /* Cegah request 404 ke _archive/book-legacy/book-spine.svg */
+}
+
+@media (min-width: 768px), (orientation: landscape) and (max-height: 520px) and (min-width: 600px) and (max-width: 1100px) {
+  #pg-portal #timelineBook.is-open .book-spine {
+    display: block;
+    position: relative;
+    background: linear-gradient(90deg, #270508 0%, #5c1017 30%, #731215 50%, #5c1017 70%, #270508 100%);
+    background-image: linear-gradient(90deg, #270508 0%, #5c1017 30%, #731215 50%, #5c1017 70%, #270508 100%);
+    border-left: 1px solid rgba(200, 165, 114, 0.55);
+    border-right: 1px solid rgba(200, 165, 114, 0.55);
+    z-index: 5;
+  }
+  /* Garis-garis emas horizontal punggung buku */
+  #pg-portal #timelineBook.is-open .book-spine::before {
+    content: "";
+    position: absolute;
+    inset: 28px 3px;
+    background: repeating-linear-gradient(
+      180deg,
+      rgba(226, 154, 63, 0.78) 0px,
+      rgba(226, 154, 63, 0.78) 3px,
+      transparent 3px,
+      transparent 54px
+    );
+    opacity: 0.72;
+    pointer-events: none;
+  }
+}
+
+/* Halaman Perkamen Krem (tanpa book-page.svg; relative agar konten bebas memanjang tanpa terpotong) */
+#pg-portal #timelineBook .book-page {
+  position: relative;
+  min-width: 0;
+  height: auto;
+  min-height: 0;
+  overflow: visible;
+}
+
+#pg-portal #timelineBook .book-page-paper {
+  position: relative !important; /* Timpa position:absolute di style.css:346 */
+  inset: auto !important;
+  height: 100%;
+  background: radial-gradient(ellipse at 50% 45%, #fbf6ec 0%, #f4ebd8 78%, #eadbbf 100%) !important;
+  background-image: none;
+  color: var(--color-text-dark, #1f1013);
+  border: 1px solid var(--color-paper-gold-rim, #c8a572);
+  border-radius: 4px;
+  padding: clamp(18px, 3vw, 28px) clamp(16px, 2.5vw, 24px);
+  box-shadow: inset 0 0 18px rgba(190, 111, 36, 0.14);
+}
+
+#pg-portal #timelineBook .book-page-paper::after {
+  content: "";
+  position: absolute;
+  inset: 8px;
+  border: 1px solid rgba(190, 111, 36, 0.34);
+  border-radius: 2px;
+  background: none !important;
+  background-image: none !important; /* Cegah request 404 book-ornament.svg dari style.css:347 */
+  pointer-events: none;
+}
+
+#pg-portal #timelineBook .book-page-content {
+  position: relative;
+  z-index: 2;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  text-align: left;
+}
+
+/* Mekanisme Balik Halaman (.book-turn-leaf): tanpa book-cover.svg, tanpa display:none !important */
+#pg-portal #timelineBook .book-turn-leaf {
+  position: absolute;
+  top: 18px;
+  bottom: 18px;
+  right: 20px;
+  width: calc(50% - 32px);
+  transform-style: preserve-3d;
+  transform-origin: left center;
+  pointer-events: none;
+  opacity: 0;
+  z-index: 18;
+  /* Perlu !important untuk menimpa display:none !important pada .book-turn-leaf di style.css:435 */
+  display: block !important;
+}
+
+#pg-portal #timelineBook.is-closed .book-turn-leaf {
+  opacity: 0;
+}
+
+#pg-portal #timelineBook .book-turn-front,
+#pg-portal #timelineBook .book-turn-back {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  border-radius: 0 6px 6px 0;
+  background: #f5ebd8 !important;
+  background-image: none !important;
+  border: 1px solid var(--color-paper-gold-rim, #c8a572);
+}
+
+#pg-portal #timelineBook .book-turn-front::after,
+#pg-portal #timelineBook .book-turn-back::after {
+  content: "";
+  position: absolute;
+  inset: 10px;
+  border: 1px solid rgba(190, 111, 36, 0.35);
+  background: none !important;
+  background-image: none !important; /* Cegah request 404 book-ornament.svg dari style.css:372 */
+}
+
+#pg-portal #timelineBook .book-turn-front > .book-page-paper::after,
+#pg-portal #timelineBook .book-turn-back > .book-page-paper::after {
+  background: none !important;
+  background-image: none !important; /* Cegah request 404 book-ornament.svg dari style.css:316 */
+}
+
+#pg-portal #timelineBook .book-turn-back {
+  transform: rotateY(180deg);
+  background: #ebd8be !important;
+}
+
+#pg-portal #timelineBook .book-shell.book-turn-next .book-turn-leaf {
+  animation: bookTurnNext 0.58s var(--ease-royal, cubic-bezier(0.2, 0.8, 0.2, 1));
+}
+#pg-portal #timelineBook .book-shell.book-turn-prev .book-turn-leaf {
+  animation: bookTurnPrev 0.58s var(--ease-royal, cubic-bezier(0.2, 0.8, 0.2, 1));
+}
+
+@keyframes bookTurnNext {
+  0% { opacity: 0.92; transform: rotateY(0deg); }
+  100% { opacity: 0; transform: rotateY(-172deg); }
+}
+
+@keyframes bookTurnPrev {
+  0% { opacity: 0.92; transform: rotateY(-172deg); }
+  100% { opacity: 0; transform: rotateY(0deg); }
+}
+
+/* Detail Tahap (#det) di Halaman Kiri */
+#pg-portal #timelineBook #det.card.detail {
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  padding: 0;
+  color: var(--color-text-dark, #1f1013);
+}
+
+#pg-portal #timelineBook #det .d-ic {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 1.5px solid var(--color-paper-gold-rim, #c8a572);
+  background: rgba(115, 18, 21, 0.08);
+  color: var(--color-maroon, #731215);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 8px;
+}
+
+#pg-portal #timelineBook #det .d-ic img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+#pg-portal #timelineBook #det .chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-maroon, #731215);
+  background: rgba(190, 111, 36, 0.14);
+  border: 1px solid rgba(190, 111, 36, 0.42);
+  padding: 4px 10px;
+  border-radius: 3px;
+}
+
+#pg-portal #timelineBook #det h3 {
+  font-family: var(--font-title, 'Cormorant Garamond', Georgia, serif);
+  font-size: clamp(22px, 2.8vw, 28px);
+  font-weight: 700;
+  color: var(--color-maroon, #731215);
+  margin: 8px 0 6px;
+  line-height: 1.15;
+}
+
+#pg-portal #timelineBook #det p {
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--color-text-dark, #1f1013);
+  margin: 0 0 10px;
+}
+
+#pg-portal #timelineBook #det .btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 42px;
+  padding: 9px 16px;
+  border-radius: var(--radius-sm, 4px);
+  background: var(--color-maroon, #731215);
+  color: var(--color-paper-cream, #f7f1e6);
+  border: 1px solid var(--color-gold-dark, #be6f24);
+  box-shadow: none;
+  font-family: var(--font-ui, 'Hanken Grotesk', sans-serif);
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* Akses Cepat Kitab: Handbook, Twibbon, Poster (dari CMS kitList) */
+#pg-portal #portalBookKit {
+  border-top: 1px solid rgba(190, 111, 36, 0.36);
+  padding-top: 12px;
+  margin-top: 4px;
+}
+
+#pg-portal .kit-ledger-title {
+  font-family: var(--font-title, 'Cormorant Garamond', Georgia, serif);
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-maroon, #731215);
+  margin: 0 0 8px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+#pg-portal .kit-ledger-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+}
+
+#pg-portal .kit-ledger-card {
+  border: 1px solid rgba(190, 111, 36, 0.42);
+  border-radius: var(--radius-sm, 4px);
+  background: rgba(255, 252, 246, 0.55);
+  overflow: hidden;
+}
+
+#pg-portal .kit-ledger-btn {
+  width: 100%;
+  min-height: 44px;
+  padding: 8px 12px;
+  background: transparent;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  text-align: left;
+  color: var(--color-text-dark, #1f1013);
+  cursor: pointer;
+}
+
+#pg-portal .kit-ledger-left {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-width: 0;
+}
+
+#pg-portal .kit-ledger-left .portal-svg-icon {
+  color: var(--color-maroon, #731215);
+  width: 18px;
+  height: 18px;
+}
+
+#pg-portal .kit-ledger-name {
+  font-family: var(--font-title, 'Cormorant Garamond', Georgia, serif);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--color-maroon, #731215);
+  line-height: 1.2;
+}
+
+#pg-portal .kit-ledger-toggle {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-gold-dark, #be6f24);
+  flex-shrink: 0;
+}
+
+#pg-portal .kit-ledger-body {
+  padding: 0 12px 12px;
+  border-top: 1px dashed rgba(190, 111, 36, 0.28);
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--color-text-dark, #1f1013);
+}
+
+#pg-portal .kit-ledger-body[hidden] {
+  display: none;
+}
+
+#pg-portal .kit-ledger-thumb {
+  margin-top: 8px;
+  width: 100%;
+  height: 112px;
+  background: #f0e4cd;
+  border: 1px solid rgba(190, 111, 36, 0.35);
+  border-radius: 3px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#pg-portal .kit-ledger-thumb img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+#pg-portal .kit-ledger-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  padding: 7px 14px;
+  min-height: 38px;
+  border-radius: var(--radius-sm, 4px);
+  background: var(--color-maroon, #731215);
+  color: var(--color-paper-cream, #f7f1e6);
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+/* Halaman Kanan: Hitung Mundur Angka Serif Besar + Pembatas Tipis Emas (Bukan Kotak Berkedip) */
+#pg-portal #timelineBook .book-right .book-page-content {
+  align-items: center;
+  text-align: center;
+}
+
+#pg-portal #timelineBook .book-mini-tag {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  color: var(--color-gold-dark, #be6f24);
+}
+
+#pg-portal #timelineBook .book-count-title {
+  font-family: var(--font-title, 'Cormorant Garamond', Georgia, serif);
+  font-size: clamp(22px, 3vw, 29px);
+  font-weight: 700;
+  color: var(--color-maroon, #731215);
+  margin: 0;
+  line-height: 1.15;
+}
+
+#pg-portal #timelineBook .book-count {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  width: 100%;
+  padding: 12px 4px;
+  border-top: 1px solid rgba(190, 111, 36, 0.45);
+  border-bottom: 1px solid rgba(190, 111, 36, 0.45);
+  gap: 0;
+}
+
+#pg-portal #timelineBook .book-count .unit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 4px;
+  border-right: 1px solid rgba(190, 111, 36, 0.42);
+}
+
+#pg-portal #timelineBook .book-count .unit:last-child {
+  border-right: none;
+}
+
+#pg-portal #timelineBook .book-count .flip,
+#pg-portal #timelineBook .book-count .flip.tick {
+  /* Perlu !important untuk menimpa kotak navy & animasi berkedip .flip di style.css:117 & 570 */
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  min-width: 0 !important;
+  height: auto !important;
+  padding: 0 !important;
+}
+
+/* Matikan garis pembelah split-flap horizontal dari .flip:after (style.css:118) dan ::before (359) */
+#pg-portal #timelineBook .book-count .flip::before,
+#pg-portal #timelineBook .book-count .flip::after {
+  content: none !important;
+  display: none !important;
+}
+
+#pg-portal #timelineBook .book-count .flip span,
+#pg-portal #timelineBook .book-count .flip.tick span {
+  font-family: var(--font-title, 'Cormorant Garamond', Georgia, serif);
+  font-size: clamp(26px, 4.2vw, 40px);
+  font-weight: 700;
+  line-height: 1;
+  color: var(--color-maroon, #731215);
+  font-variant-numeric: tabular-nums;
+  animation: none !important;
+  display: block;
+}
+
+#pg-portal #timelineBook .book-count .unit small {
+  font-family: var(--font-ui, 'Hanken Grotesk', sans-serif);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: var(--color-gold-dark, #be6f24);
+  margin-top: 4px;
+}
+
+#pg-portal #timelineBook .meter.big {
+  width: 100%;
+  height: 7px;
+  background: rgba(115, 18, 21, 0.12);
+  border: 1px solid rgba(190, 111, 36, 0.38);
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+#pg-portal #timelineBook .meter.big > i#cdBar {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-maroon, #731215) 0%, var(--color-gold-light, #e29a3f) 100%);
+}
+
+#pg-portal #timelineBook #cdTxt,
+#pg-portal #timelineBook #wib {
+  color: var(--color-text-dark, #1f1013);
+  font-size: 13px;
+}
+
+#pg-portal #timelineBook #wib {
+  color: var(--color-maroon, #731215);
+  font-weight: 600;
+}
+
+#pg-portal #timelineBook .book-mascots {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 4px;
+}
+
+/* ----------------------------------------------------------------------------
+ * 6. BAGIAN E: CERMIN PENAMBAH PESONA (#portalMirror)
+ * ---------------------------------------------------------------------------- */
+#pg-portal #portalMirror {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#pg-portal .mirror-plaque {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 20px;
+  border-radius: var(--radius-sm, 4px);
+  background: linear-gradient(180deg, #321317 0%, #200a0e 100%);
+  border: 1px solid var(--color-paper-gold-rim, #c8a572);
+  color: var(--color-gold-light, #e29a3f);
+  font-family: var(--font-title, 'Cormorant Garamond', Georgia, serif);
+  font-size: clamp(19px, 2.8vw, 24px);
+  font-weight: 700;
+  margin-bottom: 20px;
+  box-shadow: 0 8px 20px rgba(8, 2, 4, 0.6);
+}
+
+#pg-portal .mirror-plaque .portal-svg-icon {
+  width: 22px;
+  height: 22px;
+}
+
+#pg-portal .mirror-stage {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+#pg-portal .mirror-frame-btn {
+  position: relative;
+  width: 158px;
+  height: 204px;
+  padding: 10px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at 35% 28%, #f2cf8b 0%, #c8a572 45%, #7e4b1a 100%);
+  border: 2px solid #e29a3f;
+  box-shadow: 0 14px 36px rgba(8, 2, 4, 0.8), inset 0 0 12px rgba(31, 16, 19, 0.45);
+  cursor: pointer;
+  transition: transform 0.3s var(--ease-royal, cubic-bezier(0.2, 0.8, 0.2, 1));
+}
+
+#pg-portal .mirror-frame-btn:hover,
+#pg-portal .mirror-frame-btn:focus-visible {
+  transform: scale(1.03);
+}
+
+#pg-portal .mirror-surface {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 2px solid #5c1017;
+  background:
+    linear-gradient(125deg, rgba(247, 241, 230, 0.55) 14%, transparent 15%, transparent 22%, rgba(247, 241, 230, 0.35) 23%, transparent 24%),
+    radial-gradient(ellipse at 38% 34%, #efe5d5 0%, #cbbca8 44%, #6a4c4b 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+#pg-portal .mirror-surface::after {
+  content: "";
+  position: absolute;
+  top: -20%;
+  left: -130%;
+  width: 75%;
+  height: 140%;
+  background: linear-gradient(105deg, transparent 0%, rgba(247, 241, 230, 0.65) 50%, transparent 100%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+#pg-portal .mirror-frame-btn.is-charmed .mirror-surface::after {
+  animation: mirrorGleam 0.9s ease forwards;
+}
+
+@keyframes mirrorGleam {
+  0% { transform: translateX(0); opacity: 0.9; }
+  100% { transform: translateX(340%); opacity: 0; }
+}
+
+/* Catatan Tempel Tua "klik di sini" */
+#pg-portal .mirror-sticky {
+  position: absolute;
+  right: -18px;
+  bottom: 18px;
+  padding: 8px 12px;
+  background: linear-gradient(180deg, #efe2c6 0%, #e1cfac 100%);
+  color: #2b1619;
+  border: 1px solid #b89865;
+  border-radius: 2px;
+  font-family: var(--font-title, 'Cormorant Garamond', Georgia, serif);
+  font-size: 15px;
+  font-weight: 700;
+  font-style: italic;
+  box-shadow: 0 6px 14px rgba(10, 2, 4, 0.5);
+  transform: rotate(-4deg);
+  pointer-events: none;
+}
+
+#pg-portal .mirror-sticky::before {
+  content: "";
+  position: absolute;
+  top: -5px;
+  left: 50%;
+  width: 24px;
+  height: 9px;
+  transform: translateX(-50%);
+  background: rgba(200, 165, 114, 0.72);
+}
+
+#pg-portal .mirror-reveal {
+  max-width: 480px;
+  padding: 14px 20px;
+  background: var(--color-paper-cream, #f7f1e6);
+  color: var(--color-text-dark, #1f1013);
+  border: 1.5px solid var(--color-paper-gold-rim, #c8a572);
+  border-radius: var(--radius-md, 6px);
+  font-family: var(--font-title, 'Cormorant Garamond', Georgia, serif);
+  font-size: clamp(17px, 2.2vw, 20px);
+  font-weight: 600;
+  line-height: 1.4;
+  box-shadow: 0 10px 26px rgba(8, 2, 4, 0.65);
+}
+
+#pg-portal .mirror-reveal[hidden] {
+  display: none;
+}
+
+#pg-portal .mirror-actions {
+  display: flex;
+  justify-content: center;
+}
+
+#pg-portal .btn-mirror-skip {
+  min-height: 44px;
+  padding: 8px 18px;
+  border-radius: var(--radius-sm, 4px);
+  background: transparent;
+  border: 1px solid rgba(200, 165, 114, 0.5);
+  color: var(--color-text-secondary, #d4c3b0);
+  font-family: var(--font-ui, 'Hanken Grotesk', sans-serif);
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+#pg-portal .btn-mirror-skip:hover,
+#pg-portal .btn-mirror-skip:focus-visible {
+  border-color: var(--color-gold-light, #e29a3f);
+  color: var(--color-paper-cream, #f7f1e6);
+}
+
+/* ----------------------------------------------------------------------------
+ * 7. KONTINUITAS KONTRAS #berita & #tim DI ATAS LATAR #14080a (TANPA REDESIGN)
+ * ---------------------------------------------------------------------------- */
+#pg-portal #berita .sec-title,
+#pg-portal #tim .sec-title,
+#pg-portal #tim h3 {
+  color: var(--color-paper-cream, #f7f1e6);
+}
+
+#pg-portal #berita .sub {
+  color: var(--color-text-secondary, #d4c3b0);
+}
+
+#pg-portal #berita img,
+#pg-portal #tim img {
+  object-fit: cover;
+}
+
+/* ----------------------------------------------------------------------------
+ * 8. HORMATI prefers-reduced-motion
+ * ---------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  #pg-portal *,
+  #pg-portal *::before,
+  #pg-portal *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

@@ -17,6 +17,7 @@
     <link rel="stylesheet" href="css/hasil.css">
     <link rel="stylesheet" href="css/cms.css">
     <link rel="stylesheet" href="css/konfirmasi.css">
+    <link rel="stylesheet" href="css/portal-stage.css">
 </head>
 
 <body>
@@ -307,6 +308,24 @@
     </section>
     <main id="app">
         <div class="page active" id="pg-portal">
+            <!-- Latar Hutan 4 Lapis (SVG serasi adegan jalan hutan hero) -->
+            <div class="portal-forest-backdrop" id="portalForestBg" aria-hidden="true">
+                <div class="portal-forest-sticky">
+                    <svg class="pf-layer pf-castle" viewBox="0 0 1440 420" preserveAspectRatio="xMidYMax slice">
+                        <path d="M580 420 L602 250 L620 220 L638 250 L655 250 L664 195 L682 145 L700 195 L716 140 L724 108 L732 140 L748 195 L766 145 L784 195 L794 250 L812 250 L830 220 L848 250 L870 420 Z" fill="#320e14" stroke="#be6f24" stroke-width="1" stroke-opacity="0.32"/>
+                        <path d="M0 420 Q360 320 720 340 Q1080 320 1440 420 Z" fill="#25090e"/>
+                    </svg>
+                    <svg class="pf-layer pf-mid" viewBox="0 0 1440 480" preserveAspectRatio="xMidYMax slice">
+                        <path d="M0 480 L0 190 Q80 155 150 215 Q215 170 285 250 L330 480 Z" fill="#24090d" stroke="#be6f24" stroke-width="0.9" stroke-opacity="0.22"/>
+                        <path d="M1110 480 L1155 250 Q1225 170 1290 215 Q1360 155 1440 190 L1440 480 Z" fill="#24090d" stroke="#be6f24" stroke-width="0.9" stroke-opacity="0.22"/>
+                    </svg>
+                    <svg class="pf-layer pf-fg" viewBox="0 0 1440 560" preserveAspectRatio="xMidYMax slice">
+                        <path d="M-20 560 L-20 80 Q55 130 95 250 Q140 365 180 560 Z" fill="#140507" stroke="#e29a3f" stroke-width="1" stroke-opacity="0.22"/>
+                        <path d="M1460 560 L1460 80 Q1385 130 1345 250 Q1300 365 1260 560 Z" fill="#140507" stroke="#e29a3f" stroke-width="1" stroke-opacity="0.22"/>
+                    </svg>
+                </div>
+            </div>
+
             <section id="about"><span class="tag">TENTANG</span>
                 <h2 class="sec-title rv">Apa itu PRPN x Enchantax?</h2>
                 <p class="sub rv">Ketuk kotak di bawah untuk mengenal lebih dekat.</p>
@@ -322,22 +341,92 @@
             <section id="jadwal"><span class="tag">JADWAL</span>
                 <h2 class="sec-title rv">Timeline Lomba</h2>
                 <p class="sub rv">Ketuk titik pada jalur dan lihat maskot berlari ke tahap itu.</p>
-                <div class="tabs timeline-branches rv" id="timelineBranches" aria-label="Pilih cabang lomba"><button
-                        type="button" data-tl="lcc">🧠 Lomba Cerdas Cermat</button><button type="button"
-                        data-tl="infografis">🎨 Creativeee Competition</button><button type="button" data-tl="esai"
-                        class="on">📝 Call for Paper</button></div>
-                <div class="path rv">
-                    <div class="line"><i id="lf"></i></div>
-                    <div class="nodes" id="nodes"></div><i class="m runner" id="run" data-k="g2"></i>
+                <div class="tabs timeline-branches rv" id="timelineBranches" aria-label="Pilih cabang lomba">
+                    <button type="button" data-tl="lcc">
+                        <span class="gate-visual" aria-hidden="true">
+                            <svg class="gate-svg" viewBox="0 0 180 116">
+                                <path d="M0 116 Q56 100 76 74 L104 74 Q124 100 180 116 Z" fill="#2c0c11"/>
+                                <path d="M62 116 Q78 96 84 74 L96 74 Q102 96 118 116 Z" fill="#6e3a1a" fill-opacity="0.48" stroke="#be6f24" stroke-width="0.9"/>
+                                <path d="M46 76 L46 34 L62 20 L78 34 L78 24 L90 12 L102 24 L102 34 L118 20 L134 34 L134 76 Z" fill="#4f1219" stroke="#e29a3f" stroke-width="1.2"/>
+                                <rect x="74" y="42" width="32" height="34" rx="16" fill="#e29a3f" fill-opacity="0.32"/>
+                                <g class="gate-door-l"><path d="M74 76 L74 54 A16 14 0 0 1 90 42 L90 76 Z" fill="#731215" stroke="#c8a572" stroke-width="1"/></g>
+                                <g class="gate-door-r"><path d="M106 76 L106 54 A16 14 0 0 0 90 42 L90 76 Z" fill="#731215" stroke="#c8a572" stroke-width="1"/></g>
+                            </svg>
+                        </span>
+                        <span class="gate-meta">
+                            <span class="gate-head-row">
+                                <svg class="gate-ico" viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons/icons.svg#icon-lcc"></use></svg>
+                                <span class="gate-title">Lomba Cerdas Cermat</span>
+                            </span>
+                            <span class="gate-cue">Masuki Gerbang</span>
+                        </span>
+                        <span class="branch-fireworks" aria-hidden="true"></span>
+                    </button>
+                    <button type="button" data-tl="infografis">
+                        <span class="gate-visual" aria-hidden="true">
+                            <svg class="gate-svg" viewBox="0 0 180 116">
+                                <path d="M0 116 Q56 100 76 74 L104 74 Q124 100 180 116 Z" fill="#2c0c11"/>
+                                <path d="M62 116 Q78 96 84 74 L96 74 Q102 96 118 116 Z" fill="#6e3a1a" fill-opacity="0.48" stroke="#be6f24" stroke-width="0.9"/>
+                                <path d="M48 76 L48 38 Q62 24 76 34 L90 14 L104 34 Q118 24 132 38 L132 76 Z" fill="#4f1219" stroke="#e29a3f" stroke-width="1.2"/>
+                                <rect x="74" y="42" width="32" height="34" rx="16" fill="#e29a3f" fill-opacity="0.32"/>
+                                <g class="gate-door-l"><path d="M74 76 L74 54 A16 14 0 0 1 90 42 L90 76 Z" fill="#731215" stroke="#c8a572" stroke-width="1"/></g>
+                                <g class="gate-door-r"><path d="M106 76 L106 54 A16 14 0 0 0 90 42 L90 76 Z" fill="#731215" stroke="#c8a572" stroke-width="1"/></g>
+                            </svg>
+                        </span>
+                        <span class="gate-meta">
+                            <span class="gate-head-row">
+                                <svg class="gate-ico" viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons/icons.svg#icon-creative"></use></svg>
+                                <span class="gate-title">Creative Competition</span>
+                            </span>
+                            <span class="gate-cue">Masuki Gerbang</span>
+                        </span>
+                        <span class="branch-fireworks" aria-hidden="true"></span>
+                    </button>
+                    <button type="button" data-tl="esai" class="on">
+                        <span class="gate-visual" aria-hidden="true">
+                            <svg class="gate-svg" viewBox="0 0 180 116">
+                                <path d="M0 116 Q56 100 76 74 L104 74 Q124 100 180 116 Z" fill="#2c0c11"/>
+                                <path d="M62 116 Q78 96 84 74 L96 74 Q102 96 118 116 Z" fill="#6e3a1a" fill-opacity="0.48" stroke="#be6f24" stroke-width="0.9"/>
+                                <path d="M44 76 L44 36 L68 24 L90 10 L112 24 L136 36 L136 76 Z" fill="#4f1219" stroke="#e29a3f" stroke-width="1.2"/>
+                                <rect x="74" y="42" width="32" height="34" rx="16" fill="#e29a3f" fill-opacity="0.32"/>
+                                <g class="gate-door-l"><path d="M74 76 L74 54 A16 14 0 0 1 90 42 L90 76 Z" fill="#731215" stroke="#c8a572" stroke-width="1"/></g>
+                                <g class="gate-door-r"><path d="M106 76 L106 54 A16 14 0 0 0 90 42 L90 76 Z" fill="#731215" stroke="#c8a572" stroke-width="1"/></g>
+                            </svg>
+                        </span>
+                        <span class="gate-meta">
+                            <span class="gate-head-row">
+                                <svg class="gate-ico" viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons/icons.svg#icon-cfp"></use></svg>
+                                <span class="gate-title">Call for Paper</span>
+                            </span>
+                            <span class="gate-cue">Jalan Terpilih</span>
+                        </span>
+                        <span class="branch-fireworks" aria-hidden="true"></span>
+                    </button>
                 </div>
-                <div class="timeline-book rv" id="timelineBook" aria-label="Buku timeline lomba">
+                <div class="portal-branch-scroll" id="portalBranchScroll">
+                    <div class="path rv">
+                        <div class="line"><i id="lf"></i></div>
+                        <div class="nodes" id="nodes"></div><i class="m runner" id="run" data-k="g2"></i>
+                    </div>
+                </div>
+                <div class="timeline-book rv is-closed" id="timelineBook" aria-label="Buku timeline lomba">
                     <div class="book-shell" id="bookShell">
-                        <div class="book-ribbon" aria-hidden="true"></div><i class="book-spark s1"></i><i
-                            class="book-spark s2"></i><i class="book-spark s3"></i><i class="book-spark s4"></i>
+                        <button type="button" class="book-cover-overlay" id="bookCoverOverlay" aria-expanded="false" aria-controls="bookShell">
+                            <span class="cover-crest" aria-hidden="true">
+                                <svg viewBox="0 0 24 24"><use href="assets/icons/icons.svg#icon-book"></use></svg>
+                            </span>
+                            <span class="cover-kicker">KITAB PANDUAN SAYEMBARA</span>
+                            <h3 class="cover-title">Jadwal, Waktu &amp; Bekal</h3>
+                            <p class="cover-event" id="bookCoverEvent">PRPN x ENCHANTAX 2026</p>
+                            <span class="cover-cta">Ketuk untuk Membuka Kitab</span>
+                        </button>
+                        <button type="button" class="btn-close-book" id="btnCloseBook">Tutup Kitab</button>
+                        <div class="book-ribbon" aria-hidden="true"></div>
                         <div class="book-page book-left">
                             <div class="book-page-paper">
                                 <div class="book-page-content">
                                     <div class="card detail" id="det"></div>
+                                    <div class="portal-book-kit" id="portalBookKit" aria-label="Akses cepat sayembara"></div>
                                 </div>
                             </div>
                         </div>
@@ -373,6 +462,24 @@
                             <div class="book-turn-front"></div>
                             <div class="book-turn-back"></div>
                         </div>
+                    </div>
+                </div>
+            </section>
+            <section id="portalMirror" class="portal-mirror-sec" aria-label="Cermin Penambah Pesona">
+                <div class="mirror-plaque">
+                    <svg class="portal-svg-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="assets/icons/icons.svg#icon-mirror"></use></svg>
+                    <span>Cermin penambah pesona</span>
+                </div>
+                <div class="mirror-stage">
+                    <button type="button" class="mirror-frame-btn" id="mirrorFrameBtn" aria-expanded="false" aria-controls="mirrorRevealBox">
+                        <span class="mirror-surface" aria-hidden="true">
+                            <svg class="portal-svg-icon" viewBox="0 0 24 24" style="width:44px;height:44px;color:#731215;opacity:0.42"><use href="assets/icons/icons.svg#icon-mirror"></use></svg>
+                        </span>
+                        <span class="mirror-sticky" id="mirrorStickyNote">klik di sini</span>
+                    </button>
+                    <p class="mirror-reveal" id="mirrorRevealBox" hidden>Cermin ini bisa menambah ketampanan dan kecantikan penggunanya. Gunakan sekarang sebelum kelewatan.</p>
+                    <div class="mirror-actions">
+                        <button type="button" class="btn-mirror-skip" id="btnMirrorSkip">Lewati ke Berita</button>
                     </div>
                 </div>
             </section>
@@ -581,6 +688,7 @@
     <script src="js/konfirmasi.js"></script>
     <script src="js/gate.js"></script>
     <script src="js/hero-stage.js"></script>
+    <script src="js/portal-stage.js"></script>
 </body>
 
 </html>
